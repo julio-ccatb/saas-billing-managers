@@ -12,7 +12,8 @@ import {
   Menu, 
   X,
   CreditCard,
-  LogOut
+  LogOut,
+  KeyRound
 } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { useSession, signOut } from "next-auth/react";
@@ -21,6 +22,7 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
   { name: "Invoices", href: "/invoices", icon: FileText },
   { name: "Customers", href: "/customers", icon: Users },
+  { name: "Licenses", href: "/licenses", icon: KeyRound },
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
