@@ -48,7 +48,10 @@ export const invoiceSchema = z.object({
 
   notes: z.string().default(""),
   paymentTerms: z.string().default("Payment due upon receipt"),
-  templateId: z.string().default("standard"),
+  templateId: z.string().default("classic"),
+  themeColor: z.string().default("#4F46E5"),
+  logoUrl: z.string().nullable().optional(),
+  signatureData: z.string().nullable().optional(),
 });
 
 export const customerSchema = z.object({
@@ -73,6 +76,7 @@ export const companyProfileSchema = z.object({
   country: z.string().default(""),
   taxId: z.string().default(""),
   logoUrl: z.string().nullable().optional(),
+  signatureData: z.string().nullable().optional(),
   currency: z.string().default("USD"),
   paymentTerms: z.string().default("Payment due upon receipt"),
   notes: z.string().default("Thank you for your business!"),

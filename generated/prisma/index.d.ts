@@ -6273,6 +6273,7 @@ export namespace Prisma {
     country: string | null
     taxId: string | null
     logoUrl: string | null
+    signatureData: string | null
     currency: string | null
     paymentTerms: string | null
     notes: string | null
@@ -6292,6 +6293,7 @@ export namespace Prisma {
     country: string | null
     taxId: string | null
     logoUrl: string | null
+    signatureData: string | null
     currency: string | null
     paymentTerms: string | null
     notes: string | null
@@ -6311,6 +6313,7 @@ export namespace Prisma {
     country: number
     taxId: number
     logoUrl: number
+    signatureData: number
     currency: number
     paymentTerms: number
     notes: number
@@ -6332,6 +6335,7 @@ export namespace Prisma {
     country?: true
     taxId?: true
     logoUrl?: true
+    signatureData?: true
     currency?: true
     paymentTerms?: true
     notes?: true
@@ -6351,6 +6355,7 @@ export namespace Prisma {
     country?: true
     taxId?: true
     logoUrl?: true
+    signatureData?: true
     currency?: true
     paymentTerms?: true
     notes?: true
@@ -6370,6 +6375,7 @@ export namespace Prisma {
     country?: true
     taxId?: true
     logoUrl?: true
+    signatureData?: true
     currency?: true
     paymentTerms?: true
     notes?: true
@@ -6462,6 +6468,7 @@ export namespace Prisma {
     country: string
     taxId: string
     logoUrl: string | null
+    signatureData: string | null
     currency: string
     paymentTerms: string
     notes: string
@@ -6498,6 +6505,7 @@ export namespace Prisma {
     country?: boolean
     taxId?: boolean
     logoUrl?: boolean
+    signatureData?: boolean
     currency?: boolean
     paymentTerms?: boolean
     notes?: boolean
@@ -6518,6 +6526,7 @@ export namespace Prisma {
     country?: boolean
     taxId?: boolean
     logoUrl?: boolean
+    signatureData?: boolean
     currency?: boolean
     paymentTerms?: boolean
     notes?: boolean
@@ -6538,6 +6547,7 @@ export namespace Prisma {
     country?: boolean
     taxId?: boolean
     logoUrl?: boolean
+    signatureData?: boolean
     currency?: boolean
     paymentTerms?: boolean
     notes?: boolean
@@ -6558,6 +6568,7 @@ export namespace Prisma {
     country?: boolean
     taxId?: boolean
     logoUrl?: boolean
+    signatureData?: boolean
     currency?: boolean
     paymentTerms?: boolean
     notes?: boolean
@@ -6565,7 +6576,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CompanyProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "logoUrl" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
+  export type CompanyProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "logoUrl" | "signatureData" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
   export type CompanyProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6593,6 +6604,7 @@ export namespace Prisma {
       country: string
       taxId: string
       logoUrl: string | null
+      signatureData: string | null
       currency: string
       paymentTerms: string
       notes: string
@@ -7033,6 +7045,7 @@ export namespace Prisma {
     readonly country: FieldRef<"CompanyProfile", 'String'>
     readonly taxId: FieldRef<"CompanyProfile", 'String'>
     readonly logoUrl: FieldRef<"CompanyProfile", 'String'>
+    readonly signatureData: FieldRef<"CompanyProfile", 'String'>
     readonly currency: FieldRef<"CompanyProfile", 'String'>
     readonly paymentTerms: FieldRef<"CompanyProfile", 'String'>
     readonly notes: FieldRef<"CompanyProfile", 'String'>
@@ -8694,6 +8707,9 @@ export namespace Prisma {
     notes: string | null
     paymentTerms: string | null
     templateId: string | null
+    themeColor: string | null
+    logoUrl: string | null
+    signatureData: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8733,6 +8749,9 @@ export namespace Prisma {
     notes: string | null
     paymentTerms: string | null
     templateId: string | null
+    themeColor: string | null
+    logoUrl: string | null
+    signatureData: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -8772,6 +8791,9 @@ export namespace Prisma {
     notes: number
     paymentTerms: number
     templateId: number
+    themeColor: number
+    logoUrl: number
+    signatureData: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -8833,6 +8855,9 @@ export namespace Prisma {
     notes?: true
     paymentTerms?: true
     templateId?: true
+    themeColor?: true
+    logoUrl?: true
+    signatureData?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8872,6 +8897,9 @@ export namespace Prisma {
     notes?: true
     paymentTerms?: true
     templateId?: true
+    themeColor?: true
+    logoUrl?: true
+    signatureData?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -8911,6 +8939,9 @@ export namespace Prisma {
     notes?: true
     paymentTerms?: true
     templateId?: true
+    themeColor?: true
+    logoUrl?: true
+    signatureData?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -9037,6 +9068,9 @@ export namespace Prisma {
     notes: string
     paymentTerms: string
     templateId: string
+    themeColor: string
+    logoUrl: string | null
+    signatureData: string | null
     createdAt: Date
     updatedAt: Date
     _count: InvoiceCountAggregateOutputType | null
@@ -9095,6 +9129,9 @@ export namespace Prisma {
     notes?: boolean
     paymentTerms?: boolean
     templateId?: boolean
+    themeColor?: boolean
+    logoUrl?: boolean
+    signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9138,6 +9175,9 @@ export namespace Prisma {
     notes?: boolean
     paymentTerms?: boolean
     templateId?: boolean
+    themeColor?: boolean
+    logoUrl?: boolean
+    signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9179,6 +9219,9 @@ export namespace Prisma {
     notes?: boolean
     paymentTerms?: boolean
     templateId?: boolean
+    themeColor?: boolean
+    logoUrl?: boolean
+    signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -9220,11 +9263,14 @@ export namespace Prisma {
     notes?: boolean
     paymentTerms?: boolean
     templateId?: boolean
+    themeColor?: boolean
+    logoUrl?: boolean
+    signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "templateId" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "templateId" | "themeColor" | "logoUrl" | "signatureData" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
@@ -9282,6 +9328,9 @@ export namespace Prisma {
       notes: string
       paymentTerms: string
       templateId: string
+      themeColor: string
+      logoUrl: string | null
+      signatureData: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["invoice"]>
@@ -9744,6 +9793,9 @@ export namespace Prisma {
     readonly notes: FieldRef<"Invoice", 'String'>
     readonly paymentTerms: FieldRef<"Invoice", 'String'>
     readonly templateId: FieldRef<"Invoice", 'String'>
+    readonly themeColor: FieldRef<"Invoice", 'String'>
+    readonly logoUrl: FieldRef<"Invoice", 'String'>
+    readonly signatureData: FieldRef<"Invoice", 'String'>
     readonly createdAt: FieldRef<"Invoice", 'DateTime'>
     readonly updatedAt: FieldRef<"Invoice", 'DateTime'>
   }
@@ -12370,6 +12422,7 @@ export namespace Prisma {
     country: 'country',
     taxId: 'taxId',
     logoUrl: 'logoUrl',
+    signatureData: 'signatureData',
     currency: 'currency',
     paymentTerms: 'paymentTerms',
     notes: 'notes',
@@ -12433,6 +12486,9 @@ export namespace Prisma {
     notes: 'notes',
     paymentTerms: 'paymentTerms',
     templateId: 'templateId',
+    themeColor: 'themeColor',
+    logoUrl: 'logoUrl',
+    signatureData: 'signatureData',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12804,6 +12860,7 @@ export namespace Prisma {
     country?: StringFilter<"CompanyProfile"> | string
     taxId?: StringFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
+    signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
     currency?: StringFilter<"CompanyProfile"> | string
     paymentTerms?: StringFilter<"CompanyProfile"> | string
     notes?: StringFilter<"CompanyProfile"> | string
@@ -12824,6 +12881,7 @@ export namespace Prisma {
     country?: SortOrder
     taxId?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    signatureData?: SortOrderInput | SortOrder
     currency?: SortOrder
     paymentTerms?: SortOrder
     notes?: SortOrder
@@ -12847,6 +12905,7 @@ export namespace Prisma {
     country?: StringFilter<"CompanyProfile"> | string
     taxId?: StringFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
+    signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
     currency?: StringFilter<"CompanyProfile"> | string
     paymentTerms?: StringFilter<"CompanyProfile"> | string
     notes?: StringFilter<"CompanyProfile"> | string
@@ -12867,6 +12926,7 @@ export namespace Prisma {
     country?: SortOrder
     taxId?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
+    signatureData?: SortOrderInput | SortOrder
     currency?: SortOrder
     paymentTerms?: SortOrder
     notes?: SortOrder
@@ -12892,6 +12952,7 @@ export namespace Prisma {
     country?: StringWithAggregatesFilter<"CompanyProfile"> | string
     taxId?: StringWithAggregatesFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
+    signatureData?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
     currency?: StringWithAggregatesFilter<"CompanyProfile"> | string
     paymentTerms?: StringWithAggregatesFilter<"CompanyProfile"> | string
     notes?: StringWithAggregatesFilter<"CompanyProfile"> | string
@@ -13030,6 +13091,9 @@ export namespace Prisma {
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
+    themeColor?: StringFilter<"Invoice"> | string
+    logoUrl?: StringNullableFilter<"Invoice"> | string | null
+    signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13072,6 +13136,9 @@ export namespace Prisma {
     notes?: SortOrder
     paymentTerms?: SortOrder
     templateId?: SortOrder
+    themeColor?: SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    signatureData?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -13117,6 +13184,9 @@ export namespace Prisma {
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
+    themeColor?: StringFilter<"Invoice"> | string
+    logoUrl?: StringNullableFilter<"Invoice"> | string | null
+    signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -13159,6 +13229,9 @@ export namespace Prisma {
     notes?: SortOrder
     paymentTerms?: SortOrder
     templateId?: SortOrder
+    themeColor?: SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    signatureData?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: InvoiceCountOrderByAggregateInput
@@ -13206,6 +13279,9 @@ export namespace Prisma {
     notes?: StringWithAggregatesFilter<"Invoice"> | string
     paymentTerms?: StringWithAggregatesFilter<"Invoice"> | string
     templateId?: StringWithAggregatesFilter<"Invoice"> | string
+    themeColor?: StringWithAggregatesFilter<"Invoice"> | string
+    logoUrl?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
+    signatureData?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
   }
@@ -13622,6 +13698,7 @@ export namespace Prisma {
     country?: string
     taxId?: string
     logoUrl?: string | null
+    signatureData?: string | null
     currency?: string
     paymentTerms?: string
     notes?: string
@@ -13642,6 +13719,7 @@ export namespace Prisma {
     country?: string
     taxId?: string
     logoUrl?: string | null
+    signatureData?: string | null
     currency?: string
     paymentTerms?: string
     notes?: string
@@ -13660,6 +13738,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -13680,6 +13759,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -13699,6 +13779,7 @@ export namespace Prisma {
     country?: string
     taxId?: string
     logoUrl?: string | null
+    signatureData?: string | null
     currency?: string
     paymentTerms?: string
     notes?: string
@@ -13717,6 +13798,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -13736,6 +13818,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -13884,6 +13967,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutInvoicesInput
@@ -13926,6 +14012,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -13964,6 +14053,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
@@ -14006,6 +14098,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -14046,6 +14141,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14083,6 +14181,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14122,6 +14223,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14620,6 +14724,7 @@ export namespace Prisma {
     country?: SortOrder
     taxId?: SortOrder
     logoUrl?: SortOrder
+    signatureData?: SortOrder
     currency?: SortOrder
     paymentTerms?: SortOrder
     notes?: SortOrder
@@ -14639,6 +14744,7 @@ export namespace Prisma {
     country?: SortOrder
     taxId?: SortOrder
     logoUrl?: SortOrder
+    signatureData?: SortOrder
     currency?: SortOrder
     paymentTerms?: SortOrder
     notes?: SortOrder
@@ -14658,6 +14764,7 @@ export namespace Prisma {
     country?: SortOrder
     taxId?: SortOrder
     logoUrl?: SortOrder
+    signatureData?: SortOrder
     currency?: SortOrder
     paymentTerms?: SortOrder
     notes?: SortOrder
@@ -14771,6 +14878,9 @@ export namespace Prisma {
     notes?: SortOrder
     paymentTerms?: SortOrder
     templateId?: SortOrder
+    themeColor?: SortOrder
+    logoUrl?: SortOrder
+    signatureData?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14820,6 +14930,9 @@ export namespace Prisma {
     notes?: SortOrder
     paymentTerms?: SortOrder
     templateId?: SortOrder
+    themeColor?: SortOrder
+    logoUrl?: SortOrder
+    signatureData?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14859,6 +14972,9 @@ export namespace Prisma {
     notes?: SortOrder
     paymentTerms?: SortOrder
     templateId?: SortOrder
+    themeColor?: SortOrder
+    logoUrl?: SortOrder
+    signatureData?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15942,6 +16058,7 @@ export namespace Prisma {
     country?: string
     taxId?: string
     logoUrl?: string | null
+    signatureData?: string | null
     currency?: string
     paymentTerms?: string
     notes?: string
@@ -15960,6 +16077,7 @@ export namespace Prisma {
     country?: string
     taxId?: string
     logoUrl?: string | null
+    signatureData?: string | null
     currency?: string
     paymentTerms?: string
     notes?: string
@@ -16044,6 +16162,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
@@ -16084,6 +16205,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -16208,6 +16332,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -16226,6 +16351,7 @@ export namespace Prisma {
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
@@ -16321,6 +16447,9 @@ export namespace Prisma {
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
+    themeColor?: StringFilter<"Invoice"> | string
+    logoUrl?: StringNullableFilter<"Invoice"> | string | null
+    signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
   }
@@ -16457,6 +16586,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutInvoicesInput
@@ -16497,6 +16629,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
@@ -16797,6 +16932,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutInvoicesInput
@@ -16838,6 +16976,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -16891,6 +17032,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
@@ -16932,6 +17076,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17012,6 +17159,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17176,6 +17326,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
@@ -17216,6 +17369,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -17255,6 +17411,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17293,6 +17452,9 @@ export namespace Prisma {
     notes?: string
     paymentTerms?: string
     templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17330,6 +17492,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
@@ -17370,6 +17535,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
@@ -17409,6 +17577,9 @@ export namespace Prisma {
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

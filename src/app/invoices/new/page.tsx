@@ -27,19 +27,21 @@ function InvoiceCreateContent() {
   }, [autoNum]);
 
   useEffect(() => {
-    if (profile && profile.companyName && !initializedRef.current) {
+    if (profile && !initializedRef.current) {
       initializedRef.current = true;
-      updateField("senderName", profile.companyName);
-      updateField("senderEmail", profile.email);
-      updateField("senderPhone", profile.phone);
-      updateField("senderAddress", profile.address);
-      updateField("senderCity", profile.city);
-      updateField("senderZipCode", profile.zipCode);
-      updateField("senderCountry", profile.country);
-      updateField("senderTaxId", profile.taxId);
-      updateField("currency", profile.currency);
-      updateField("paymentTerms", profile.paymentTerms);
-      updateField("notes", profile.notes);
+      if (profile.companyName) updateField("senderName", profile.companyName);
+      if (profile.email) updateField("senderEmail", profile.email);
+      if (profile.phone) updateField("senderPhone", profile.phone);
+      if (profile.address) updateField("senderAddress", profile.address);
+      if (profile.city) updateField("senderCity", profile.city);
+      if (profile.zipCode) updateField("senderZipCode", profile.zipCode);
+      if (profile.country) updateField("senderCountry", profile.country);
+      if (profile.taxId) updateField("senderTaxId", profile.taxId);
+      if (profile.currency) updateField("currency", profile.currency);
+      if (profile.paymentTerms) updateField("paymentTerms", profile.paymentTerms);
+      if (profile.notes) updateField("notes", profile.notes);
+      if (profile.logoUrl) updateField("logoUrl", profile.logoUrl);
+      if (profile.signatureData) updateField("signatureData", profile.signatureData);
     }
   }, [profile]);
 
@@ -101,11 +103,11 @@ function InvoiceCreateContent() {
       </div>
 
       {/* Two Column Layout: Editor & Live Preview */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-        <div className="xl:col-span-7">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <div className="xl:col-span-5">
           <InvoiceFormEditor />
         </div>
-        <div className="xl:col-span-5">
+        <div className="xl:col-span-7">
           <InvoicePreviewCard />
         </div>
       </div>

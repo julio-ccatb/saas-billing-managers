@@ -10,7 +10,8 @@ import {
   Clock, 
   Trash2, 
   Eye, 
-  FileText 
+  FileText,
+  Download
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
@@ -179,6 +180,31 @@ export default function InvoicesPage() {
                               <CheckCircle2 className="w-4 h-4" />
                             </button>
                           )}
+                          <button
+                            onClick={async () => {
+                              try {
+                                const res = await fetch("/api/invoice/export-pdf", {
+                                  method: "POST",
+                                  headers: { "Content-Type": "application/json" },
+                                  body: JSON.stringify({ id: inv.id }),
+                                });
+                                if (!res.ok) throw new Error("Failed to generate PDF");
+                                const blob = await res.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `invoice-${inv.invoiceNumber}.pdf`;
+                                a.click();
+                                window.URL.revokeObjectURL(url);
+                              } catch (err: any) {
+                                alert(`Error downloading PDF: ${err.message}`);
+                              }
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                            title="Download PDF"
+                          >
+                            <Download className="w-4 h-4" />
+                          </button>
                           <Link
                             href={`/invoices/${inv.id}/edit`}
                             className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-gray-100 transition-colors"

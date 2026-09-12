@@ -81,6 +81,7 @@ model CompanyProfile {
     country      String   @default("")
     taxId        String   @default("")
     logoUrl      String?
+    signatureData String?
     currency     String   @default("USD")
     paymentTerms String   @default("Payment due upon receipt")
     notes        String   @default("Thank you for your business!")
@@ -151,7 +152,10 @@ model Invoice {
 
     notes           String        @default("")
     paymentTerms    String        @default("")
-    templateId      String        @default("standard")
+    templateId      String        @default("classic")
+    themeColor      String        @default("#4F46E5")
+    logoUrl         String?
+    signatureData   String?
     createdAt       DateTime      @default(now())
     updatedAt       DateTime      @updatedAt
 

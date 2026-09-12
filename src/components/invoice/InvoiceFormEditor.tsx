@@ -2,15 +2,25 @@
 
 import React from "react";
 import { useInvoiceForm } from "./InvoiceFormContext";
-import { Plus, Trash2, Building2, User, Calendar, CreditCard, Percent, Truck } from "lucide-react";
+import { Plus, Trash2, Building2, User, Users, Calendar, CreditCard, Percent, Truck } from "lucide-react";
+import { api } from "~/trpc/react";
+import { LogoUploader } from "./LogoUploader";
+import { SignaturePad } from "./SignaturePad";
 
 export function InvoiceFormEditor() {
   const { invoice, updateField, addItem, removeItem, updateItem } = useInvoiceForm();
+  const { data: customers } = api.customer.getAll.useQuery();
 
   return (
     <div className="space-y-8 p-6 bg-white border border-gray-200 rounded-xl shadow-xs">
-      {/* Top Metadata */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-6 border-b border-gray-100">
+      {/* Top Branding & Metadata */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-6 border-b border-gray-100 items-end">
+        <div>
+          <LogoUploader
+            value={invoice.logoUrl}
+            onChange={(base64) => updateField("logoUrl", base64)}
+          />
+        </div>
         <div>
           <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
             Invoice Number
@@ -146,9 +156,47 @@ export function InvoiceFormEditor() {
 
         {/* To (Client) */}
         <div className="space-y-3 bg-gray-50/70 p-4 rounded-lg border border-gray-100">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 pb-1 border-b border-gray-200">
-            <User className="w-4 h-4 text-emerald-600" />
-            <span>Bill To (Client)</span>
+          <div className="flex items-center justify-between pb-1 border-b border-gray-200">
+            <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+              <User className="w-4 h-4 text-emerald-600" />
+              <span>Bill To (Client)</span>
+            </div>
+            {customers && customers.length > 0 && (
+              <div className="flex items-center gap-1.5 text-xs">
+                <Users className="w-3.5 h-3.5 text-gray-400" />
+                <select
+                  aria-label="Select existing client"
+                  className="bg-white border border-gray-300 rounded px-2 py-0.5 text-xs text-gray-700"
+                  value={invoice.customerId ?? ""}
+                  onChange={(e) => {
+                    const id = e.target.value;
+                    if (!id) {
+                      updateField("customerId", null);
+                      return;
+                    }
+                    const cust = customers.find((c) => c.id === id);
+                    if (cust) {
+                      updateField("customerId", cust.id);
+                      updateField("receiverName", cust.name);
+                      updateField("receiverEmail", cust.email);
+                      updateField("receiverPhone", cust.phone);
+                      updateField("receiverAddress", cust.address);
+                      updateField("receiverCity", cust.city);
+                      updateField("receiverZipCode", cust.zipCode);
+                      updateField("receiverCountry", cust.country);
+                      updateField("receiverTaxId", cust.taxId);
+                    }
+                  }}
+                >
+                  <option value="">Choose saved client...</option>
+                  {customers.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name} {c.email ? `(${c.email})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
           <div>
             <label className="block text-xs text-gray-500 mb-1">Client Name *</label>
@@ -386,6 +434,14 @@ export function InvoiceFormEditor() {
             onChange={(e) => updateField("notes", e.target.value)}
           />
         </div>
+      </div>
+
+      {/* Signature Section */}
+      <div className="pt-4 border-t border-gray-100">
+        <SignaturePad
+          value={invoice.signatureData}
+          onChange={(sig) => updateField("signatureData", sig)}
+        />
       </div>
     </div>
   );

@@ -50,7 +50,10 @@ export const initialInvoiceState: InvoiceInput = {
   shippingAmount: 0,
   notes: "Thank you for partnering with us. Please settle within terms.",
   paymentTerms: "Net 14 - Direct Bank Transfer or Credit Card",
-  templateId: "standard",
+  templateId: "1",
+  themeColor: "#4F46E5",
+  logoUrl: null,
+  signatureData: null,
 };
 
 interface InvoiceFormContextType {

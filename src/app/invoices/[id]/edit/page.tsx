@@ -60,6 +60,9 @@ function InvoiceEditContent({ invoiceId }: { invoiceId: string }) {
         notes: data.notes,
         paymentTerms: data.paymentTerms,
         templateId: data.templateId,
+        themeColor: (data as any).themeColor ?? "#4F46E5",
+        logoUrl: (data as any).logoUrl ?? null,
+        signatureData: (data as any).signatureData ?? null,
       });
     }
   }, [data]);
@@ -121,11 +124,11 @@ function InvoiceEditContent({ invoiceId }: { invoiceId: string }) {
       </div>
 
       {/* Two Column Layout: Editor & Live Preview */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-        <div className="xl:col-span-7">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+        <div className="xl:col-span-5">
           <InvoiceFormEditor />
         </div>
-        <div className="xl:col-span-5">
+        <div className="xl:col-span-7">
           <InvoicePreviewCard />
         </div>
       </div>

@@ -23,6 +23,7 @@ export const profileRouter = createTRPCRouter({
       country: "",
       taxId: "",
       logoUrl: null,
+      signatureData: null,
       currency: "USD",
       paymentTerms: "Payment due upon receipt",
       notes: "Thank you for your business!",

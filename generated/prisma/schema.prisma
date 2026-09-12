@@ -70,22 +70,23 @@ model User {
 }
 
 model CompanyProfile {
-  id           String   @id @default(cuid())
-  userId       String   @unique
-  companyName  String   @default("")
-  email        String   @default("")
-  phone        String   @default("")
-  address      String   @default("")
-  city         String   @default("")
-  zipCode      String   @default("")
-  country      String   @default("")
-  taxId        String   @default("")
-  logoUrl      String?
-  currency     String   @default("USD")
-  paymentTerms String   @default("Payment due upon receipt")
-  notes        String   @default("Thank you for your business!")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  companyName   String   @default("")
+  email         String   @default("")
+  phone         String   @default("")
+  address       String   @default("")
+  city          String   @default("")
+  zipCode       String   @default("")
+  country       String   @default("")
+  taxId         String   @default("")
+  logoUrl       String?
+  signatureData String?
+  currency      String   @default("USD")
+  paymentTerms  String   @default("Payment due upon receipt")
+  notes         String   @default("Thank you for your business!")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -149,11 +150,14 @@ model Invoice {
   shippingAmount Float @default(0)
   totalAmount    Float @default(0)
 
-  notes        String   @default("")
-  paymentTerms String   @default("")
-  templateId   String   @default("standard")
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  notes         String   @default("")
+  paymentTerms  String   @default("")
+  templateId    String   @default("classic")
+  themeColor    String   @default("#4F46E5")
+  logoUrl       String?
+  signatureData String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   customer Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)

@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Building2, Save, Check } from "lucide-react";
+import { Building2, Save, Check, FileSignature } from "lucide-react";
 import { api } from "~/trpc/react";
 import { DashboardLayout } from "~/components/layout/DashboardLayout";
+import { LogoUploader } from "~/components/invoice/LogoUploader";
+import { SignaturePad } from "~/components/invoice/SignaturePad";
 
 export default function SettingsPage() {
   const [profileData, setProfileData] = useState({
@@ -15,6 +17,8 @@ export default function SettingsPage() {
     zipCode: "",
     country: "",
     taxId: "",
+    logoUrl: null as string | null,
+    signatureData: null as string | null,
     currency: "USD",
     paymentTerms: "Payment due upon receipt",
     notes: "Thank you for your business!",
@@ -35,6 +39,8 @@ export default function SettingsPage() {
         zipCode: data.zipCode ?? "",
         country: data.country ?? "",
         taxId: data.taxId ?? "",
+        logoUrl: data.logoUrl ?? null,
+        signatureData: (data as any).signatureData ?? null,
         currency: data.currency ?? "USD",
         paymentTerms: data.paymentTerms ?? "Payment due upon receipt",
         notes: data.notes ?? "Thank you for your business!",
@@ -193,6 +199,32 @@ export default function SettingsPage() {
                 value={profileData.notes}
                 onChange={(e) => setProfileData({ ...profileData, notes: e.target.value })}
               />
+            </div>
+          </div>
+
+          {/* Company Branding & Signature */}
+          <div className="space-y-4 pt-2 border-t border-gray-100 text-sm">
+            <h3 className="text-xs uppercase font-semibold tracking-wider text-gray-400">
+              Company Branding & Default Signature
+            </h3>
+            <p className="text-xs text-gray-500">
+              Your default logo and authorized signature will be automatically pre-filled on every newly created invoice.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+              <div className="bg-gray-50/70 p-4 rounded-xl border border-gray-200">
+                <LogoUploader
+                  value={profileData.logoUrl}
+                  onChange={(logo) => setProfileData({ ...profileData, logoUrl: logo })}
+                />
+              </div>
+
+              <div className="bg-gray-50/70 p-4 rounded-xl border border-gray-200">
+                <SignaturePad
+                  value={profileData.signatureData}
+                  onChange={(sig) => setProfileData({ ...profileData, signatureData: sig })}
+                />
+              </div>
             </div>
           </div>
 

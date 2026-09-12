@@ -169,6 +169,7 @@ exports.Prisma.CompanyProfileScalarFieldEnum = {
   country: 'country',
   taxId: 'taxId',
   logoUrl: 'logoUrl',
+  signatureData: 'signatureData',
   currency: 'currency',
   paymentTerms: 'paymentTerms',
   notes: 'notes',
@@ -226,6 +227,9 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   notes: 'notes',
   paymentTerms: 'paymentTerms',
   templateId: 'templateId',
+  themeColor: 'themeColor',
+  logoUrl: 'logoUrl',
+  signatureData: 'signatureData',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
