@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "sqlite"
+    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+    // Further reading:
+    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    url      = env("DATABASE_URL")
+}
+
+model Post {
+    id        Int      @id @default(autoincrement())
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+}
+
+// Necessary for Next auth
+model Account {
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String? // @db.Text
+    access_token             String? // @db.Text
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String? // @db.Text
+    session_state            String?
+    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    refresh_token_expires_in Int?
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    posts         Post[]
+    companyProfile CompanyProfile?
+    customers      Customer[]
+    invoices       Invoice[]
+}
+
+model CompanyProfile {
+    id           String   @id @default(cuid())
+    userId       String   @unique
+    companyName  String   @default("")
+    email        String   @default("")
+    phone        String   @default("")
+    address      String   @default("")
+    city         String   @default("")
+    zipCode      String   @default("")
+    country      String   @default("")
+    taxId        String   @default("")
+    logoUrl      String?
+    currency     String   @default("USD")
+    paymentTerms String   @default("Payment due upon receipt")
+    notes        String   @default("Thank you for your business!")
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Customer {
+    id        String    @id @default(cuid())
+    userId    String
+    name      String
+    email     String    @default("")
+    phone     String    @default("")
+    address   String    @default("")
+    city      String    @default("")
+    zipCode   String    @default("")
+    country   String    @default("")
+    taxId     String    @default("")
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    invoices Invoice[]
+
+    @@index([userId, name])
+}
+
+model Invoice {
+    id              String        @id @default(cuid())
+    userId          String
+    customerId      String?
+    invoiceNumber   String
+    issueDate       DateTime      @default(now())
+    dueDate         DateTime
+    status          String        @default("PENDING") // DRAFT, PENDING, PAID, OVERDUE
+    currency        String        @default("USD")
+
+    // Sender details snapshotted at time of invoice
+    senderName      String        @default("")
+    senderEmail     String        @default("")
+    senderPhone     String        @default("")
+    senderAddress   String        @default("")
+    senderCity      String        @default("")
+    senderZipCode   String        @default("")
+    senderCountry   String        @default("")
+    senderTaxId     String        @default("")
+
+    // Receiver details snapshotted
+    receiverName    String        @default("")
+    receiverEmail   String        @default("")
+    receiverPhone   String        @default("")
+    receiverAddress String        @default("")
+    receiverCity    String        @default("")
+    receiverZipCode String        @default("")
+    receiverCountry String        @default("")
+    receiverTaxId   String        @default("")
+
+    // Calculations
+    subTotal        Float         @default(0)
+    taxRate         Float         @default(0)
+    taxAmount       Float         @default(0)
+    discountRate    Float         @default(0)
+    discountAmount  Float         @default(0)
+    shippingAmount  Float         @default(0)
+    totalAmount     Float         @default(0)
+
+    notes           String        @default("")
+    paymentTerms    String        @default("")
+    templateId      String        @default("standard")
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    customer Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+    items    InvoiceItem[]
+
+    @@index([userId, status])
+    @@index([userId, invoiceNumber])
+}
+
+model InvoiceItem {
+    id          String   @id @default(cuid())
+    invoiceId   String
+    description String
+    quantity    Float    @default(1)
+    unitPrice   Float    @default(0)
+    total       Float    @default(0)
+    orderIndex  Int      @default(0)
+
+    invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+    @@index([invoiceId])
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
