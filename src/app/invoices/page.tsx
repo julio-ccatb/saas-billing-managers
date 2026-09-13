@@ -5,9 +5,7 @@ import Link from "next/link";
 import { 
   Plus, 
   Search, 
-  Filter, 
   CheckCircle2, 
-  Clock, 
   Trash2, 
   Eye, 
   FileText,
@@ -16,11 +14,16 @@ import {
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { DashboardLayout } from "~/components/layout/DashboardLayout";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Badge } from "~/components/ui/badge";
+import { Card, CardContent } from "~/components/ui/card";
 
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<"ALL" | "DRAFT" | "PENDING" | "PAID" | "OVERDUE">("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -45,68 +48,106 @@ export default function InvoicesPage() {
     },
   });
 
+  const handleDownloadPdf = async (inv: any) => {
+    try {
+      setDownloadingId(inv.id);
+      const res = await fetch("/api/invoice/export-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: inv.id }),
+      });
+      if (!res.ok) throw new Error("Failed to generate PDF");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `invoice-${inv.invoiceNumber}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert(`Error downloading PDF: ${err.message}`);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "PAID":
+        return <Badge variant="success">Paid</Badge>;
+      case "OVERDUE":
+        return <Badge variant="destructive">Overdue</Badge>;
+      case "DRAFT":
+        return <Badge variant="secondary">Draft</Badge>;
+      default:
+        return <Badge variant="warning">Pending</Badge>;
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Invoices</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Manage, track, and issue billing statements</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Invoices</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage, track, and issue billing statements</p>
           </div>
-          <Link
-            href="/invoices/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-xs transition-colors self-start sm:self-auto"
-          >
-            <Plus className="w-4 h-4" />
-            Create Invoice
-          </Link>
+          <Button asChild className="gap-2 self-start sm:self-auto">
+            <Link href="/invoices/new">
+              <Plus className="w-4 h-4" />
+              <span>Create Invoice</span>
+            </Link>
+          </Button>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* Search */}
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by invoice # or client..."
-              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPage(1);
-              }}
-            />
-          </div>
-
-          {/* Status Tabs */}
-          <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
-            {(["ALL", "PENDING", "PAID", "OVERDUE", "DRAFT"] as const).map((st) => (
-              <button
-                key={st}
-                onClick={() => {
-                  setStatusFilter(st);
+        <Card className="p-3 sm:p-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            {/* Search */}
+            <div className="relative w-full md:w-80">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search invoice # or client..."
+                className="pl-9 h-10"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
                   setPage(1);
                 }}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                  statusFilter === st
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                {st}
-              </button>
-            ))}
-          </div>
-        </div>
+              />
+            </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
+            {/* Status Tabs */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+              {(["ALL", "PENDING", "PAID", "OVERDUE", "DRAFT"] as const).map((st) => (
+                <button
+                  key={st}
+                  onClick={() => {
+                    setStatusFilter(st);
+                    setPage(1);
+                  }}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer shrink-0 min-h-[36px] ${
+                    statusFilter === st
+                      ? "bg-primary text-primary-foreground shadow-xs"
+                      : "bg-secondary text-secondary-foreground hover:bg-muted"
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+          </div>
+        </Card>
+
+        {/* Invoices List - Hybrid View */}
+        <Card className="overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
-                <tr className="bg-gray-50/70 border-b border-gray-100 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                <tr className="bg-muted/50 border-b border-border text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                   <th className="py-3.5 px-5">Invoice #</th>
                   <th className="py-3.5 px-5">Client</th>
                   <th className="py-3.5 px-5">Issue Date</th>
@@ -116,113 +157,88 @@ export default function InvoicesPage() {
                   <th className="py-3.5 px-5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-border">
                 {isLoading ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-12 text-gray-400">
+                    <td colSpan={7} className="text-center py-12 text-muted-foreground text-xs">
                       Loading invoices...
                     </td>
                   </tr>
                 ) : !data?.invoices || data.invoices.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="text-center py-16">
-                      <FileText className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-600 font-semibold">No invoices match your filter</p>
-                      <p className="text-gray-400 text-xs mt-1">Try adjusting your search query or status filter.</p>
+                      <FileText className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-foreground font-semibold text-sm">No invoices match your filter</p>
+                      <p className="text-muted-foreground text-xs mt-1">Try adjusting your search query or status filter.</p>
                     </td>
                   </tr>
                 ) : (
                   data.invoices.map((inv) => (
-                    <tr key={inv.id} className="hover:bg-gray-50/60 transition-colors">
-                      <td className="py-4 px-5 font-bold text-gray-900">
+                    <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-4 px-5 font-bold text-foreground">
                         {inv.invoiceNumber}
                       </td>
                       <td className="py-4 px-5">
-                        <div className="font-medium text-gray-900">{inv.receiverName}</div>
+                        <div className="font-medium text-foreground">{inv.receiverName}</div>
                         {inv.receiverEmail && (
-                          <div className="text-xs text-gray-400">{inv.receiverEmail}</div>
+                          <div className="text-xs text-muted-foreground">{inv.receiverEmail}</div>
                         )}
                       </td>
-                      <td className="py-4 px-5 text-gray-500 text-xs">
+                      <td className="py-4 px-5 text-muted-foreground text-xs">
                         {formatDate(inv.issueDate)}
                       </td>
-                      <td className="py-4 px-5 text-gray-500 text-xs">
+                      <td className="py-4 px-5 text-muted-foreground text-xs">
                         {formatDate(inv.dueDate)}
                       </td>
-                      <td className="py-4 px-5 font-bold text-gray-900">
+                      <td className="py-4 px-5 font-bold text-foreground font-mono">
                         {formatCurrency(inv.totalAmount, inv.currency)}
                       </td>
                       <td className="py-4 px-5">
-                        <span
-                          className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                            inv.status === "PAID"
-                              ? "bg-emerald-100 text-emerald-700"
-                              : inv.status === "OVERDUE"
-                              ? "bg-rose-100 text-rose-700"
-                              : inv.status === "DRAFT"
-                              ? "bg-gray-100 text-gray-700"
-                              : "bg-amber-100 text-amber-700"
-                          }`}
-                        >
-                          {inv.status}
-                        </span>
+                        {getStatusBadge(inv.status)}
                       </td>
                       <td className="py-4 px-5 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                        <div className="flex items-center justify-end gap-1.5">
                           {inv.status !== "PAID" && (
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
                               onClick={() =>
                                 updateStatusMutation.mutate({ id: inv.id, status: "PAID" })
                               }
-                              className="p-1.5 text-gray-400 hover:text-emerald-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                              className="text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50"
                               title="Mark as Paid"
                             >
                               <CheckCircle2 className="w-4 h-4" />
-                            </button>
+                            </Button>
                           )}
-                          <button
-                            onClick={async () => {
-                              try {
-                                const res = await fetch("/api/invoice/export-pdf", {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({ id: inv.id }),
-                                });
-                                if (!res.ok) throw new Error("Failed to generate PDF");
-                                const blob = await res.blob();
-                                const url = window.URL.createObjectURL(blob);
-                                const a = document.createElement("a");
-                                a.href = url;
-                                a.download = `invoice-${inv.invoiceNumber}.pdf`;
-                                a.click();
-                                window.URL.revokeObjectURL(url);
-                              } catch (err: any) {
-                                alert(`Error downloading PDF: ${err.message}`);
-                              }
-                            }}
-                            className="p-1.5 text-gray-400 hover:text-indigo-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={downloadingId === inv.id}
+                            onClick={() => handleDownloadPdf(inv)}
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/10"
                             title="Download PDF"
                           >
                             <Download className="w-4 h-4" />
-                          </button>
-                          <Link
-                            href={`/invoices/${inv.id}/edit`}
-                            className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-gray-100 transition-colors"
-                            title="Edit Invoice"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Link>
-                          <button
+                          </Button>
+                          <Button asChild variant="ghost" size="icon" className="text-muted-foreground hover:text-primary hover:bg-primary/10" title="Edit Invoice">
+                            <Link href={`/invoices/${inv.id}/edit`}>
+                              <Eye className="w-4 h-4" />
+                            </Link>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => {
                               if (confirm(`Delete invoice ${inv.invoiceNumber}?`)) {
                                 deleteMutation.mutate({ id: inv.id });
                               }
                             }}
-                            className="p-1.5 text-gray-400 hover:text-rose-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
+                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                             title="Delete Invoice"
                           >
                             <Trash2 className="w-4 h-4" />
-                          </button>
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -232,31 +248,109 @@ export default function InvoicesPage() {
             </table>
           </div>
 
+          {/* Mobile Card List View */}
+          <div className="md:hidden divide-y divide-border">
+            {isLoading ? (
+              <div className="text-center py-10 text-muted-foreground text-xs">Loading invoices...</div>
+            ) : !data?.invoices || data.invoices.length === 0 ? (
+              <div className="text-center py-12 px-4 space-y-2">
+                <FileText className="w-10 h-10 text-muted-foreground/30 mx-auto" />
+                <p className="text-foreground text-sm font-semibold">No invoices found</p>
+                <p className="text-muted-foreground text-xs">Try adjusting your filters.</p>
+              </div>
+            ) : (
+              data.invoices.map((inv) => (
+                <div key={inv.id} className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-sm text-foreground block">{inv.invoiceNumber}</span>
+                      <span className="text-xs text-muted-foreground">{inv.receiverName}</span>
+                    </div>
+                    {getStatusBadge(inv.status)}
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs py-1 border-y border-border/60">
+                    <span className="text-muted-foreground">Due: {formatDate(inv.dueDate)}</span>
+                    <span className="font-bold text-foreground font-mono text-sm">{formatCurrency(inv.totalAmount, inv.currency)}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-1">
+                    <Button asChild variant="outline" size="sm" className="h-9 text-xs flex-1">
+                      <Link href={`/invoices/${inv.id}/edit`}>
+                        <Eye className="w-3.5 h-3.5 mr-1" /> View / Edit
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-9 px-3 text-xs"
+                      disabled={downloadingId === inv.id}
+                      onClick={() => handleDownloadPdf(inv)}
+                      title="Download PDF"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                    </Button>
+                    {inv.status !== "PAID" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-9 px-3 text-xs text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                        onClick={() =>
+                          updateStatusMutation.mutate({ id: inv.id, status: "PAID" })
+                        }
+                        title="Mark Paid"
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-9 px-2.5 text-muted-foreground hover:text-destructive"
+                      onClick={() => {
+                        if (confirm(`Delete invoice ${inv.invoiceNumber}?`)) {
+                          deleteMutation.mutate({ id: inv.id });
+                        }
+                      }}
+                      title="Delete"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
           {/* Pagination */}
           {data && data.totalPages > 1 && (
-            <div className="p-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+            <div className="p-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
               <span>
                 Showing page {data.page} of {data.totalPages} ({data.totalCount} total)
               </span>
-              <div className="flex gap-2">
-                <button
+              <div className="flex gap-2 w-full sm:w-auto justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
                   disabled={page <= 1}
                   onClick={() => setPage(p => p - 1)}
-                  className="px-3 py-1.5 border border-gray-200 rounded-md disabled:opacity-40 hover:bg-gray-50"
+                  className="flex-1 sm:flex-initial"
                 >
                   Previous
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   disabled={page >= data.totalPages}
                   onClick={() => setPage(p => p + 1)}
-                  className="px-3 py-1.5 border border-gray-200 rounded-md disabled:opacity-40 hover:bg-gray-50"
+                  className="flex-1 sm:flex-initial"
                 >
                   Next
-                </button>
+                </Button>
               </div>
             </div>
           )}
-        </div>
+        </Card>
       </div>
     </DashboardLayout>
   );

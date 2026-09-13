@@ -182,7 +182,7 @@ export default function LicensesPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-7 max-w-7xl mx-auto">
+      <div className="space-y-7 w-full">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>

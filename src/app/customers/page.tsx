@@ -4,6 +4,16 @@ import React, { useState } from "react";
 import { Plus, Search, Trash2, Edit2, Users, Mail, Phone, MapPin } from "lucide-react";
 import { api } from "~/trpc/react";
 import { DashboardLayout } from "~/components/layout/DashboardLayout";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "~/components/ui/dialog";
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -91,230 +101,201 @@ export default function CustomersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Customers & Clients</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Manage your client contacts and billing profiles</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Customers & Clients</h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage your client contacts and billing profiles</p>
           </div>
-          <button
-            onClick={() => openModal()}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-lg shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
-          >
+          <Button onClick={() => openModal()} className="gap-2 self-start sm:self-auto">
             <Plus className="w-4 h-4" />
-            Add Customer
-          </button>
+            <span>Add Customer</span>
+          </Button>
         </div>
 
         {/* Search */}
-        <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
+        <Card className="p-3 sm:p-4">
+          <div className="relative w-full max-w-md">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input
               type="text"
-              placeholder="Search customers by name or email..."
-              className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
+              placeholder="Search clients by name, email, or tax ID..."
+              className="pl-9 h-10"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-        </div>
+        </Card>
 
-        {/* Customer Cards / Grid */}
+        {/* Customer Cards Grid */}
         {isLoading ? (
-          <div className="text-center py-16 text-gray-400">Loading customers...</div>
+          <div className="text-center py-12 text-muted-foreground text-xs">Loading customers...</div>
         ) : !customers || customers.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-            <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-600 font-semibold">No customers registered</p>
-            <p className="text-gray-400 text-xs mt-1">Add clients to streamline your invoice generation.</p>
-          </div>
+          <Card className="text-center py-16 px-4">
+            <Users className="w-12 h-12 text-muted-foreground/30 mx-auto mb-3" />
+            <p className="text-foreground font-semibold text-sm">No customers found</p>
+            <p className="text-muted-foreground text-xs mt-1 mb-4">Add your first client to start sending invoices quickly.</p>
+            <Button onClick={() => openModal()} variant="outline" size="sm">
+              <Plus className="w-4 h-4 mr-1.5" /> Add Customer
+            </Button>
+          </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             {customers.map((c) => (
-              <div
-                key={c.id}
-                className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs hover:border-gray-300 transition-colors flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <h3 className="font-bold text-gray-900 text-base">{c.name}</h3>
-                    <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
-                      {c._count.invoices} invoices
-                    </span>
-                  </div>
-
-                  <div className="space-y-2 text-xs text-gray-600">
-                    {c.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                        <span className="truncate">{c.email}</span>
-                      </div>
-                    )}
-                    {c.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                        <span>{c.phone}</span>
-                      </div>
-                    )}
-                    {(c.city || c.country) && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-3.5 h-3.5 text-gray-400 shrink-0" />
-                        <span className="truncate">
-                          {[c.city, c.country].filter(Boolean).join(", ")}
+              <Card key={c.id} className="hover:border-border/80 transition-shadow flex flex-col justify-between">
+                <CardHeader className="p-4 sm:p-5 pb-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <CardTitle className="text-base text-foreground font-semibold">{c.name}</CardTitle>
+                      {c.taxId && (
+                        <span className="inline-block text-[10px] font-mono bg-muted text-muted-foreground px-2 py-0.5 rounded mt-1">
+                          Tax ID: {c.taxId}
                         </span>
-                      </div>
-                    )}
-                    {c.taxId && (
-                      <div className="text-gray-400 pt-1">
-                        Tax ID: <span className="text-gray-700 font-medium">{c.taxId}</span>
-                      </div>
-                    )}
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => openModal(c)}
+                        className="h-8 w-8 text-muted-foreground hover:text-primary"
+                        title="Edit Customer"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          if (confirm(`Delete customer ${c.name}? This may impact existing drafts.`)) {
+                            deleteMutation.mutate({ id: c.id });
+                          }
+                        }}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                        title="Delete Customer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-end gap-2">
-                  <button
-                    onClick={() => openModal(c)}
-                    className="p-1.5 text-gray-400 hover:text-blue-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                    title="Edit Customer"
-                  >
-                    <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete customer ${c.name}?`)) {
-                        deleteMutation.mutate({ id: c.id });
-                      }
-                    }}
-                    className="p-1.5 text-gray-400 hover:text-rose-600 rounded-md hover:bg-gray-100 transition-colors cursor-pointer"
-                    title="Delete Customer"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+                </CardHeader>
+                <CardContent className="p-4 sm:p-5 pt-0 space-y-2 text-xs text-muted-foreground">
+                  {c.email && (
+                    <div className="flex items-center gap-2 truncate">
+                      <Mail className="w-3.5 h-3.5 text-muted-foreground/70 shrink-0" />
+                      <span className="truncate">{c.email}</span>
+                    </div>
+                  )}
+                  {c.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-3.5 h-3.5 text-muted-foreground/70 shrink-0" />
+                      <span>{c.phone}</span>
+                    </div>
+                  )}
+                  {(c.address || c.city || c.country) && (
+                    <div className="flex items-start gap-2">
+                      <MapPin className="w-3.5 h-3.5 text-muted-foreground/70 shrink-0 mt-0.5" />
+                      <span className="line-clamp-2">
+                        {[c.address, c.city, c.zipCode, c.country].filter(Boolean).join(", ")}
+                      </span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
 
-        {/* Modal */}
-        {isModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 space-y-4">
-              <h2 className="text-lg font-bold text-gray-900">
-                {editingId ? "Edit Customer" : "New Customer"}
-              </h2>
+        {/* Upsert Customer Dialog */}
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle>{editingId ? "Edit Customer" : "New Customer"}</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleSubmit} className="space-y-4 py-2">
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">Company or Person Name *</label>
+                <Input
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g. Acme Corp"
+                />
+              </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">
-                    Client Name *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  <label className="block text-xs font-semibold text-foreground mb-1">Email</label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="billing@acme.com"
                   />
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">
-                      Phone
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
-
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">
-                    Address
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                    value={formData.address}
-                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  <label className="block text-xs font-semibold text-foreground mb-1">Phone</label>
+                  <Input
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="+1 (555) 000-0000"
                   />
                 </div>
+              </div>
 
-                <div className="grid grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">City</label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">Postal Code</label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      value={formData.zipCode}
-                      onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1">Country</label>
-                    <input
-                      type="text"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                      value={formData.country}
-                      onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    />
-                  </div>
-                </div>
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">Tax ID / VAT Number</label>
+                <Input
+                  value={formData.taxId}
+                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                  placeholder="US123456789"
+                />
+              </div>
 
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">Street Address</label>
+                <Input
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                  placeholder="123 Main St"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1">
-                    Tax / VAT ID
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-                    value={formData.taxId}
-                    onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
+                  <label className="block text-xs font-semibold text-foreground mb-1">City</label>
+                  <Input
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="San Francisco"
                   />
                 </div>
-
-                <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={closeModal}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-xs cursor-pointer"
-                  >
-                    Save Customer
-                  </button>
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">ZIP / Postal</label>
+                  <Input
+                    value={formData.zipCode}
+                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                    placeholder="94105"
+                  />
                 </div>
-              </form>
-            </div>
-          </div>
-        )}
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Country</label>
+                  <Input
+                    value={formData.country}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    placeholder="USA"
+                  />
+                </div>
+              </div>
+
+              <DialogFooter className="pt-2">
+                <Button type="button" variant="outline" onClick={closeModal}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={upsertMutation.isPending}>
+                  {upsertMutation.isPending ? "Saving..." : editingId ? "Update Customer" : "Create Customer"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

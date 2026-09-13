@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import type { InvoiceInput } from "~/lib/schemas/invoice";
+import { invoiceSchema } from "~/lib/schemas/invoice";
 
 export const initialInvoiceState: InvoiceInput = {
   invoiceNumber: "INV-2026-0001",
@@ -53,11 +54,13 @@ export const initialInvoiceState: InvoiceInput = {
   bankName: "",
   bankAccountName: "",
   bankAccountNumber: "",
-  templateId: "1",
+  templateId: "classic",
   themeColor: "#4F46E5",
   logoUrl: null,
   signatureData: null,
 };
+
+export type FormErrors = Record<string, string>;
 
 interface InvoiceFormContextType {
   invoice: InvoiceInput;
@@ -66,6 +69,9 @@ interface InvoiceFormContextType {
   addItem: () => void;
   removeItem: (index: number) => void;
   updateItem: (index: number, field: keyof InvoiceInput["items"][0], value: any) => void;
+  errors: FormErrors;
+  validateForm: () => boolean;
+  clearError: (field: string) => void;
 }
 
 const InvoiceFormContext = createContext<InvoiceFormContextType | undefined>(undefined);
@@ -78,10 +84,21 @@ export function InvoiceFormProvider({
   initialData?: InvoiceInput;
 }) {
   const [invoice, setInvoice] = useState<InvoiceInput>(initialData ?? initialInvoiceState);
+  const [errors, setErrors] = useState<FormErrors>({});
+
+  const clearError = useCallback((field: string) => {
+    setErrors((prev) => {
+      if (!prev[field]) return prev;
+      const copy = { ...prev };
+      delete copy[field];
+      return copy;
+    });
+  }, []);
 
   const updateField = useCallback(<K extends keyof InvoiceInput>(field: K, value: InvoiceInput[K]) => {
     setInvoice((prev) => ({ ...prev, [field]: value }));
-  }, []);
+    clearError(field as string);
+  }, [clearError]);
 
   const addItem = useCallback(() => {
     setInvoice((prev) => ({
@@ -97,7 +114,8 @@ export function InvoiceFormProvider({
         },
       ],
     }));
-  }, []);
+    clearError("items");
+  }, [clearError]);
 
   const removeItem = useCallback((index: number) => {
     setInvoice((prev) => ({
@@ -121,7 +139,24 @@ export function InvoiceFormProvider({
       newItems[index] = target;
       return { ...prev, items: newItems };
     });
-  }, []);
+    clearError(`items.${index}.${field}`);
+    clearError("items");
+  }, [clearError]);
+
+  const validateForm = useCallback(() => {
+    const result = invoiceSchema.safeParse(invoice);
+    if (!result.success) {
+      const newErrors: FormErrors = {};
+      result.error.errors.forEach((err) => {
+        const path = err.path.join(".");
+        newErrors[path] = err.message;
+      });
+      setErrors(newErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  }, [invoice]);
 
   const value = useMemo(
     () => ({
@@ -131,8 +166,11 @@ export function InvoiceFormProvider({
       addItem,
       removeItem,
       updateItem,
+      errors,
+      validateForm,
+      clearError,
     }),
-    [invoice, updateField, addItem, removeItem, updateItem]
+    [invoice, updateField, addItem, removeItem, updateItem, errors, validateForm, clearError]
   );
 
   return (

@@ -2,18 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, FileCheck } from "lucide-react";
+import { ArrowLeft, Save, FileCheck, Edit3, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { InvoiceFormProvider, useInvoiceForm } from "~/components/invoice/InvoiceFormContext";
 import { InvoiceFormEditor } from "~/components/invoice/InvoiceFormEditor";
 import { InvoicePreviewCard } from "~/components/invoice/InvoicePreviewCard";
+import { Button } from "~/components/ui/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { api } from "~/trpc/react";
 
 function InvoiceCreateContent() {
   const router = useRouter();
-  const { invoice, updateField } = useInvoiceForm();
+  const { invoice, updateField, validateForm } = useInvoiceForm();
   const [isSaving, setIsSaving] = useState(false);
+  const [mobileTab, setMobileTab] = useState<"editor" | "preview">("editor");
 
   const { data: autoNum } = api.invoice.getNextInvoiceNumber.useQuery();
   const { data: profile } = api.profile.get.useQuery();
@@ -59,6 +62,14 @@ function InvoiceCreateContent() {
   });
 
   const handleSave = (status: "DRAFT" | "PENDING") => {
+    if (status === "PENDING") {
+      const isValid = validateForm();
+      if (!isValid) {
+        setMobileTab("editor");
+        return;
+      }
+    }
+
     setIsSaving(true);
     createInvoiceMutation.mutate({
       ...invoice,
@@ -67,52 +78,98 @@ function InvoiceCreateContent() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-20 lg:pb-0">
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Link
-            href="/invoices"
-            className="p-2 text-gray-500 hover:text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
+          <Button asChild variant="outline" size="icon" className="h-9 w-9">
+            <Link href="/invoices">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">New Invoice</h1>
-            <p className="text-xs text-gray-500">Draft, customize, and generate invoice</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">New Invoice</h1>
+            <p className="text-xs text-muted-foreground">Draft, customize, and issue billing statement</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
+        {/* Desktop Action Buttons */}
+        <div className="hidden sm:flex items-center gap-2">
+          <Button
             type="button"
+            variant="outline"
             disabled={isSaving}
             onClick={() => handleSave("DRAFT")}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg transition-colors disabled:opacity-50 cursor-pointer"
+            className="gap-1.5"
           >
-            <Save className="w-4 h-4" />
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             <span>Save Draft</span>
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={isSaving}
             onClick={() => handleSave("PENDING")}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg shadow-xs transition-colors disabled:opacity-50 cursor-pointer"
+            className="gap-1.5 shadow-xs"
           >
-            <FileCheck className="w-4 h-4" />
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileCheck className="w-4 h-4" />}
             <span>Issue Invoice</span>
-          </button>
+          </Button>
         </div>
       </div>
 
-      {/* Two Column Layout: Editor & Live Preview */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
-        <div className="xl:col-span-5">
+      {/* Mobile Mode Switcher (Tabs) visible only on < 1024px screens */}
+      <div className="lg:hidden">
+        <Tabs value={mobileTab} onValueChange={(val) => setMobileTab(val as any)} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 h-11">
+            <TabsTrigger value="editor" className="gap-1.5 text-xs sm:text-sm">
+              <Edit3 className="w-3.5 h-3.5" />
+              <span>Edit Form</span>
+            </TabsTrigger>
+            <TabsTrigger value="preview" className="gap-1.5 text-xs sm:text-sm">
+              <Eye className="w-3.5 h-3.5" />
+              <span>Live Preview</span>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="editor" className="mt-4">
+            <InvoiceFormEditor />
+          </TabsContent>
+          <TabsContent value="preview" className="mt-4">
+            <InvoicePreviewCard />
+          </TabsContent>
+        </Tabs>
+      </div>
+
+      {/* Desktop Grid Layout: Simultaneous Editor & Preview side-by-side on lg+ */}
+      <div className="hidden lg:grid lg:grid-cols-12 gap-6 items-start w-full">
+        <div className="lg:col-span-6 xl:col-span-5 2xl:col-span-5">
           <InvoiceFormEditor />
         </div>
-        <div className="xl:col-span-7">
+        <div className="lg:col-span-6 xl:col-span-7 2xl:col-span-7">
           <InvoicePreviewCard />
         </div>
+      </div>
+
+      {/* Mobile Floating Action Bar */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-md border-t border-border p-3 flex items-center justify-between gap-2 shadow-lg">
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isSaving}
+          onClick={() => handleSave("DRAFT")}
+          className="flex-1 text-xs h-11"
+        >
+          <Save className="w-3.5 h-3.5 mr-1" />
+          <span>Save Draft</span>
+        </Button>
+        <Button
+          type="button"
+          disabled={isSaving}
+          onClick={() => handleSave("PENDING")}
+          className="flex-1 text-xs h-11 shadow-xs"
+        >
+          <FileCheck className="w-3.5 h-3.5 mr-1" />
+          <span>Issue Invoice</span>
+        </Button>
       </div>
     </div>
   );

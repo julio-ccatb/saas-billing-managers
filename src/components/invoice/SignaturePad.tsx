@@ -2,6 +2,15 @@
 
 import React, { useRef, useState, useEffect } from "react";
 import { PenTool, Type, Upload, Trash2, Check, X, Eraser } from "lucide-react";
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "~/components/ui/dialog";
 
 interface SignaturePadProps {
   value?: string | null;
@@ -22,8 +31,8 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");
       if (ctx) {
-        ctx.strokeStyle = "#111827";
-        ctx.lineWidth = 2.2;
+        ctx.strokeStyle = "#0f172a";
+        ctx.lineWidth = 2.4;
         ctx.lineCap = "round";
         ctx.lineJoin = "round";
       }
@@ -82,13 +91,12 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 
   const handleSaveType = () => {
     if (!typedText.trim()) return;
-    // Generate an image from typed cursive font on an offscreen canvas
     const offscreen = document.createElement("canvas");
     offscreen.width = 400;
     offscreen.height = 100;
     const ctx = offscreen.getContext("2d");
     if (ctx) {
-      ctx.fillStyle = "#111827";
+      ctx.fillStyle = "#0f172a";
       ctx.font = "italic 38px 'Dancing Script', cursive, sans-serif";
       ctx.textBaseline = "middle";
       ctx.fillText(typedText, 20, 50);
@@ -123,191 +131,185 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
         Authorized Signature
       </label>
 
       {value ? (
-        <div className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+        <div className="flex items-center gap-3 p-3 bg-muted/40 border border-border rounded-xl">
           <img
             src={value}
             alt="Invoice Signature"
             className="h-12 w-auto max-w-[180px] object-contain"
           />
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={handleRemove}
-            className="p-1.5 text-gray-400 hover:text-rose-600 rounded-md hover:bg-white transition-colors cursor-pointer"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-card"
             title="Remove Signature"
           >
             <Trash2 className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       ) : (
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 border border-dashed border-gray-300 hover:border-blue-500 rounded-lg bg-gray-50/70 hover:bg-blue-50/50 text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+          className="flex items-center gap-2 px-3 py-2 border border-dashed border-input hover:border-primary rounded-lg bg-card hover:bg-muted/50 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer w-full justify-center min-h-[44px]"
         >
-          <PenTool className="w-3.5 h-3.5" />
+          <PenTool className="w-3.5 h-3.5 text-primary" />
           <span>Add Signature (Draw / Type / Upload)</span>
         </button>
       )}
 
-      {/* Signature Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
-              <h3 className="text-sm font-bold text-gray-900">Add Signature</h3>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="p-1 text-gray-400 hover:text-gray-600 rounded-md"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+      {/* Signature Modal with shadcn Dialog */}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          <DialogHeader className="p-4 pb-2 border-b border-border">
+            <DialogTitle>Add Signature</DialogTitle>
+          </DialogHeader>
 
-            {/* Modal Tabs */}
-            <div className="flex border-b border-gray-100 bg-gray-50/70 p-1 gap-1">
-              <button
-                type="button"
-                onClick={() => setActiveTab("draw")}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                  activeTab === "draw"
-                    ? "bg-white text-blue-600 shadow-xs font-semibold"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                <PenTool className="w-3.5 h-3.5" /> Draw
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("type")}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                  activeTab === "type"
-                    ? "bg-white text-blue-600 shadow-xs font-semibold"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                <Type className="w-3.5 h-3.5" /> Type
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("upload")}
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
-                  activeTab === "upload"
-                    ? "bg-white text-blue-600 shadow-xs font-semibold"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                <Upload className="w-3.5 h-3.5" /> Upload Image
-              </button>
-            </div>
+          {/* Modal Tabs */}
+          <div className="flex border-b border-border bg-muted/40 p-1.5 gap-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab("draw")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                activeTab === "draw"
+                  ? "bg-card text-primary shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <PenTool className="w-3.5 h-3.5" /> Draw
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("type")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                activeTab === "type"
+                  ? "bg-card text-primary shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Type className="w-3.5 h-3.5" /> Type
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("upload")}
+              className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-medium rounded-lg transition-colors cursor-pointer ${
+                activeTab === "upload"
+                  ? "bg-card text-primary shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Upload className="w-3.5 h-3.5" /> Upload Image
+            </button>
+          </div>
 
-            {/* Modal Tab Content */}
-            <div className="p-5">
-              {activeTab === "draw" && (
-                <div className="space-y-3">
-                  <p className="text-xs text-gray-500">Sign with your mouse, trackpad, or finger below:</p>
-                  <div className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-                    <canvas
-                      ref={canvasRef}
-                      width={460}
-                      height={140}
-                      onMouseDown={startDrawing}
-                      onMouseMove={draw}
-                      onMouseUp={stopDrawing}
-                      onMouseLeave={stopDrawing}
-                      onTouchStart={startDrawing}
-                      onTouchMove={draw}
-                      onTouchEnd={stopDrawing}
-                      className="w-full h-36 touch-none cursor-crosshair bg-white"
-                    />
-                  </div>
-                  <div className="flex justify-between items-center pt-2">
-                    <button
-                      type="button"
-                      onClick={clearCanvas}
-                      className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800"
-                    >
-                      <Eraser className="w-3.5 h-3.5" /> Clear
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleSaveDraw}
-                      className="inline-flex items-center gap-1 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs"
-                    >
-                      <Check className="w-3.5 h-3.5" /> Apply Signature
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "type" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Type your full name:
-                    </label>
-                    <input
-                      type="text"
-                      value={typedText}
-                      onChange={(e) => setTypedText(e.target.value)}
-                      placeholder="e.g. Johnathan Doe"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-                    />
-                  </div>
-
-                  {typedText && (
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-center">
-                      <p
-                        className="text-3xl text-gray-900 select-none"
-                        style={{ fontFamily: "'Dancing Script', cursive, sans-serif" }}
-                      >
-                        {typedText}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex justify-end pt-2">
-                    <button
-                      type="button"
-                      disabled={!typedText.trim()}
-                      onClick={handleSaveType}
-                      className="inline-flex items-center gap-1 px-4 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-xs"
-                    >
-                      <Check className="w-3.5 h-3.5" /> Apply Signature
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {activeTab === "upload" && (
-                <div className="space-y-4 text-center py-4">
-                  <div
-                    onClick={() => fileInputRef.current?.click()}
-                    className="border-2 border-dashed border-gray-300 hover:border-blue-500 rounded-xl p-6 cursor-pointer bg-gray-50/50 hover:bg-blue-50/20 transition-colors"
-                  >
-                    <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-xs font-semibold text-gray-700">Upload signature file</p>
-                    <p className="text-[11px] text-gray-400 mt-0.5">PNG, JPG, SVG with transparent or white background</p>
-                  </div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
+          {/* Modal Content */}
+          <div className="p-4 sm:p-5">
+            {activeTab === "draw" && (
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground">Sign with your mouse, trackpad, or finger below:</p>
+                <div className="border border-input rounded-xl overflow-hidden bg-muted/20">
+                  <canvas
+                    ref={canvasRef}
+                    width={440}
+                    height={140}
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseLeave={stopDrawing}
+                    onTouchStart={startDrawing}
+                    onTouchMove={draw}
+                    onTouchEnd={stopDrawing}
+                    className="w-full h-36 touch-none cursor-crosshair bg-white"
                   />
                 </div>
-              )}
-            </div>
+                <div className="flex justify-between items-center pt-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearCanvas}
+                    className="text-xs text-muted-foreground hover:text-foreground gap-1"
+                  >
+                    <Eraser className="w-3.5 h-3.5" /> Clear
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleSaveDraw}
+                    className="gap-1 shadow-xs"
+                  >
+                    <Check className="w-3.5 h-3.5" /> Apply Signature
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "type" && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-medium text-foreground mb-1">
+                    Type your full name:
+                  </label>
+                  <Input
+                    type="text"
+                    value={typedText}
+                    onChange={(e) => setTypedText(e.target.value)}
+                    placeholder="e.g. Johnathan Doe"
+                  />
+                </div>
+
+                {typedText && (
+                  <div className="p-4 bg-muted/30 border border-border rounded-xl text-center">
+                    <p
+                      className="text-3xl text-foreground select-none"
+                      style={{ fontFamily: "'Dancing Script', cursive, sans-serif" }}
+                    >
+                      {typedText}
+                    </p>
+                  </div>
+                )}
+
+                <div className="flex justify-end pt-2">
+                  <Button
+                    type="button"
+                    disabled={!typedText.trim()}
+                    onClick={handleSaveType}
+                    className="gap-1 shadow-xs"
+                  >
+                    <Check className="w-3.5 h-3.5" /> Apply Signature
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "upload" && (
+              <div className="space-y-4 text-center py-4">
+                <div
+                  onClick={() => fileInputRef.current?.click()}
+                  className="border-2 border-dashed border-input hover:border-primary rounded-xl p-6 cursor-pointer bg-muted/20 hover:bg-muted/40 transition-colors"
+                >
+                  <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-xs font-semibold text-foreground">Upload signature file</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">PNG, JPG, SVG with transparent background</p>
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

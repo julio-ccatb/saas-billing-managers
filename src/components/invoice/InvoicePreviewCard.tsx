@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { INVOICE_TEMPLATES, ACCENT_COLORS } from "~/lib/templates/invoiceTemplates";
 import { getTemplateComponent } from "~/server/services/renderHtml";
+import { Button } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
 
 export function InvoicePreviewCard() {
   const { invoice, updateField } = useInvoiceForm();
@@ -51,15 +53,15 @@ export function InvoicePreviewCard() {
   };
 
   return (
-    <div className="space-y-4 sticky top-6">
+    <div className="space-y-4 lg:sticky lg:top-6 w-full">
       {/* Top Toolbar (Hidden when printing) */}
-      <div className="preview-toolbar bg-white p-3 rounded-xl border border-gray-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
-        {/* 13 Numbered Templates Selector */}
+      <Card className="preview-toolbar p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs bg-card border-border">
+        {/* Templates Selector */}
         <div className="flex items-center gap-2">
-          <Layout className="w-4 h-4 text-gray-500" />
+          <Layout className="w-4 h-4 text-primary shrink-0" />
           <select
             aria-label="Invoice template"
-            className="text-xs bg-gray-50 border border-gray-200 rounded-md px-2.5 py-1 font-medium text-gray-700"
+            className="text-xs bg-muted border border-input rounded-lg px-2.5 py-1.5 font-medium text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring"
             value={invoice.templateId}
             onChange={(e) => updateField("templateId", e.target.value)}
           >
@@ -72,43 +74,48 @@ export function InvoicePreviewCard() {
         </div>
 
         {/* Color Palette Presets */}
-        <div className="flex items-center gap-1.5">
-          <Palette className="w-3.5 h-3.5 text-gray-400 mr-1" />
-          {ACCENT_COLORS.map((c) => {
-            const isSelected = invoice.themeColor === c.value;
-            return (
-              <button
-                key={c.name}
-                type="button"
-                onClick={() => updateField("themeColor", c.value)}
-                style={{ backgroundColor: c.value }}
-                className={`w-5 h-5 rounded-full transition-transform cursor-pointer flex items-center justify-center ${
-                  isSelected ? "ring-2 ring-offset-1 ring-gray-400 scale-110" : "hover:scale-105 opacity-85"
-                }`}
-                title={c.name}
-              >
-                {isSelected && <Check className="w-3 h-3 text-white" />}
-              </button>
-            );
-          })}
+        <div className="flex items-center gap-2">
+          <Palette className="w-3.5 h-3.5 text-muted-foreground mr-0.5 shrink-0" />
+          <div className="flex items-center gap-1.5">
+            {ACCENT_COLORS.map((c) => {
+              const isSelected = invoice.themeColor === c.value;
+              return (
+                <button
+                  key={c.name}
+                  type="button"
+                  onClick={() => updateField("themeColor", c.value)}
+                  style={{ backgroundColor: c.value }}
+                  className={`w-5 h-5 rounded-full transition-transform cursor-pointer flex items-center justify-center ${
+                    isSelected ? "ring-2 ring-offset-2 ring-primary scale-110" : "hover:scale-105 opacity-85"
+                  }`}
+                  title={c.name}
+                >
+                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Actions: Native Print + Puppeteer PDF */}
         <div className="flex items-center gap-2">
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+            className="h-8 text-xs font-semibold gap-1.5"
             title="Open browser print dialog / Save as PDF"
           >
             <Printer className="w-3.5 h-3.5" />
             <span>Print / PDF</span>
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            size="sm"
             disabled={isGeneratingPdf}
             onClick={handleDownloadPdf}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+            className="h-8 text-xs font-semibold gap-1.5 shadow-xs"
             title="Download PDF via headless server"
           >
             {isGeneratingPdf ? (
@@ -117,13 +124,15 @@ export function InvoicePreviewCard() {
               <Download className="w-3.5 h-3.5" />
             )}
             <span>{isGeneratingPdf ? "Rendering..." : "Download PDF"}</span>
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       {/* Invoice Document Sheet */}
-      <div className="invoice-printable-card bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-        {getTemplateComponent(invoice)}
+      <div className="invoice-printable-card bg-white text-gray-900 rounded-xl shadow-md border border-border overflow-x-auto w-full">
+        <div className="w-full">
+          {getTemplateComponent(invoice)}
+        </div>
       </div>
     </div>
   );

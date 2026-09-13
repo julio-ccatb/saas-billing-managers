@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Upload, Image as ImageIcon, Trash2 } from "lucide-react";
+import { Upload, Trash2 } from "lucide-react";
+import { Button } from "~/components/ui/button";
 
 interface LogoUploaderProps {
   value?: string | null;
@@ -35,7 +36,6 @@ export function LogoUploader({ value, onChange }: LogoUploaderProps) {
     reader.onload = (event) => {
       let base64 = event.target?.result as string;
       if (base64) {
-        // If an SVG was loaded without xml mime prefix, normalize it
         if (isSvg && !base64.startsWith("data:image/svg+xml")) {
           const cleanBase64 = base64.includes(",") ? base64.split(",")[1] : base64;
           base64 = `data:image/svg+xml;base64,${cleanBase64}`;
@@ -58,34 +58,36 @@ export function LogoUploader({ value, onChange }: LogoUploaderProps) {
 
   return (
     <div>
-      <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+      <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">
         Company Logo
       </label>
 
       {value ? (
-        <div className="relative group inline-flex items-center gap-3 p-2 bg-gray-50 border border-gray-200 rounded-lg">
+        <div className="relative group inline-flex items-center gap-3 p-2 bg-muted/40 border border-border rounded-lg">
           <img
             src={value}
             alt="Invoice Logo"
             className="h-12 w-auto max-w-[140px] object-contain rounded"
           />
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={handleRemove}
-            className="p-1.5 text-gray-400 hover:text-rose-600 rounded-md hover:bg-white transition-colors cursor-pointer"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-card"
             title="Remove Logo"
           >
             <Trash2 className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       ) : (
         <div>
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-3 py-2 border border-dashed border-gray-300 hover:border-blue-500 rounded-lg bg-gray-50/70 hover:bg-blue-50/50 text-xs font-medium text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-3 py-2 border border-dashed border-input hover:border-primary rounded-lg bg-card hover:bg-muted/50 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer w-full justify-center min-h-[44px]"
           >
-            <Upload className="w-3.5 h-3.5" />
+            <Upload className="w-3.5 h-3.5 text-primary" />
             <span>Upload Logo (PNG, JPG, SVG)</span>
           </button>
           <input
@@ -98,7 +100,7 @@ export function LogoUploader({ value, onChange }: LogoUploaderProps) {
         </div>
       )}
 
-      {error && <p className="text-[11px] text-rose-500 mt-1">{error}</p>}
+      {error && <p className="text-[11px] text-destructive mt-1 font-medium">{error}</p>}
     </div>
   );
 }
