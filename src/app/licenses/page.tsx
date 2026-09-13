@@ -38,7 +38,7 @@ export default function LicensesPage() {
   const [editingLicense, setEditingLicense] = useState<any | null>(null);
   const [createdKeyModal, setCreatedKeyModal] = useState<{ key: string; name: string } | null>(null);
   const [snippetDrawerLicense, setSnippetDrawerLicense] = useState<any | null>(null);
-  const [activeSnippetTab, setActiveSnippetTab] = useState<"node" | "nextjs" | "python" | "php">("node");
+  const [activeSnippetTab, setActiveSnippetTab] = useState<"trpc" | "node" | "nextjs" | "python" | "php">("trpc");
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
 
   // Form State
@@ -777,6 +777,7 @@ export default function LicensesPage() {
               {/* Snippet Tabs */}
               <div className="flex items-center gap-2 border-b border-gray-200 pb-2">
                 {[
+                  { id: "trpc", label: "tRPC Middleware" },
                   { id: "node", label: "Node.js / Express" },
                   { id: "nextjs", label: "Next.js Middleware" },
                   { id: "python", label: "Python" },
@@ -856,6 +857,100 @@ function getCodeSnippet(lang: string, key: string): string {
   const endpoint = "http://localhost:3000/api/v1/licenses/verify";
 
   switch (lang) {
+    case "trpc":
+      return `import { TRPCError } from "@trpc/server";
+
+interface LicensePayload {
+  active: boolean;
+  status?: "ACTIVE" | "SUSPENDED" | "DOMAIN_MISMATCH" | "REVOKED" | string;
+  reason?: string;
+  error?: string;
+  serviceName?: string;
+  leaseExpiresAt?: string; // ISO 8601 timestamp
+  checkedAt?: string;
+}
+
+// In-memory cache to persist the latest valid lease across requests
+let cachedLicense: LicensePayload | null = null;
+
+export const verifyLicense = t.middleware(async ({ ctx, next }) => {
+  const licenseUrl = process.env.LICENSE_SERVER_URL ?? "${endpoint}";
+  const licenseKey = process.env.LIC_KEY ?? "${key}";
+  const now = Date.now();
+  const leaseEnd = cachedLicense?.leaseExpiresAt
+    ? new Date(cachedLicense.leaseExpiresAt).getTime()
+    : 0;
+
+  // 1. FAST PATH: Pass immediately with 0ms latency if current lease is still valid
+  if (cachedLicense?.active && leaseEnd > now) {
+    return next({
+      ctx: { ...ctx, license: cachedLicense },
+    });
+  }
+
+  // 2. NETWORK PATH: Fetch fresh lease when expired or upon initial container boot
+  let payload: LicensePayload | null = null;
+  let isNetworkFailure = false;
+
+  try {
+    const res = await fetch(licenseUrl, {
+      method: "GET",
+      headers: {
+        Authorization: \`Bearer \${licenseKey}\`,
+        "x-origin-domain": process.env.APP_DOMAIN ?? "",
+      },
+      signal: AbortSignal.timeout(3000), // Fast 3s timeout to prevent request stalls
+      cache: "no-store",
+    });
+
+    if ([200, 400, 401, 403].includes(res.status)) {
+      payload = (await res.json()) as LicensePayload;
+    } else {
+      isNetworkFailure = true;
+    }
+  } catch {
+    // Network drop, DNS failure, or timeout
+    isNetworkFailure = true;
+  }
+
+  // 3. LEASE RECOVERY: Tolerates temporary billing server downtime
+  if (isNetworkFailure) {
+    // Grace period check: allow request if previously cached lease is active and unexpired
+    if (cachedLicense?.active && leaseEnd > now) {
+      return next({
+        ctx: { ...ctx, license: cachedLicense },
+      });
+    }
+
+    // No valid lease exists or the grace period has lapsed
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "Licensing service unreachable and local lease grace period has expired.",
+    });
+  }
+
+  // 4. ACTIVE LICENSE: Update local cache with the newest lease details
+  if (payload?.active) {
+    cachedLicense = payload;
+    return next({
+      ctx: { ...ctx, license: payload },
+    });
+  }
+
+  // 5. EXPLICIT DENIAL (Suspended, Revoked, Mismatched): Invalidate cache immediately
+  cachedLicense = null;
+  const message = payload?.reason || payload?.error || "Service suspended. Contact billing.";
+
+  switch (payload?.status) {
+    case "REVOKED":
+      throw new TRPCError({ code: "UNAUTHORIZED", message });
+    case "DOMAIN_MISMATCH":
+    case "SUSPENDED":
+    default:
+      throw new TRPCError({ code: "FORBIDDEN", message });
+  }
+});`;
+
     case "node":
       return `// Express.js middleware with 1-hour cached lease
 let cachedLease = null;

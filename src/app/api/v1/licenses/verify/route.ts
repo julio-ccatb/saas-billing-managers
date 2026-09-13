@@ -52,7 +52,8 @@ async function handleVerification(req: NextRequest) {
     }
 
     originDomain = cleanDomain(
-      url.searchParams.get("originDomain") ||
+      req.headers.get("x-origin-domain") ||
+        url.searchParams.get("originDomain") ||
         url.searchParams.get("domain") ||
         req.headers.get("origin") ||
         req.headers.get("referer")
