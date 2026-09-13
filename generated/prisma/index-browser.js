@@ -274,6 +274,38 @@ exports.Prisma.LicenseScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ContractScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  customerId: 'customerId',
+  contractNumber: 'contractNumber',
+  title: 'title',
+  status: 'status',
+  value: 'value',
+  currency: 'currency',
+  billingCycle: 'billingCycle',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  signedAt: 'signedAt',
+  terms: 'terms',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  operatorId: 'operatorId',
+  action: 'action',
+  entityType: 'entityType',
+  entityId: 'entityId',
+  reason: 'reason',
+  metadata: 'metadata',
+  ipAddress: 'ipAddress',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -295,7 +327,9 @@ exports.Prisma.ModelName = {
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',
   VerificationToken: 'VerificationToken',
-  License: 'License'
+  License: 'License',
+  Contract: 'Contract',
+  AuditLog: 'AuditLog'
 };
 
 /**

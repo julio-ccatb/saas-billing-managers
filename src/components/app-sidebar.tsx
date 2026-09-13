@@ -70,9 +70,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: <UsersIcon />,
     },
     {
-      title: "Licenses",
+      title: "Contracts",
+      url: "/dashboard/contracts",
+      icon: <CreditCardIcon />,
+    },
+    {
+      title: "Licenses & Services",
       url: "/dashboard/licenses",
       icon: <KeyRoundIcon />,
+    },
+    {
+      title: "Audit Ledger",
+      url: "/dashboard/audit",
+      icon: <Building2Icon />,
     },
     {
       title: "Settings",
@@ -83,14 +93,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const quickActions = [
     {
+      name: "Onboard Client",
+      url: "/dashboard/customers/new",
+      icon: <UsersIcon />,
+    },
+    {
       name: "New Invoice",
       url: "/dashboard/invoices/new",
       icon: <FilePlusIcon />,
     },
     {
-      name: "Manage Customers",
+      name: "Manage Clients",
       url: "/dashboard/customers",
-      icon: <UsersIcon />,
+      icon: <Building2Icon />,
     },
     {
       name: "Company & Banking",

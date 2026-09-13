@@ -1,8 +1,10 @@
-import { invoiceRouter } from "~/server/api/routers/invoice";
-import { customerRouter } from "~/server/api/routers/customer";
+import { invoiceRouter } from "~/features/billing/server/router";
+import { customerRouter } from "~/features/clients/server/router";
+import { licenseRouter } from "~/features/licenses/server/router";
+import { contractRouter } from "~/features/contracts/server/router";
+import { auditRouter } from "~/features/audit/server/router";
 import { profileRouter } from "~/server/api/routers/profile";
 import { postRouter } from "~/server/api/routers/post";
-import { licenseRouter } from "~/server/api/routers/license";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -16,6 +18,8 @@ export const appRouter = createTRPCRouter({
   profile: profileRouter,
   post: postRouter,
   license: licenseRouter,
+  contract: contractRouter,
+  audit: auditRouter,
 });
 
 // export type definition of API

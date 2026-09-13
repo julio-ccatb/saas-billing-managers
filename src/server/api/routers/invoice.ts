@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { invoiceSchema } from "~/lib/schemas/invoice";
 import { calculateInvoiceTotals } from "~/lib/utils/format";
+import { recordAuditLog } from "~/server/services/audit";
 
 export const invoiceRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -108,6 +109,10 @@ export const invoiceRouter = createTRPCRouter({
     let paidCount = 0;
     let overdueCount = 0;
 
+    let overdueUnder30 = 0;
+    let overdue30To60 = 0;
+    let overdueOver60 = 0;
+
     for (const inv of invoices) {
       totalInvoiced += inv.totalAmount;
       const isOverdue = inv.status !== "PAID" && new Date(inv.dueDate) < now;
@@ -118,6 +123,17 @@ export const invoiceRouter = createTRPCRouter({
       } else if (isOverdue || inv.status === "OVERDUE") {
         totalOverdue += inv.totalAmount;
         overdueCount++;
+        const daysOverdue = Math.max(
+          0,
+          Math.floor((now.getTime() - new Date(inv.dueDate).getTime()) / (1000 * 60 * 60 * 24))
+        );
+        if (daysOverdue <= 30) {
+          overdueUnder30 += inv.totalAmount;
+        } else if (daysOverdue <= 60) {
+          overdue30To60 += inv.totalAmount;
+        } else {
+          overdueOver60 += inv.totalAmount;
+        }
       } else if (inv.status === "DRAFT") {
         draftCount++;
       } else {
@@ -137,6 +153,11 @@ export const invoiceRouter = createTRPCRouter({
         pending: pendingCount,
         paid: paidCount,
         overdue: overdueCount,
+      },
+      aging: {
+        under30: overdueUnder30,
+        between30And60: overdue30To60,
+        over60: overdueOver60,
       },
     };
   }),
@@ -242,6 +263,7 @@ export const invoiceRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         status: z.enum(["DRAFT", "PENDING", "PAID", "OVERDUE"]),
+        reason: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -256,14 +278,36 @@ export const invoiceRouter = createTRPCRouter({
         });
       }
 
-      return ctx.db.invoice.update({
+      const updated = await ctx.db.invoice.update({
         where: { id: input.id },
         data: { status: input.status },
       });
+
+      await recordAuditLog(ctx.db, {
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "BILLING_OVERRIDE",
+        entityType: "INVOICE",
+        entityId: existing.id,
+        reason: input.reason?.trim() || `Invoice status changed to ${input.status}`,
+        metadata: {
+          invoiceNumber: existing.invoiceNumber,
+          previousStatus: existing.status,
+          nextStatus: input.status,
+          totalAmount: existing.totalAmount,
+        },
+      });
+
+      return updated;
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        reason: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.invoice.findUnique({
         where: { id: input.id },
@@ -276,8 +320,24 @@ export const invoiceRouter = createTRPCRouter({
         });
       }
 
-      return ctx.db.invoice.delete({
+      const deleted = await ctx.db.invoice.delete({
         where: { id: input.id },
       });
+
+      await recordAuditLog(ctx.db, {
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "BILLING_OVERRIDE",
+        entityType: "INVOICE",
+        entityId: existing.id,
+        reason: input.reason?.trim() || "Invoice deleted by operator",
+        metadata: {
+          invoiceNumber: existing.invoiceNumber,
+          status: existing.status,
+          totalAmount: existing.totalAmount,
+        },
+      });
+
+      return deleted;
     }),
 });

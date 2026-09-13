@@ -2,6 +2,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { customerSchema } from "~/lib/schemas/invoice";
+import { recordAuditLog } from "~/server/services/audit";
 
 export const customerRouter = createTRPCRouter({
   getAll: protectedProcedure
@@ -41,9 +42,14 @@ export const customerRouter = createTRPCRouter({
       const customer = await ctx.db.customer.findUnique({
         where: { id: input.id },
         include: {
+          contracts: {
+            orderBy: { createdAt: "desc" },
+          },
+          licenses: {
+            orderBy: { createdAt: "desc" },
+          },
           invoices: {
             orderBy: { issueDate: "desc" },
-            take: 10,
           },
         },
       });
@@ -84,15 +90,35 @@ export const customerRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        reason: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.customer.findUnique({ where: { id: input.id } });
       if (!existing || existing.userId !== ctx.session.user.id) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Customer not found" });
       }
 
-      return ctx.db.customer.delete({
+      const deleted = await ctx.db.customer.delete({
         where: { id: input.id },
       });
+
+      await recordAuditLog(ctx.db, {
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "CUSTOMER_DELETED",
+        entityType: "CUSTOMER",
+        entityId: existing.id,
+        reason: input.reason?.trim() || "Customer removed by operator",
+        metadata: {
+          customerName: existing.name,
+          email: existing.email,
+        },
+      });
+
+      return deleted;
     }),
 });

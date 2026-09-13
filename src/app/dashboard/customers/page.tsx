@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { Plus, Search, Trash2, Edit2, Users, Mail, Phone, MapPin } from "lucide-react";
 import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
@@ -102,10 +103,26 @@ export default function CustomersPage() {
             <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Customers & Clients</h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage your client contacts and billing profiles</p>
           </div>
-          <Button onClick={() => openModal()} className="gap-2 self-start sm:self-auto">
-            <Plus className="w-4 h-4" />
-            <span>Add Customer</span>
-          </Button>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openModal()}
+              className="gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Quick Add</span>
+            </Button>
+            <Button
+              render={<Link href="/dashboard/customers/new" />}
+              nativeButton={false}
+              size="sm"
+              className="gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Onboard Client</span>
+            </Button>
+          </div>
         </div>
 
         {/* Search */}
@@ -141,7 +158,11 @@ export default function CustomersPage() {
                 <CardHeader className="p-4 sm:p-5 pb-3">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <CardTitle className="text-base text-foreground font-semibold">{c.name}</CardTitle>
+                      <CardTitle className="text-base text-foreground font-semibold">
+                        <Link href={`/dashboard/customers/${c.id}`} className="hover:text-primary transition-colors">
+                          {c.name}
+                        </Link>
+                      </CardTitle>
                       {c.taxId && (
                         <span className="inline-block text-[10px] font-mono bg-muted text-muted-foreground px-2 py-0.5 rounded mt-1">
                           Tax ID: {c.taxId}

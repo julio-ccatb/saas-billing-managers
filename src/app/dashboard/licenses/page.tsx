@@ -40,6 +40,11 @@ export default function LicensesPage() {
   const [activeSnippetTab, setActiveSnippetTab] = useState<"trpc" | "node" | "nextjs" | "python" | "php">("trpc");
   const [copiedKeyId, setCopiedKeyId] = useState<string | null>(null);
 
+  // Guardrail Kill Switch Modal
+  const [guardrailModalLicense, setGuardrailModalLicense] = useState<any>(null);
+  const [guardrailReason, setGuardrailReason] = useState("");
+  const [guardrailNotice, setGuardrailNotice] = useState("");
+
   // Form State
   const [formData, setFormData] = useState({
     name: "",
@@ -94,9 +99,11 @@ export default function LicensesPage() {
     onSuccess: () => {
       utils.license.getAll.invalidate();
       utils.license.getMetrics.invalidate();
+      setGuardrailModalLicense(null);
+      setGuardrailReason("");
     },
     onError: (err) => {
-      alert(`Error toggling status: ${err.message}`);
+      alert(`Guardrail error: ${err.message}`);
     },
   });
 
@@ -426,19 +433,29 @@ export default function LicensesPage() {
                             </span>
                           ) : (
                             <button
-                              onClick={() =>
-                                toggleStatusMutation.mutate({
-                                  id: lic.id,
-                                  status: isActive ? "SUSPENDED" : "ACTIVE",
-                                })
-                              }
+                              onClick={() => {
+                                if (isActive) {
+                                  setGuardrailModalLicense(lic);
+                                  setGuardrailNotice(
+                                    lic.suspensionNotice ||
+                                      "Service temporarily suspended by administrator due to billing ledger delinquency."
+                                  );
+                                  setGuardrailReason("");
+                                } else {
+                                  toggleStatusMutation.mutate({
+                                    id: lic.id,
+                                    status: "ACTIVE",
+                                    reason: "Service reactivated by operator",
+                                  });
+                                }
+                              }}
                               disabled={toggleStatusMutation.isPending}
                               className={`relative inline-flex items-center h-6 rounded-full w-12 transition-colors cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-offset-2 ${
                                 isActive
                                   ? "bg-emerald-500 focus:ring-emerald-400"
                                   : "bg-rose-500 focus:ring-rose-400"
                               }`}
-                              title={isActive ? "Click to suspend service" : "Click to reactivate service"}
+                              title={isActive ? "Click to suspend service (guardrail enforced)" : "Click to reactivate service"}
                             >
                               <span
                                 className={`inline-block w-4 h-4 transform bg-white rounded-full transition-transform shadow-xs ${
@@ -518,13 +535,11 @@ export default function LicensesPage() {
                         </td>
                       </tr>
                     );
-                  })
-                )}
+                  }))}
               </tbody>
             </table>
           </div>
         </div>
-      </div>
 
       {/* CREATE / EDIT MODAL */}
       {(isCreateModalOpen || editingLicense) && (
@@ -844,6 +859,93 @@ export default function LicensesPage() {
             >
               Close Integration Panel
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* KILL-SWITCH GUARDRAIL DISALLOW / CONFIRM MODAL */}
+      {guardrailModalLicense && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 animate-in fade-in zoom-in-95 duration-150 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-gray-900">
+                    Service Disablement Guardrail
+                  </h2>
+                  <p className="text-xs text-gray-500">CSOC Policy: Mandatory Operator Rationale</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setGuardrailModalLicense(null)}
+                className="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-3.5 bg-rose-50 border border-rose-100 rounded-xl space-y-1 text-xs text-rose-900">
+              <p className="font-semibold flex items-center gap-1.5 text-rose-700">
+                <AlertTriangle className="w-4 h-4" /> Immediate Client Disruption
+              </p>
+              <p className="text-rose-800 leading-relaxed text-[11px]">
+                Suspending <strong>{guardrailModalLicense.name}</strong> will cause client apps to fail verification upon their next lease renewal. An immutable entry will be written to the Audit Ledger.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Mandatory Operator Rationale (min 3 chars) *
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Delinquent account 30+ days overdue"
+                value={guardrailReason}
+                onChange={(e) => setGuardrailReason(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-700 mb-1">
+                Client-Facing Notice
+              </label>
+              <textarea
+                rows={2}
+                value={guardrailNotice}
+                onChange={(e) => setGuardrailNotice(e.target.value)}
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => setGuardrailModalLicense(null)}
+                className="px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={guardrailReason.trim().length < 3 || toggleStatusMutation.isPending}
+                onClick={() => {
+                  toggleStatusMutation.mutate({
+                    id: guardrailModalLicense.id,
+                    status: "SUSPENDED",
+                    reason: guardrailReason,
+                    suspensionNotice: guardrailNotice,
+                  });
+                }}
+                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 disabled:opacity-50 rounded-lg shadow-xs transition-colors cursor-pointer"
+              >
+                Confirm &amp; Enforce Suspension
+              </button>
+            </div>
           </div>
         </div>
       )}
