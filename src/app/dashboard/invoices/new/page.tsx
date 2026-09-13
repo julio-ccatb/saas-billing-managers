@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, FileCheck, Edit3, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { InvoiceFormProvider, useInvoiceForm } from "~/components/invoice/InvoiceFormContext";
 import { InvoiceFormEditor } from "~/components/invoice/InvoiceFormEditor";
 import { InvoicePreviewCard } from "~/components/invoice/InvoicePreviewCard";
@@ -181,10 +180,8 @@ function InvoiceCreateContent() {
 
 export default function NewInvoicePage() {
   return (
-    <DashboardLayout>
-      <InvoiceFormProvider>
-        <InvoiceCreateContent />
-      </InvoiceFormProvider>
-    </DashboardLayout>
+    <InvoiceFormProvider>
+      <InvoiceCreateContent />
+    </InvoiceFormProvider>
   );
 }

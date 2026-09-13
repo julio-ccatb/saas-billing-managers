@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Save, Edit3, Eye, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { InvoiceFormProvider, useInvoiceForm } from "~/components/invoice/InvoiceFormContext";
 import { InvoiceFormEditor } from "~/components/invoice/InvoiceFormEditor";
 import { InvoicePreviewCard } from "~/components/invoice/InvoicePreviewCard";
@@ -192,10 +191,8 @@ export default function EditInvoicePage() {
   const invoiceId = params?.id as string;
 
   return (
-    <DashboardLayout>
-      <InvoiceFormProvider>
-        <InvoiceEditContent invoiceId={invoiceId} />
-      </InvoiceFormProvider>
-    </DashboardLayout>
+    <InvoiceFormProvider>
+      <InvoiceEditContent invoiceId={invoiceId} />
+    </InvoiceFormProvider>
   );
 }

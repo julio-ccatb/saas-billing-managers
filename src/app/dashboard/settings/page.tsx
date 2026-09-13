@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Building2, Save, Check, Landmark } from "lucide-react";
 import { api } from "~/trpc/react";
-import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { LogoUploader } from "~/components/invoice/LogoUploader";
 import { SignaturePad } from "~/components/invoice/SignaturePad";
 import { Button } from "~/components/ui/button";
@@ -73,16 +72,15 @@ export default function SettingsPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="w-full space-y-6">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Business Settings</h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-            Configure default company sender information, currency, payment details, and terms
-          </p>
-        </div>
+    <div className="w-full space-y-6">
+      <div>
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Business Settings</h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+          Configure default company sender information, currency, payment details, and terms
+        </p>
+      </div>
 
-        <Card>
+      <Card>
           <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-6">
             <div className="flex items-center gap-2 pb-3 border-b border-border text-sm font-semibold text-foreground">
               <Building2 className="w-5 h-5 text-primary" />
@@ -291,6 +289,5 @@ export default function SettingsPage() {
           </form>
         </Card>
       </div>
-    </DashboardLayout>
   );
 }

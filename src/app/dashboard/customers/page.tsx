@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Plus, Search, Trash2, Edit2, Users, Mail, Phone, MapPin } from "lucide-react";
 import { api } from "~/trpc/react";
-import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
@@ -96,8 +95,7 @@ export default function CustomersPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -297,6 +295,5 @@ export default function CustomersPage() {
           </DialogContent>
         </Dialog>
       </div>
-    </DashboardLayout>
   );
 }

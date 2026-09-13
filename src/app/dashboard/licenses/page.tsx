@@ -25,7 +25,6 @@ import {
   FileCode
 } from "lucide-react";
 import { api } from "~/trpc/react";
-import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { formatDate } from "~/lib/utils/format";
 import { maskLicenseKey } from "~/lib/license/keygen";
 
@@ -181,8 +180,7 @@ export default function LicensesPage() {
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-7 w-full">
+    <div className="space-y-7 w-full">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -849,7 +847,7 @@ export default function LicensesPage() {
           </div>
         </div>
       )}
-    </DashboardLayout>
+    </div>
   );
 }
 
