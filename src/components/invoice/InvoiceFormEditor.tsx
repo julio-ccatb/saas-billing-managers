@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useInvoiceForm } from "./InvoiceFormContext";
-import { Plus, Trash2, Building2, User, Users, Calendar, CreditCard, Percent, Truck } from "lucide-react";
+import { Plus, Trash2, Building2, User, Users, Calendar, CreditCard, Percent, Truck, Landmark } from "lucide-react";
 import { api } from "~/trpc/react";
 import { LogoUploader } from "./LogoUploader";
 import { SignaturePad } from "./SignaturePad";
@@ -433,6 +433,46 @@ export function InvoiceFormEditor() {
             value={invoice.notes}
             onChange={(e) => updateField("notes", e.target.value)}
           />
+        </div>
+      </div>
+
+      {/* Payment & Bank Information */}
+      <div className="space-y-3 bg-gray-50/70 p-4 rounded-lg border border-gray-100">
+        <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 pb-1 border-b border-gray-200">
+          <Landmark className="w-4 h-4 text-blue-600" />
+          <span>Payment Information (Bank Details)</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Bank Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Chase"
+              className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm"
+              value={invoice.bankName || ""}
+              onChange={(e) => updateField("bankName", e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Account Name</label>
+            <input
+              type="text"
+              placeholder="e.g. Acme Studio LLC"
+              className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm"
+              value={invoice.bankAccountName || ""}
+              onChange={(e) => updateField("bankAccountName", e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-500 mb-1">Account Number / IBAN</label>
+            <input
+              type="text"
+              placeholder="e.g. 1234567890"
+              className="w-full px-3 py-1.5 bg-white border border-gray-300 rounded-md text-sm"
+              value={invoice.bankAccountNumber || ""}
+              onChange={(e) => updateField("bankAccountNumber", e.target.value)}
+            />
+          </div>
         </div>
       </div>
 

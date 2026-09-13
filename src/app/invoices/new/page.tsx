@@ -40,6 +40,9 @@ function InvoiceCreateContent() {
       if (profile.currency) updateField("currency", profile.currency);
       if (profile.paymentTerms) updateField("paymentTerms", profile.paymentTerms);
       if (profile.notes) updateField("notes", profile.notes);
+      if ((profile as any).bankName) updateField("bankName", (profile as any).bankName);
+      if ((profile as any).bankAccountName) updateField("bankAccountName", (profile as any).bankAccountName);
+      if ((profile as any).bankAccountNumber) updateField("bankAccountNumber", (profile as any).bankAccountNumber);
       if (profile.logoUrl) updateField("logoUrl", profile.logoUrl);
       if (profile.signatureData) updateField("signatureData", profile.signatureData);
     }

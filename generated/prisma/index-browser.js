@@ -168,6 +168,9 @@ exports.Prisma.CompanyProfileScalarFieldEnum = {
   zipCode: 'zipCode',
   country: 'country',
   taxId: 'taxId',
+  bankName: 'bankName',
+  bankAccountName: 'bankAccountName',
+  bankAccountNumber: 'bankAccountNumber',
   logoUrl: 'logoUrl',
   signatureData: 'signatureData',
   currency: 'currency',
@@ -226,6 +229,9 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   totalAmount: 'totalAmount',
   notes: 'notes',
   paymentTerms: 'paymentTerms',
+  bankName: 'bankName',
+  bankAccountName: 'bankAccountName',
+  bankAccountNumber: 'bankAccountNumber',
   templateId: 'templateId',
   themeColor: 'themeColor',
   logoUrl: 'logoUrl',
@@ -250,6 +256,24 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
   expires: 'expires'
 };
 
+exports.Prisma.LicenseScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  customerId: 'customerId',
+  name: 'name',
+  key: 'key',
+  status: 'status',
+  allowedDomain: 'allowedDomain',
+  suspensionNotice: 'suspensionNotice',
+  leaseTtlMinutes: 'leaseTtlMinutes',
+  gracePeriodHours: 'gracePeriodHours',
+  lastCheckedAt: 'lastCheckedAt',
+  lastCheckedIp: 'lastCheckedIp',
+  checkCount: 'checkCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -270,7 +294,8 @@ exports.Prisma.ModelName = {
   Customer: 'Customer',
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  License: 'License'
 };
 
 /**

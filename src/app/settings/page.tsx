@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Building2, Save, Check, FileSignature } from "lucide-react";
+import { Building2, Save, Check, FileSignature, Landmark } from "lucide-react";
 import { api } from "~/trpc/react";
 import { DashboardLayout } from "~/components/layout/DashboardLayout";
 import { LogoUploader } from "~/components/invoice/LogoUploader";
@@ -17,6 +17,9 @@ export default function SettingsPage() {
     zipCode: "",
     country: "",
     taxId: "",
+    bankName: "",
+    bankAccountName: "",
+    bankAccountNumber: "",
     logoUrl: null as string | null,
     signatureData: null as string | null,
     currency: "USD",
@@ -39,6 +42,9 @@ export default function SettingsPage() {
         zipCode: data.zipCode ?? "",
         country: data.country ?? "",
         taxId: data.taxId ?? "",
+        bankName: (data as any).bankName ?? "",
+        bankAccountName: (data as any).bankAccountName ?? "",
+        bankAccountNumber: (data as any).bankAccountNumber ?? "",
         logoUrl: data.logoUrl ?? null,
         signatureData: (data as any).signatureData ?? null,
         currency: data.currency ?? "USD",
@@ -199,6 +205,50 @@ export default function SettingsPage() {
                 value={profileData.notes}
                 onChange={(e) => setProfileData({ ...profileData, notes: e.target.value })}
               />
+            </div>
+          </div>
+
+          {/* Bank & Payment Information */}
+          <div className="space-y-4 pt-2 border-t border-gray-100 text-sm">
+            <div className="flex items-center gap-2 text-sm font-semibold text-gray-800">
+              <Landmark className="w-4 h-4 text-blue-600" />
+              <span>Payment & Bank Information</span>
+            </div>
+            <p className="text-xs text-gray-500">
+              Provide your banking details so clients know where to send wire and direct deposit payments. This will be pre-filled on your invoices under Payment Info.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Bank Name</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Chase, Bank of America"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  value={profileData.bankName}
+                  onChange={(e) => setProfileData({ ...profileData, bankName: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Account Name / Beneficiary</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Acme Studio LLC"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  value={profileData.bankAccountName}
+                  onChange={(e) => setProfileData({ ...profileData, bankAccountName: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Account Number / IBAN</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 1234567890 or IBAN"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                  value={profileData.bankAccountNumber}
+                  onChange={(e) => setProfileData({ ...profileData, bankAccountNumber: e.target.value })}
+                />
+              </div>
             </div>
           </div>
 

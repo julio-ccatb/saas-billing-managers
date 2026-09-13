@@ -58,6 +58,11 @@ export type InvoiceItem = $Result.DefaultSelection<Prisma.$InvoiceItemPayload>
  * 
  */
 export type VerificationToken = $Result.DefaultSelection<Prisma.$VerificationTokenPayload>
+/**
+ * Model License
+ * 
+ */
+export type License = $Result.DefaultSelection<Prisma.$LicensePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -266,6 +271,16 @@ export class PrismaClient<
     * ```
     */
   get verificationToken(): Prisma.VerificationTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.license`: Exposes CRUD operations for the **License** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Licenses
+    * const licenses = await prisma.license.findMany()
+    * ```
+    */
+  get license(): Prisma.LicenseDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -715,7 +730,8 @@ export namespace Prisma {
     Customer: 'Customer',
     Invoice: 'Invoice',
     InvoiceItem: 'InvoiceItem',
-    VerificationToken: 'VerificationToken'
+    VerificationToken: 'VerificationToken',
+    License: 'License'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -734,7 +750,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "account" | "session" | "user" | "companyProfile" | "customer" | "invoice" | "invoiceItem" | "verificationToken"
+      modelProps: "post" | "account" | "session" | "user" | "companyProfile" | "customer" | "invoice" | "invoiceItem" | "verificationToken" | "license"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1404,6 +1420,80 @@ export namespace Prisma {
           }
         }
       }
+      License: {
+        payload: Prisma.$LicensePayload<ExtArgs>
+        fields: Prisma.LicenseFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.LicenseFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.LicenseFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          findFirst: {
+            args: Prisma.LicenseFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.LicenseFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          findMany: {
+            args: Prisma.LicenseFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>[]
+          }
+          create: {
+            args: Prisma.LicenseCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          createMany: {
+            args: Prisma.LicenseCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.LicenseCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>[]
+          }
+          delete: {
+            args: Prisma.LicenseDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          update: {
+            args: Prisma.LicenseUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          deleteMany: {
+            args: Prisma.LicenseDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.LicenseUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.LicenseUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>[]
+          }
+          upsert: {
+            args: Prisma.LicenseUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$LicensePayload>
+          }
+          aggregate: {
+            args: Prisma.LicenseAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateLicense>
+          }
+          groupBy: {
+            args: Prisma.LicenseGroupByArgs<ExtArgs>
+            result: $Utils.Optional<LicenseGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.LicenseCountArgs<ExtArgs>
+            result: $Utils.Optional<LicenseCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1509,6 +1599,7 @@ export namespace Prisma {
     invoice?: InvoiceOmit
     invoiceItem?: InvoiceItemOmit
     verificationToken?: VerificationTokenOmit
+    license?: LicenseOmit
   }
 
   /* Types for Logging */
@@ -1594,6 +1685,7 @@ export namespace Prisma {
     posts: number
     customers: number
     invoices: number
+    licenses: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1602,6 +1694,7 @@ export namespace Prisma {
     posts?: boolean | UserCountOutputTypeCountPostsArgs
     customers?: boolean | UserCountOutputTypeCountCustomersArgs
     invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
+    licenses?: boolean | UserCountOutputTypeCountLicensesArgs
   }
 
   // Custom InputTypes
@@ -1650,6 +1743,13 @@ export namespace Prisma {
     where?: InvoiceWhereInput
   }
 
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountLicensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LicenseWhereInput
+  }
+
 
   /**
    * Count Type CustomerCountOutputType
@@ -1657,10 +1757,12 @@ export namespace Prisma {
 
   export type CustomerCountOutputType = {
     invoices: number
+    licenses: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     invoices?: boolean | CustomerCountOutputTypeCountInvoicesArgs
+    licenses?: boolean | CustomerCountOutputTypeCountLicensesArgs
   }
 
   // Custom InputTypes
@@ -1679,6 +1781,13 @@ export namespace Prisma {
    */
   export type CustomerCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceWhereInput
+  }
+
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountLicensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LicenseWhereInput
   }
 
 
@@ -5218,6 +5327,7 @@ export namespace Prisma {
     companyProfile?: boolean | User$companyProfileArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
+    licenses?: boolean | User$licensesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5253,6 +5363,7 @@ export namespace Prisma {
     companyProfile?: boolean | User$companyProfileArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
+    licenses?: boolean | User$licensesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5267,6 +5378,7 @@ export namespace Prisma {
       companyProfile: Prisma.$CompanyProfilePayload<ExtArgs> | null
       customers: Prisma.$CustomerPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      licenses: Prisma.$LicensePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5674,6 +5786,7 @@ export namespace Prisma {
     companyProfile<T extends User$companyProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$companyProfileArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     customers<T extends User$customersArgs<ExtArgs> = {}>(args?: Subset<T, User$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    licenses<T extends User$licensesArgs<ExtArgs> = {}>(args?: Subset<T, User$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6233,6 +6346,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.licenses
+   */
+  export type User$licensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    where?: LicenseWhereInput
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    cursor?: LicenseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6272,6 +6409,9 @@ export namespace Prisma {
     zipCode: string | null
     country: string | null
     taxId: string | null
+    bankName: string | null
+    bankAccountName: string | null
+    bankAccountNumber: string | null
     logoUrl: string | null
     signatureData: string | null
     currency: string | null
@@ -6292,6 +6432,9 @@ export namespace Prisma {
     zipCode: string | null
     country: string | null
     taxId: string | null
+    bankName: string | null
+    bankAccountName: string | null
+    bankAccountNumber: string | null
     logoUrl: string | null
     signatureData: string | null
     currency: string | null
@@ -6312,6 +6455,9 @@ export namespace Prisma {
     zipCode: number
     country: number
     taxId: number
+    bankName: number
+    bankAccountName: number
+    bankAccountNumber: number
     logoUrl: number
     signatureData: number
     currency: number
@@ -6334,6 +6480,9 @@ export namespace Prisma {
     zipCode?: true
     country?: true
     taxId?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     logoUrl?: true
     signatureData?: true
     currency?: true
@@ -6354,6 +6503,9 @@ export namespace Prisma {
     zipCode?: true
     country?: true
     taxId?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     logoUrl?: true
     signatureData?: true
     currency?: true
@@ -6374,6 +6526,9 @@ export namespace Prisma {
     zipCode?: true
     country?: true
     taxId?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     logoUrl?: true
     signatureData?: true
     currency?: true
@@ -6467,6 +6622,9 @@ export namespace Prisma {
     zipCode: string
     country: string
     taxId: string
+    bankName: string
+    bankAccountName: string
+    bankAccountNumber: string
     logoUrl: string | null
     signatureData: string | null
     currency: string
@@ -6504,6 +6662,9 @@ export namespace Prisma {
     zipCode?: boolean
     country?: boolean
     taxId?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     logoUrl?: boolean
     signatureData?: boolean
     currency?: boolean
@@ -6525,6 +6686,9 @@ export namespace Prisma {
     zipCode?: boolean
     country?: boolean
     taxId?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     logoUrl?: boolean
     signatureData?: boolean
     currency?: boolean
@@ -6546,6 +6710,9 @@ export namespace Prisma {
     zipCode?: boolean
     country?: boolean
     taxId?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     logoUrl?: boolean
     signatureData?: boolean
     currency?: boolean
@@ -6567,6 +6734,9 @@ export namespace Prisma {
     zipCode?: boolean
     country?: boolean
     taxId?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     logoUrl?: boolean
     signatureData?: boolean
     currency?: boolean
@@ -6576,7 +6746,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CompanyProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "logoUrl" | "signatureData" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
+  export type CompanyProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "bankName" | "bankAccountName" | "bankAccountNumber" | "logoUrl" | "signatureData" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
   export type CompanyProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -6603,6 +6773,9 @@ export namespace Prisma {
       zipCode: string
       country: string
       taxId: string
+      bankName: string
+      bankAccountName: string
+      bankAccountNumber: string
       logoUrl: string | null
       signatureData: string | null
       currency: string
@@ -7044,6 +7217,9 @@ export namespace Prisma {
     readonly zipCode: FieldRef<"CompanyProfile", 'String'>
     readonly country: FieldRef<"CompanyProfile", 'String'>
     readonly taxId: FieldRef<"CompanyProfile", 'String'>
+    readonly bankName: FieldRef<"CompanyProfile", 'String'>
+    readonly bankAccountName: FieldRef<"CompanyProfile", 'String'>
+    readonly bankAccountNumber: FieldRef<"CompanyProfile", 'String'>
     readonly logoUrl: FieldRef<"CompanyProfile", 'String'>
     readonly signatureData: FieldRef<"CompanyProfile", 'String'>
     readonly currency: FieldRef<"CompanyProfile", 'String'>
@@ -7685,6 +7861,7 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
+    licenses?: boolean | Customer$licensesArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -7739,6 +7916,7 @@ export namespace Prisma {
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
+    licenses?: boolean | Customer$licensesArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7753,6 +7931,7 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs>
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      licenses: Prisma.$LicensePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -8163,6 +8342,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     invoices<T extends Customer$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    licenses<T extends Customer$licensesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8622,6 +8802,30 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.licenses
+   */
+  export type Customer$licensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    where?: LicenseWhereInput
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    cursor?: LicenseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
    * Customer without action
    */
   export type CustomerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8706,6 +8910,9 @@ export namespace Prisma {
     totalAmount: number | null
     notes: string | null
     paymentTerms: string | null
+    bankName: string | null
+    bankAccountName: string | null
+    bankAccountNumber: string | null
     templateId: string | null
     themeColor: string | null
     logoUrl: string | null
@@ -8748,6 +8955,9 @@ export namespace Prisma {
     totalAmount: number | null
     notes: string | null
     paymentTerms: string | null
+    bankName: string | null
+    bankAccountName: string | null
+    bankAccountNumber: string | null
     templateId: string | null
     themeColor: string | null
     logoUrl: string | null
@@ -8790,6 +9000,9 @@ export namespace Prisma {
     totalAmount: number
     notes: number
     paymentTerms: number
+    bankName: number
+    bankAccountName: number
+    bankAccountNumber: number
     templateId: number
     themeColor: number
     logoUrl: number
@@ -8854,6 +9067,9 @@ export namespace Prisma {
     totalAmount?: true
     notes?: true
     paymentTerms?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     templateId?: true
     themeColor?: true
     logoUrl?: true
@@ -8896,6 +9112,9 @@ export namespace Prisma {
     totalAmount?: true
     notes?: true
     paymentTerms?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     templateId?: true
     themeColor?: true
     logoUrl?: true
@@ -8938,6 +9157,9 @@ export namespace Prisma {
     totalAmount?: true
     notes?: true
     paymentTerms?: true
+    bankName?: true
+    bankAccountName?: true
+    bankAccountNumber?: true
     templateId?: true
     themeColor?: true
     logoUrl?: true
@@ -9067,6 +9289,9 @@ export namespace Prisma {
     totalAmount: number
     notes: string
     paymentTerms: string
+    bankName: string
+    bankAccountName: string
+    bankAccountNumber: string
     templateId: string
     themeColor: string
     logoUrl: string | null
@@ -9128,6 +9353,9 @@ export namespace Prisma {
     totalAmount?: boolean
     notes?: boolean
     paymentTerms?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     templateId?: boolean
     themeColor?: boolean
     logoUrl?: boolean
@@ -9174,6 +9402,9 @@ export namespace Prisma {
     totalAmount?: boolean
     notes?: boolean
     paymentTerms?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     templateId?: boolean
     themeColor?: boolean
     logoUrl?: boolean
@@ -9218,6 +9449,9 @@ export namespace Prisma {
     totalAmount?: boolean
     notes?: boolean
     paymentTerms?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     templateId?: boolean
     themeColor?: boolean
     logoUrl?: boolean
@@ -9262,6 +9496,9 @@ export namespace Prisma {
     totalAmount?: boolean
     notes?: boolean
     paymentTerms?: boolean
+    bankName?: boolean
+    bankAccountName?: boolean
+    bankAccountNumber?: boolean
     templateId?: boolean
     themeColor?: boolean
     logoUrl?: boolean
@@ -9270,7 +9507,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "templateId" | "themeColor" | "logoUrl" | "signatureData" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "bankName" | "bankAccountName" | "bankAccountNumber" | "templateId" | "themeColor" | "logoUrl" | "signatureData" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
@@ -9327,6 +9564,9 @@ export namespace Prisma {
       totalAmount: number
       notes: string
       paymentTerms: string
+      bankName: string
+      bankAccountName: string
+      bankAccountNumber: string
       templateId: string
       themeColor: string
       logoUrl: string | null
@@ -9792,6 +10032,9 @@ export namespace Prisma {
     readonly totalAmount: FieldRef<"Invoice", 'Float'>
     readonly notes: FieldRef<"Invoice", 'String'>
     readonly paymentTerms: FieldRef<"Invoice", 'String'>
+    readonly bankName: FieldRef<"Invoice", 'String'>
+    readonly bankAccountName: FieldRef<"Invoice", 'String'>
+    readonly bankAccountNumber: FieldRef<"Invoice", 'String'>
     readonly templateId: FieldRef<"Invoice", 'String'>
     readonly themeColor: FieldRef<"Invoice", 'String'>
     readonly logoUrl: FieldRef<"Invoice", 'String'>
@@ -12349,6 +12592,1261 @@ export namespace Prisma {
 
 
   /**
+   * Model License
+   */
+
+  export type AggregateLicense = {
+    _count: LicenseCountAggregateOutputType | null
+    _avg: LicenseAvgAggregateOutputType | null
+    _sum: LicenseSumAggregateOutputType | null
+    _min: LicenseMinAggregateOutputType | null
+    _max: LicenseMaxAggregateOutputType | null
+  }
+
+  export type LicenseAvgAggregateOutputType = {
+    leaseTtlMinutes: number | null
+    gracePeriodHours: number | null
+    checkCount: number | null
+  }
+
+  export type LicenseSumAggregateOutputType = {
+    leaseTtlMinutes: number | null
+    gracePeriodHours: number | null
+    checkCount: number | null
+  }
+
+  export type LicenseMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    customerId: string | null
+    name: string | null
+    key: string | null
+    status: string | null
+    allowedDomain: string | null
+    suspensionNotice: string | null
+    leaseTtlMinutes: number | null
+    gracePeriodHours: number | null
+    lastCheckedAt: Date | null
+    lastCheckedIp: string | null
+    checkCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LicenseMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    customerId: string | null
+    name: string | null
+    key: string | null
+    status: string | null
+    allowedDomain: string | null
+    suspensionNotice: string | null
+    leaseTtlMinutes: number | null
+    gracePeriodHours: number | null
+    lastCheckedAt: Date | null
+    lastCheckedIp: string | null
+    checkCount: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type LicenseCountAggregateOutputType = {
+    id: number
+    userId: number
+    customerId: number
+    name: number
+    key: number
+    status: number
+    allowedDomain: number
+    suspensionNotice: number
+    leaseTtlMinutes: number
+    gracePeriodHours: number
+    lastCheckedAt: number
+    lastCheckedIp: number
+    checkCount: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type LicenseAvgAggregateInputType = {
+    leaseTtlMinutes?: true
+    gracePeriodHours?: true
+    checkCount?: true
+  }
+
+  export type LicenseSumAggregateInputType = {
+    leaseTtlMinutes?: true
+    gracePeriodHours?: true
+    checkCount?: true
+  }
+
+  export type LicenseMinAggregateInputType = {
+    id?: true
+    userId?: true
+    customerId?: true
+    name?: true
+    key?: true
+    status?: true
+    allowedDomain?: true
+    suspensionNotice?: true
+    leaseTtlMinutes?: true
+    gracePeriodHours?: true
+    lastCheckedAt?: true
+    lastCheckedIp?: true
+    checkCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LicenseMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    customerId?: true
+    name?: true
+    key?: true
+    status?: true
+    allowedDomain?: true
+    suspensionNotice?: true
+    leaseTtlMinutes?: true
+    gracePeriodHours?: true
+    lastCheckedAt?: true
+    lastCheckedIp?: true
+    checkCount?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type LicenseCountAggregateInputType = {
+    id?: true
+    userId?: true
+    customerId?: true
+    name?: true
+    key?: true
+    status?: true
+    allowedDomain?: true
+    suspensionNotice?: true
+    leaseTtlMinutes?: true
+    gracePeriodHours?: true
+    lastCheckedAt?: true
+    lastCheckedIp?: true
+    checkCount?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type LicenseAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which License to aggregate.
+     */
+    where?: LicenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Licenses to fetch.
+     */
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: LicenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Licenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Licenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Licenses
+    **/
+    _count?: true | LicenseCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: LicenseAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: LicenseSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: LicenseMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: LicenseMaxAggregateInputType
+  }
+
+  export type GetLicenseAggregateType<T extends LicenseAggregateArgs> = {
+        [P in keyof T & keyof AggregateLicense]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateLicense[P]>
+      : GetScalarType<T[P], AggregateLicense[P]>
+  }
+
+
+
+
+  export type LicenseGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LicenseWhereInput
+    orderBy?: LicenseOrderByWithAggregationInput | LicenseOrderByWithAggregationInput[]
+    by: LicenseScalarFieldEnum[] | LicenseScalarFieldEnum
+    having?: LicenseScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: LicenseCountAggregateInputType | true
+    _avg?: LicenseAvgAggregateInputType
+    _sum?: LicenseSumAggregateInputType
+    _min?: LicenseMinAggregateInputType
+    _max?: LicenseMaxAggregateInputType
+  }
+
+  export type LicenseGroupByOutputType = {
+    id: string
+    userId: string
+    customerId: string | null
+    name: string
+    key: string
+    status: string
+    allowedDomain: string | null
+    suspensionNotice: string | null
+    leaseTtlMinutes: number
+    gracePeriodHours: number
+    lastCheckedAt: Date | null
+    lastCheckedIp: string | null
+    checkCount: number
+    createdAt: Date
+    updatedAt: Date
+    _count: LicenseCountAggregateOutputType | null
+    _avg: LicenseAvgAggregateOutputType | null
+    _sum: LicenseSumAggregateOutputType | null
+    _min: LicenseMinAggregateOutputType | null
+    _max: LicenseMaxAggregateOutputType | null
+  }
+
+  type GetLicenseGroupByPayload<T extends LicenseGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<LicenseGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof LicenseGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], LicenseGroupByOutputType[P]>
+            : GetScalarType<T[P], LicenseGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type LicenseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    customerId?: boolean
+    name?: boolean
+    key?: boolean
+    status?: boolean
+    allowedDomain?: boolean
+    suspensionNotice?: boolean
+    leaseTtlMinutes?: boolean
+    gracePeriodHours?: boolean
+    lastCheckedAt?: boolean
+    lastCheckedIp?: boolean
+    checkCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }, ExtArgs["result"]["license"]>
+
+  export type LicenseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    customerId?: boolean
+    name?: boolean
+    key?: boolean
+    status?: boolean
+    allowedDomain?: boolean
+    suspensionNotice?: boolean
+    leaseTtlMinutes?: boolean
+    gracePeriodHours?: boolean
+    lastCheckedAt?: boolean
+    lastCheckedIp?: boolean
+    checkCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }, ExtArgs["result"]["license"]>
+
+  export type LicenseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    customerId?: boolean
+    name?: boolean
+    key?: boolean
+    status?: boolean
+    allowedDomain?: boolean
+    suspensionNotice?: boolean
+    leaseTtlMinutes?: boolean
+    gracePeriodHours?: boolean
+    lastCheckedAt?: boolean
+    lastCheckedIp?: boolean
+    checkCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }, ExtArgs["result"]["license"]>
+
+  export type LicenseSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    customerId?: boolean
+    name?: boolean
+    key?: boolean
+    status?: boolean
+    allowedDomain?: boolean
+    suspensionNotice?: boolean
+    leaseTtlMinutes?: boolean
+    gracePeriodHours?: boolean
+    lastCheckedAt?: boolean
+    lastCheckedIp?: boolean
+    checkCount?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type LicenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "name" | "key" | "status" | "allowedDomain" | "suspensionNotice" | "leaseTtlMinutes" | "gracePeriodHours" | "lastCheckedAt" | "lastCheckedIp" | "checkCount" | "createdAt" | "updatedAt", ExtArgs["result"]["license"]>
+  export type LicenseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }
+  export type LicenseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }
+  export type LicenseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    customer?: boolean | License$customerArgs<ExtArgs>
+  }
+
+  export type $LicensePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "License"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      customer: Prisma.$CustomerPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      customerId: string | null
+      name: string
+      key: string
+      status: string
+      allowedDomain: string | null
+      suspensionNotice: string | null
+      leaseTtlMinutes: number
+      gracePeriodHours: number
+      lastCheckedAt: Date | null
+      lastCheckedIp: string | null
+      checkCount: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["license"]>
+    composites: {}
+  }
+
+  type LicenseGetPayload<S extends boolean | null | undefined | LicenseDefaultArgs> = $Result.GetResult<Prisma.$LicensePayload, S>
+
+  type LicenseCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<LicenseFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: LicenseCountAggregateInputType | true
+    }
+
+  export interface LicenseDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['License'], meta: { name: 'License' } }
+    /**
+     * Find zero or one License that matches the filter.
+     * @param {LicenseFindUniqueArgs} args - Arguments to find a License
+     * @example
+     * // Get one License
+     * const license = await prisma.license.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends LicenseFindUniqueArgs>(args: SelectSubset<T, LicenseFindUniqueArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one License that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {LicenseFindUniqueOrThrowArgs} args - Arguments to find a License
+     * @example
+     * // Get one License
+     * const license = await prisma.license.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends LicenseFindUniqueOrThrowArgs>(args: SelectSubset<T, LicenseFindUniqueOrThrowArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first License that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseFindFirstArgs} args - Arguments to find a License
+     * @example
+     * // Get one License
+     * const license = await prisma.license.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends LicenseFindFirstArgs>(args?: SelectSubset<T, LicenseFindFirstArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first License that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseFindFirstOrThrowArgs} args - Arguments to find a License
+     * @example
+     * // Get one License
+     * const license = await prisma.license.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends LicenseFindFirstOrThrowArgs>(args?: SelectSubset<T, LicenseFindFirstOrThrowArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Licenses that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Licenses
+     * const licenses = await prisma.license.findMany()
+     * 
+     * // Get first 10 Licenses
+     * const licenses = await prisma.license.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const licenseWithIdOnly = await prisma.license.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends LicenseFindManyArgs>(args?: SelectSubset<T, LicenseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a License.
+     * @param {LicenseCreateArgs} args - Arguments to create a License.
+     * @example
+     * // Create one License
+     * const License = await prisma.license.create({
+     *   data: {
+     *     // ... data to create a License
+     *   }
+     * })
+     * 
+     */
+    create<T extends LicenseCreateArgs>(args: SelectSubset<T, LicenseCreateArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Licenses.
+     * @param {LicenseCreateManyArgs} args - Arguments to create many Licenses.
+     * @example
+     * // Create many Licenses
+     * const license = await prisma.license.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends LicenseCreateManyArgs>(args?: SelectSubset<T, LicenseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Licenses and returns the data saved in the database.
+     * @param {LicenseCreateManyAndReturnArgs} args - Arguments to create many Licenses.
+     * @example
+     * // Create many Licenses
+     * const license = await prisma.license.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Licenses and only return the `id`
+     * const licenseWithIdOnly = await prisma.license.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends LicenseCreateManyAndReturnArgs>(args?: SelectSubset<T, LicenseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a License.
+     * @param {LicenseDeleteArgs} args - Arguments to delete one License.
+     * @example
+     * // Delete one License
+     * const License = await prisma.license.delete({
+     *   where: {
+     *     // ... filter to delete one License
+     *   }
+     * })
+     * 
+     */
+    delete<T extends LicenseDeleteArgs>(args: SelectSubset<T, LicenseDeleteArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one License.
+     * @param {LicenseUpdateArgs} args - Arguments to update one License.
+     * @example
+     * // Update one License
+     * const license = await prisma.license.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends LicenseUpdateArgs>(args: SelectSubset<T, LicenseUpdateArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Licenses.
+     * @param {LicenseDeleteManyArgs} args - Arguments to filter Licenses to delete.
+     * @example
+     * // Delete a few Licenses
+     * const { count } = await prisma.license.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends LicenseDeleteManyArgs>(args?: SelectSubset<T, LicenseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Licenses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Licenses
+     * const license = await prisma.license.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends LicenseUpdateManyArgs>(args: SelectSubset<T, LicenseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Licenses and returns the data updated in the database.
+     * @param {LicenseUpdateManyAndReturnArgs} args - Arguments to update many Licenses.
+     * @example
+     * // Update many Licenses
+     * const license = await prisma.license.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Licenses and only return the `id`
+     * const licenseWithIdOnly = await prisma.license.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends LicenseUpdateManyAndReturnArgs>(args: SelectSubset<T, LicenseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one License.
+     * @param {LicenseUpsertArgs} args - Arguments to update or create a License.
+     * @example
+     * // Update or create a License
+     * const license = await prisma.license.upsert({
+     *   create: {
+     *     // ... data to create a License
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the License we want to update
+     *   }
+     * })
+     */
+    upsert<T extends LicenseUpsertArgs>(args: SelectSubset<T, LicenseUpsertArgs<ExtArgs>>): Prisma__LicenseClient<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Licenses.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseCountArgs} args - Arguments to filter Licenses to count.
+     * @example
+     * // Count the number of Licenses
+     * const count = await prisma.license.count({
+     *   where: {
+     *     // ... the filter for the Licenses we want to count
+     *   }
+     * })
+    **/
+    count<T extends LicenseCountArgs>(
+      args?: Subset<T, LicenseCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], LicenseCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a License.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends LicenseAggregateArgs>(args: Subset<T, LicenseAggregateArgs>): Prisma.PrismaPromise<GetLicenseAggregateType<T>>
+
+    /**
+     * Group by License.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {LicenseGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends LicenseGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: LicenseGroupByArgs['orderBy'] }
+        : { orderBy?: LicenseGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, LicenseGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetLicenseGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the License model
+   */
+  readonly fields: LicenseFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for License.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__LicenseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    customer<T extends License$customerArgs<ExtArgs> = {}>(args?: Subset<T, License$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the License model
+   */
+  interface LicenseFieldRefs {
+    readonly id: FieldRef<"License", 'String'>
+    readonly userId: FieldRef<"License", 'String'>
+    readonly customerId: FieldRef<"License", 'String'>
+    readonly name: FieldRef<"License", 'String'>
+    readonly key: FieldRef<"License", 'String'>
+    readonly status: FieldRef<"License", 'String'>
+    readonly allowedDomain: FieldRef<"License", 'String'>
+    readonly suspensionNotice: FieldRef<"License", 'String'>
+    readonly leaseTtlMinutes: FieldRef<"License", 'Int'>
+    readonly gracePeriodHours: FieldRef<"License", 'Int'>
+    readonly lastCheckedAt: FieldRef<"License", 'DateTime'>
+    readonly lastCheckedIp: FieldRef<"License", 'String'>
+    readonly checkCount: FieldRef<"License", 'Int'>
+    readonly createdAt: FieldRef<"License", 'DateTime'>
+    readonly updatedAt: FieldRef<"License", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * License findUnique
+   */
+  export type LicenseFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter, which License to fetch.
+     */
+    where: LicenseWhereUniqueInput
+  }
+
+  /**
+   * License findUniqueOrThrow
+   */
+  export type LicenseFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter, which License to fetch.
+     */
+    where: LicenseWhereUniqueInput
+  }
+
+  /**
+   * License findFirst
+   */
+  export type LicenseFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter, which License to fetch.
+     */
+    where?: LicenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Licenses to fetch.
+     */
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Licenses.
+     */
+    cursor?: LicenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Licenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Licenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Licenses.
+     */
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
+   * License findFirstOrThrow
+   */
+  export type LicenseFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter, which License to fetch.
+     */
+    where?: LicenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Licenses to fetch.
+     */
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Licenses.
+     */
+    cursor?: LicenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Licenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Licenses.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Licenses.
+     */
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
+   * License findMany
+   */
+  export type LicenseFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter, which Licenses to fetch.
+     */
+    where?: LicenseWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Licenses to fetch.
+     */
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Licenses.
+     */
+    cursor?: LicenseWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Licenses from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Licenses.
+     */
+    skip?: number
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
+   * License create
+   */
+  export type LicenseCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * The data needed to create a License.
+     */
+    data: XOR<LicenseCreateInput, LicenseUncheckedCreateInput>
+  }
+
+  /**
+   * License createMany
+   */
+  export type LicenseCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Licenses.
+     */
+    data: LicenseCreateManyInput | LicenseCreateManyInput[]
+  }
+
+  /**
+   * License createManyAndReturn
+   */
+  export type LicenseCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * The data used to create many Licenses.
+     */
+    data: LicenseCreateManyInput | LicenseCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * License update
+   */
+  export type LicenseUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * The data needed to update a License.
+     */
+    data: XOR<LicenseUpdateInput, LicenseUncheckedUpdateInput>
+    /**
+     * Choose, which License to update.
+     */
+    where: LicenseWhereUniqueInput
+  }
+
+  /**
+   * License updateMany
+   */
+  export type LicenseUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Licenses.
+     */
+    data: XOR<LicenseUpdateManyMutationInput, LicenseUncheckedUpdateManyInput>
+    /**
+     * Filter which Licenses to update
+     */
+    where?: LicenseWhereInput
+    /**
+     * Limit how many Licenses to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * License updateManyAndReturn
+   */
+  export type LicenseUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * The data used to update Licenses.
+     */
+    data: XOR<LicenseUpdateManyMutationInput, LicenseUncheckedUpdateManyInput>
+    /**
+     * Filter which Licenses to update
+     */
+    where?: LicenseWhereInput
+    /**
+     * Limit how many Licenses to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * License upsert
+   */
+  export type LicenseUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * The filter to search for the License to update in case it exists.
+     */
+    where: LicenseWhereUniqueInput
+    /**
+     * In case the License found by the `where` argument doesn't exist, create a new License with this data.
+     */
+    create: XOR<LicenseCreateInput, LicenseUncheckedCreateInput>
+    /**
+     * In case the License was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<LicenseUpdateInput, LicenseUncheckedUpdateInput>
+  }
+
+  /**
+   * License delete
+   */
+  export type LicenseDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    /**
+     * Filter which License to delete.
+     */
+    where: LicenseWhereUniqueInput
+  }
+
+  /**
+   * License deleteMany
+   */
+  export type LicenseDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Licenses to delete
+     */
+    where?: LicenseWhereInput
+    /**
+     * Limit how many Licenses to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * License.customer
+   */
+  export type License$customerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Customer
+     */
+    select?: CustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Customer
+     */
+    omit?: CustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInclude<ExtArgs> | null
+    where?: CustomerWhereInput
+  }
+
+  /**
+   * License without action
+   */
+  export type LicenseDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12421,6 +13919,9 @@ export namespace Prisma {
     zipCode: 'zipCode',
     country: 'country',
     taxId: 'taxId',
+    bankName: 'bankName',
+    bankAccountName: 'bankAccountName',
+    bankAccountNumber: 'bankAccountNumber',
     logoUrl: 'logoUrl',
     signatureData: 'signatureData',
     currency: 'currency',
@@ -12485,6 +13986,9 @@ export namespace Prisma {
     totalAmount: 'totalAmount',
     notes: 'notes',
     paymentTerms: 'paymentTerms',
+    bankName: 'bankName',
+    bankAccountName: 'bankAccountName',
+    bankAccountNumber: 'bankAccountNumber',
     templateId: 'templateId',
     themeColor: 'themeColor',
     logoUrl: 'logoUrl',
@@ -12516,6 +14020,27 @@ export namespace Prisma {
   };
 
   export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+  export const LicenseScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    customerId: 'customerId',
+    name: 'name',
+    key: 'key',
+    status: 'status',
+    allowedDomain: 'allowedDomain',
+    suspensionNotice: 'suspensionNotice',
+    leaseTtlMinutes: 'leaseTtlMinutes',
+    gracePeriodHours: 'gracePeriodHours',
+    lastCheckedAt: 'lastCheckedAt',
+    lastCheckedIp: 'lastCheckedIp',
+    checkCount: 'checkCount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type LicenseScalarFieldEnum = (typeof LicenseScalarFieldEnum)[keyof typeof LicenseScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12790,6 +14315,7 @@ export namespace Prisma {
     companyProfile?: XOR<CompanyProfileNullableScalarRelationFilter, CompanyProfileWhereInput> | null
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
+    licenses?: LicenseListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -12804,6 +14330,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileOrderByWithRelationInput
     customers?: CustomerOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    licenses?: LicenseOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -12821,6 +14348,7 @@ export namespace Prisma {
     companyProfile?: XOR<CompanyProfileNullableScalarRelationFilter, CompanyProfileWhereInput> | null
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
+    licenses?: LicenseListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -12859,6 +14387,9 @@ export namespace Prisma {
     zipCode?: StringFilter<"CompanyProfile"> | string
     country?: StringFilter<"CompanyProfile"> | string
     taxId?: StringFilter<"CompanyProfile"> | string
+    bankName?: StringFilter<"CompanyProfile"> | string
+    bankAccountName?: StringFilter<"CompanyProfile"> | string
+    bankAccountNumber?: StringFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
     signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
     currency?: StringFilter<"CompanyProfile"> | string
@@ -12880,6 +14411,9 @@ export namespace Prisma {
     zipCode?: SortOrder
     country?: SortOrder
     taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
     signatureData?: SortOrderInput | SortOrder
     currency?: SortOrder
@@ -12904,6 +14438,9 @@ export namespace Prisma {
     zipCode?: StringFilter<"CompanyProfile"> | string
     country?: StringFilter<"CompanyProfile"> | string
     taxId?: StringFilter<"CompanyProfile"> | string
+    bankName?: StringFilter<"CompanyProfile"> | string
+    bankAccountName?: StringFilter<"CompanyProfile"> | string
+    bankAccountNumber?: StringFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
     signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
     currency?: StringFilter<"CompanyProfile"> | string
@@ -12925,6 +14462,9 @@ export namespace Prisma {
     zipCode?: SortOrder
     country?: SortOrder
     taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
     signatureData?: SortOrderInput | SortOrder
     currency?: SortOrder
@@ -12951,6 +14491,9 @@ export namespace Prisma {
     zipCode?: StringWithAggregatesFilter<"CompanyProfile"> | string
     country?: StringWithAggregatesFilter<"CompanyProfile"> | string
     taxId?: StringWithAggregatesFilter<"CompanyProfile"> | string
+    bankName?: StringWithAggregatesFilter<"CompanyProfile"> | string
+    bankAccountName?: StringWithAggregatesFilter<"CompanyProfile"> | string
+    bankAccountNumber?: StringWithAggregatesFilter<"CompanyProfile"> | string
     logoUrl?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
     signatureData?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
     currency?: StringWithAggregatesFilter<"CompanyProfile"> | string
@@ -12978,6 +14521,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     invoices?: InvoiceListRelationFilter
+    licenses?: LicenseListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
@@ -12995,6 +14539,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     invoices?: InvoiceOrderByRelationAggregateInput
+    licenses?: LicenseOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
@@ -13015,6 +14560,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     invoices?: InvoiceListRelationFilter
+    licenses?: LicenseListRelationFilter
   }, "id">
 
   export type CustomerOrderByWithAggregationInput = {
@@ -13090,6 +14636,9 @@ export namespace Prisma {
     totalAmount?: FloatFilter<"Invoice"> | number
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
+    bankName?: StringFilter<"Invoice"> | string
+    bankAccountName?: StringFilter<"Invoice"> | string
+    bankAccountNumber?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
     themeColor?: StringFilter<"Invoice"> | string
     logoUrl?: StringNullableFilter<"Invoice"> | string | null
@@ -13135,6 +14684,9 @@ export namespace Prisma {
     totalAmount?: SortOrder
     notes?: SortOrder
     paymentTerms?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     templateId?: SortOrder
     themeColor?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
@@ -13183,6 +14735,9 @@ export namespace Prisma {
     totalAmount?: FloatFilter<"Invoice"> | number
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
+    bankName?: StringFilter<"Invoice"> | string
+    bankAccountName?: StringFilter<"Invoice"> | string
+    bankAccountNumber?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
     themeColor?: StringFilter<"Invoice"> | string
     logoUrl?: StringNullableFilter<"Invoice"> | string | null
@@ -13228,6 +14783,9 @@ export namespace Prisma {
     totalAmount?: SortOrder
     notes?: SortOrder
     paymentTerms?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     templateId?: SortOrder
     themeColor?: SortOrder
     logoUrl?: SortOrderInput | SortOrder
@@ -13278,6 +14836,9 @@ export namespace Prisma {
     totalAmount?: FloatWithAggregatesFilter<"Invoice"> | number
     notes?: StringWithAggregatesFilter<"Invoice"> | string
     paymentTerms?: StringWithAggregatesFilter<"Invoice"> | string
+    bankName?: StringWithAggregatesFilter<"Invoice"> | string
+    bankAccountName?: StringWithAggregatesFilter<"Invoice"> | string
+    bankAccountNumber?: StringWithAggregatesFilter<"Invoice"> | string
     templateId?: StringWithAggregatesFilter<"Invoice"> | string
     themeColor?: StringWithAggregatesFilter<"Invoice"> | string
     logoUrl?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
@@ -13394,6 +14955,116 @@ export namespace Prisma {
     identifier?: StringWithAggregatesFilter<"VerificationToken"> | string
     token?: StringWithAggregatesFilter<"VerificationToken"> | string
     expires?: DateTimeWithAggregatesFilter<"VerificationToken"> | Date | string
+  }
+
+  export type LicenseWhereInput = {
+    AND?: LicenseWhereInput | LicenseWhereInput[]
+    OR?: LicenseWhereInput[]
+    NOT?: LicenseWhereInput | LicenseWhereInput[]
+    id?: StringFilter<"License"> | string
+    userId?: StringFilter<"License"> | string
+    customerId?: StringNullableFilter<"License"> | string | null
+    name?: StringFilter<"License"> | string
+    key?: StringFilter<"License"> | string
+    status?: StringFilter<"License"> | string
+    allowedDomain?: StringNullableFilter<"License"> | string | null
+    suspensionNotice?: StringNullableFilter<"License"> | string | null
+    leaseTtlMinutes?: IntFilter<"License"> | number
+    gracePeriodHours?: IntFilter<"License"> | number
+    lastCheckedAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    lastCheckedIp?: StringNullableFilter<"License"> | string | null
+    checkCount?: IntFilter<"License"> | number
+    createdAt?: DateTimeFilter<"License"> | Date | string
+    updatedAt?: DateTimeFilter<"License"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
+  }
+
+  export type LicenseOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    customerId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    status?: SortOrder
+    allowedDomain?: SortOrderInput | SortOrder
+    suspensionNotice?: SortOrderInput | SortOrder
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    lastCheckedAt?: SortOrderInput | SortOrder
+    lastCheckedIp?: SortOrderInput | SortOrder
+    checkCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    customer?: CustomerOrderByWithRelationInput
+  }
+
+  export type LicenseWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    key?: string
+    AND?: LicenseWhereInput | LicenseWhereInput[]
+    OR?: LicenseWhereInput[]
+    NOT?: LicenseWhereInput | LicenseWhereInput[]
+    userId?: StringFilter<"License"> | string
+    customerId?: StringNullableFilter<"License"> | string | null
+    name?: StringFilter<"License"> | string
+    status?: StringFilter<"License"> | string
+    allowedDomain?: StringNullableFilter<"License"> | string | null
+    suspensionNotice?: StringNullableFilter<"License"> | string | null
+    leaseTtlMinutes?: IntFilter<"License"> | number
+    gracePeriodHours?: IntFilter<"License"> | number
+    lastCheckedAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    lastCheckedIp?: StringNullableFilter<"License"> | string | null
+    checkCount?: IntFilter<"License"> | number
+    createdAt?: DateTimeFilter<"License"> | Date | string
+    updatedAt?: DateTimeFilter<"License"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
+  }, "id" | "key">
+
+  export type LicenseOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    customerId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    status?: SortOrder
+    allowedDomain?: SortOrderInput | SortOrder
+    suspensionNotice?: SortOrderInput | SortOrder
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    lastCheckedAt?: SortOrderInput | SortOrder
+    lastCheckedIp?: SortOrderInput | SortOrder
+    checkCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: LicenseCountOrderByAggregateInput
+    _avg?: LicenseAvgOrderByAggregateInput
+    _max?: LicenseMaxOrderByAggregateInput
+    _min?: LicenseMinOrderByAggregateInput
+    _sum?: LicenseSumOrderByAggregateInput
+  }
+
+  export type LicenseScalarWhereWithAggregatesInput = {
+    AND?: LicenseScalarWhereWithAggregatesInput | LicenseScalarWhereWithAggregatesInput[]
+    OR?: LicenseScalarWhereWithAggregatesInput[]
+    NOT?: LicenseScalarWhereWithAggregatesInput | LicenseScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"License"> | string
+    userId?: StringWithAggregatesFilter<"License"> | string
+    customerId?: StringNullableWithAggregatesFilter<"License"> | string | null
+    name?: StringWithAggregatesFilter<"License"> | string
+    key?: StringWithAggregatesFilter<"License"> | string
+    status?: StringWithAggregatesFilter<"License"> | string
+    allowedDomain?: StringNullableWithAggregatesFilter<"License"> | string | null
+    suspensionNotice?: StringNullableWithAggregatesFilter<"License"> | string | null
+    leaseTtlMinutes?: IntWithAggregatesFilter<"License"> | number
+    gracePeriodHours?: IntWithAggregatesFilter<"License"> | number
+    lastCheckedAt?: DateTimeNullableWithAggregatesFilter<"License"> | Date | string | null
+    lastCheckedIp?: StringNullableWithAggregatesFilter<"License"> | string | null
+    checkCount?: IntWithAggregatesFilter<"License"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"License"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"License"> | Date | string
   }
 
   export type PostCreateInput = {
@@ -13619,6 +15290,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -13633,6 +15305,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -13647,6 +15320,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -13661,6 +15335,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -13697,6 +15372,9 @@ export namespace Prisma {
     zipCode?: string
     country?: string
     taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     logoUrl?: string | null
     signatureData?: string | null
     currency?: string
@@ -13718,6 +15396,9 @@ export namespace Prisma {
     zipCode?: string
     country?: string
     taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     logoUrl?: string | null
     signatureData?: string | null
     currency?: string
@@ -13737,6 +15418,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -13758,6 +15442,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -13778,6 +15465,9 @@ export namespace Prisma {
     zipCode?: string
     country?: string
     taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     logoUrl?: string | null
     signatureData?: string | null
     currency?: string
@@ -13797,6 +15487,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -13817,6 +15510,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -13840,6 +15536,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCustomersInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
@@ -13856,6 +15553,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
@@ -13872,6 +15570,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
@@ -13888,6 +15587,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
@@ -13966,6 +15666,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -14011,6 +15714,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -14052,6 +15758,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14097,6 +15806,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14140,6 +15852,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -14180,6 +15895,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14222,6 +15940,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14339,6 +16060,130 @@ export namespace Prisma {
     identifier?: StringFieldUpdateOperationsInput | string
     token?: StringFieldUpdateOperationsInput | string
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseCreateInput = {
+    id?: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutLicensesInput
+    customer?: CustomerCreateNestedOneWithoutLicensesInput
+  }
+
+  export type LicenseUncheckedCreateInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutLicensesNestedInput
+    customer?: CustomerUpdateOneWithoutLicensesNestedInput
+  }
+
+  export type LicenseUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseCreateManyInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -14654,6 +16499,12 @@ export namespace Prisma {
     none?: InvoiceWhereInput
   }
 
+  export type LicenseListRelationFilter = {
+    every?: LicenseWhereInput
+    some?: LicenseWhereInput
+    none?: LicenseWhereInput
+  }
+
   export type AccountOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -14671,6 +16522,10 @@ export namespace Prisma {
   }
 
   export type InvoiceOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type LicenseOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -14723,6 +16578,9 @@ export namespace Prisma {
     zipCode?: SortOrder
     country?: SortOrder
     taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     logoUrl?: SortOrder
     signatureData?: SortOrder
     currency?: SortOrder
@@ -14743,6 +16601,9 @@ export namespace Prisma {
     zipCode?: SortOrder
     country?: SortOrder
     taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     logoUrl?: SortOrder
     signatureData?: SortOrder
     currency?: SortOrder
@@ -14763,6 +16624,9 @@ export namespace Prisma {
     zipCode?: SortOrder
     country?: SortOrder
     taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     logoUrl?: SortOrder
     signatureData?: SortOrder
     currency?: SortOrder
@@ -14877,6 +16741,9 @@ export namespace Prisma {
     totalAmount?: SortOrder
     notes?: SortOrder
     paymentTerms?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     templateId?: SortOrder
     themeColor?: SortOrder
     logoUrl?: SortOrder
@@ -14929,6 +16796,9 @@ export namespace Prisma {
     totalAmount?: SortOrder
     notes?: SortOrder
     paymentTerms?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     templateId?: SortOrder
     themeColor?: SortOrder
     logoUrl?: SortOrder
@@ -14971,6 +16841,9 @@ export namespace Prisma {
     totalAmount?: SortOrder
     notes?: SortOrder
     paymentTerms?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
     templateId?: SortOrder
     themeColor?: SortOrder
     logoUrl?: SortOrder
@@ -15075,6 +16948,72 @@ export namespace Prisma {
     identifier?: SortOrder
     token?: SortOrder
     expires?: SortOrder
+  }
+
+  export type LicenseCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    customerId?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    status?: SortOrder
+    allowedDomain?: SortOrder
+    suspensionNotice?: SortOrder
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    lastCheckedAt?: SortOrder
+    lastCheckedIp?: SortOrder
+    checkCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LicenseAvgOrderByAggregateInput = {
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    checkCount?: SortOrder
+  }
+
+  export type LicenseMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    customerId?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    status?: SortOrder
+    allowedDomain?: SortOrder
+    suspensionNotice?: SortOrder
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    lastCheckedAt?: SortOrder
+    lastCheckedIp?: SortOrder
+    checkCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LicenseMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    customerId?: SortOrder
+    name?: SortOrder
+    key?: SortOrder
+    status?: SortOrder
+    allowedDomain?: SortOrder
+    suspensionNotice?: SortOrder
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    lastCheckedAt?: SortOrder
+    lastCheckedIp?: SortOrder
+    checkCount?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type LicenseSumOrderByAggregateInput = {
+    leaseTtlMinutes?: SortOrder
+    gracePeriodHours?: SortOrder
+    checkCount?: SortOrder
   }
 
   export type UserCreateNestedOneWithoutPostsInput = {
@@ -15188,6 +17127,13 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
+  export type LicenseCreateNestedManyWithoutUserInput = {
+    create?: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput> | LicenseCreateWithoutUserInput[] | LicenseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutUserInput | LicenseCreateOrConnectWithoutUserInput[]
+    createMany?: LicenseCreateManyUserInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -15227,6 +17173,13 @@ export namespace Prisma {
     connectOrCreate?: InvoiceCreateOrConnectWithoutUserInput | InvoiceCreateOrConnectWithoutUserInput[]
     createMany?: InvoiceCreateManyUserInputEnvelope
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type LicenseUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput> | LicenseCreateWithoutUserInput[] | LicenseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutUserInput | LicenseCreateOrConnectWithoutUserInput[]
+    createMany?: LicenseCreateManyUserInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -15313,6 +17266,20 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type LicenseUpdateManyWithoutUserNestedInput = {
+    create?: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput> | LicenseCreateWithoutUserInput[] | LicenseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutUserInput | LicenseCreateOrConnectWithoutUserInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutUserInput | LicenseUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: LicenseCreateManyUserInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutUserInput | LicenseUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutUserInput | LicenseUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -15393,6 +17360,20 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type LicenseUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput> | LicenseCreateWithoutUserInput[] | LicenseUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutUserInput | LicenseCreateOrConnectWithoutUserInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutUserInput | LicenseUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: LicenseCreateManyUserInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutUserInput | LicenseUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutUserInput | LicenseUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+  }
+
   export type UserCreateNestedOneWithoutCompanyProfileInput = {
     create?: XOR<UserCreateWithoutCompanyProfileInput, UserUncheckedCreateWithoutCompanyProfileInput>
     connectOrCreate?: UserCreateOrConnectWithoutCompanyProfileInput
@@ -15420,11 +17401,25 @@ export namespace Prisma {
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
   }
 
+  export type LicenseCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput> | LicenseCreateWithoutCustomerInput[] | LicenseUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCustomerInput | LicenseCreateOrConnectWithoutCustomerInput[]
+    createMany?: LicenseCreateManyCustomerInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+  }
+
   export type InvoiceUncheckedCreateNestedManyWithoutCustomerInput = {
     create?: XOR<InvoiceCreateWithoutCustomerInput, InvoiceUncheckedCreateWithoutCustomerInput> | InvoiceCreateWithoutCustomerInput[] | InvoiceUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutCustomerInput | InvoiceCreateOrConnectWithoutCustomerInput[]
     createMany?: InvoiceCreateManyCustomerInputEnvelope
     connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type LicenseUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput> | LicenseCreateWithoutCustomerInput[] | LicenseUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCustomerInput | LicenseCreateOrConnectWithoutCustomerInput[]
+    createMany?: LicenseCreateManyCustomerInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutCustomersNestedInput = {
@@ -15449,6 +17444,20 @@ export namespace Prisma {
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
   }
 
+  export type LicenseUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput> | LicenseCreateWithoutCustomerInput[] | LicenseUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCustomerInput | LicenseCreateOrConnectWithoutCustomerInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutCustomerInput | LicenseUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: LicenseCreateManyCustomerInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutCustomerInput | LicenseUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutCustomerInput | LicenseUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+  }
+
   export type InvoiceUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<InvoiceCreateWithoutCustomerInput, InvoiceUncheckedCreateWithoutCustomerInput> | InvoiceCreateWithoutCustomerInput[] | InvoiceUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutCustomerInput | InvoiceCreateOrConnectWithoutCustomerInput[]
@@ -15461,6 +17470,20 @@ export namespace Prisma {
     update?: InvoiceUpdateWithWhereUniqueWithoutCustomerInput | InvoiceUpdateWithWhereUniqueWithoutCustomerInput[]
     updateMany?: InvoiceUpdateManyWithWhereWithoutCustomerInput | InvoiceUpdateManyWithWhereWithoutCustomerInput[]
     deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type LicenseUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput> | LicenseCreateWithoutCustomerInput[] | LicenseUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCustomerInput | LicenseCreateOrConnectWithoutCustomerInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutCustomerInput | LicenseUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: LicenseCreateManyCustomerInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutCustomerInput | LicenseUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutCustomerInput | LicenseUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutInvoicesInput = {
@@ -15555,6 +17578,36 @@ export namespace Prisma {
     upsert?: InvoiceUpsertWithoutItemsInput
     connect?: InvoiceWhereUniqueInput
     update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutItemsInput, InvoiceUpdateWithoutItemsInput>, InvoiceUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type UserCreateNestedOneWithoutLicensesInput = {
+    create?: XOR<UserCreateWithoutLicensesInput, UserUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLicensesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type CustomerCreateNestedOneWithoutLicensesInput = {
+    create?: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutLicensesInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutLicensesNestedInput = {
+    create?: XOR<UserCreateWithoutLicensesInput, UserUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutLicensesInput
+    upsert?: UserUpsertWithoutLicensesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutLicensesInput, UserUpdateWithoutLicensesInput>, UserUncheckedUpdateWithoutLicensesInput>
+  }
+
+  export type CustomerUpdateOneWithoutLicensesNestedInput = {
+    create?: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutLicensesInput
+    upsert?: CustomerUpsertWithoutLicensesInput
+    disconnect?: CustomerWhereInput | boolean
+    delete?: CustomerWhereInput | boolean
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutLicensesInput, CustomerUpdateWithoutLicensesInput>, CustomerUncheckedUpdateWithoutLicensesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -15772,6 +17825,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -15785,6 +17839,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -15814,6 +17869,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -15827,6 +17883,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -15840,6 +17897,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -15853,6 +17911,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -15882,6 +17941,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -15895,6 +17955,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -15908,6 +17969,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -15921,6 +17983,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -15950,6 +18013,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -15963,6 +18027,7 @@ export namespace Prisma {
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -16057,6 +18122,9 @@ export namespace Prisma {
     zipCode?: string
     country?: string
     taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     logoUrl?: string | null
     signatureData?: string | null
     currency?: string
@@ -16076,6 +18144,9 @@ export namespace Prisma {
     zipCode?: string
     country?: string
     taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     logoUrl?: string | null
     signatureData?: string | null
     currency?: string
@@ -16103,6 +18174,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutUserInput = {
@@ -16118,6 +18190,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutUserInput = {
@@ -16161,6 +18234,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -16204,6 +18280,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -16220,6 +18299,49 @@ export namespace Prisma {
 
   export type InvoiceCreateManyUserInputEnvelope = {
     data: InvoiceCreateManyUserInput | InvoiceCreateManyUserInput[]
+  }
+
+  export type LicenseCreateWithoutUserInput = {
+    id?: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer?: CustomerCreateNestedOneWithoutLicensesInput
+  }
+
+  export type LicenseUncheckedCreateWithoutUserInput = {
+    id?: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateOrConnectWithoutUserInput = {
+    where: LicenseWhereUniqueInput
+    create: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput>
+  }
+
+  export type LicenseCreateManyUserInputEnvelope = {
+    data: LicenseCreateManyUserInput | LicenseCreateManyUserInput[]
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -16331,6 +18453,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -16350,6 +18475,9 @@ export namespace Prisma {
     zipCode?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
     taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     currency?: StringFieldUpdateOperationsInput | string
@@ -16446,12 +18574,52 @@ export namespace Prisma {
     totalAmount?: FloatFilter<"Invoice"> | number
     notes?: StringFilter<"Invoice"> | string
     paymentTerms?: StringFilter<"Invoice"> | string
+    bankName?: StringFilter<"Invoice"> | string
+    bankAccountName?: StringFilter<"Invoice"> | string
+    bankAccountNumber?: StringFilter<"Invoice"> | string
     templateId?: StringFilter<"Invoice"> | string
     themeColor?: StringFilter<"Invoice"> | string
     logoUrl?: StringNullableFilter<"Invoice"> | string | null
     signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+  }
+
+  export type LicenseUpsertWithWhereUniqueWithoutUserInput = {
+    where: LicenseWhereUniqueInput
+    update: XOR<LicenseUpdateWithoutUserInput, LicenseUncheckedUpdateWithoutUserInput>
+    create: XOR<LicenseCreateWithoutUserInput, LicenseUncheckedCreateWithoutUserInput>
+  }
+
+  export type LicenseUpdateWithWhereUniqueWithoutUserInput = {
+    where: LicenseWhereUniqueInput
+    data: XOR<LicenseUpdateWithoutUserInput, LicenseUncheckedUpdateWithoutUserInput>
+  }
+
+  export type LicenseUpdateManyWithWhereWithoutUserInput = {
+    where: LicenseScalarWhereInput
+    data: XOR<LicenseUpdateManyMutationInput, LicenseUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type LicenseScalarWhereInput = {
+    AND?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+    OR?: LicenseScalarWhereInput[]
+    NOT?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+    id?: StringFilter<"License"> | string
+    userId?: StringFilter<"License"> | string
+    customerId?: StringNullableFilter<"License"> | string | null
+    name?: StringFilter<"License"> | string
+    key?: StringFilter<"License"> | string
+    status?: StringFilter<"License"> | string
+    allowedDomain?: StringNullableFilter<"License"> | string | null
+    suspensionNotice?: StringNullableFilter<"License"> | string | null
+    leaseTtlMinutes?: IntFilter<"License"> | number
+    gracePeriodHours?: IntFilter<"License"> | number
+    lastCheckedAt?: DateTimeNullableFilter<"License"> | Date | string | null
+    lastCheckedIp?: StringNullableFilter<"License"> | string | null
+    checkCount?: IntFilter<"License"> | number
+    createdAt?: DateTimeFilter<"License"> | Date | string
+    updatedAt?: DateTimeFilter<"License"> | Date | string
   }
 
   export type UserCreateWithoutCompanyProfileInput = {
@@ -16465,6 +18633,7 @@ export namespace Prisma {
     posts?: PostCreateNestedManyWithoutCreatedByInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCompanyProfileInput = {
@@ -16478,6 +18647,7 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCompanyProfileInput = {
@@ -16507,6 +18677,7 @@ export namespace Prisma {
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyProfileInput = {
@@ -16520,6 +18691,7 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutCustomersInput = {
@@ -16533,6 +18705,7 @@ export namespace Prisma {
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutCustomersInput = {
@@ -16546,6 +18719,7 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutCustomersInput = {
@@ -16585,6 +18759,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -16628,6 +18805,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -16644,6 +18824,49 @@ export namespace Prisma {
 
   export type InvoiceCreateManyCustomerInputEnvelope = {
     data: InvoiceCreateManyCustomerInput | InvoiceCreateManyCustomerInput[]
+  }
+
+  export type LicenseCreateWithoutCustomerInput = {
+    id?: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutLicensesInput
+  }
+
+  export type LicenseUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    userId: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateOrConnectWithoutCustomerInput = {
+    where: LicenseWhereUniqueInput
+    create: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type LicenseCreateManyCustomerInputEnvelope = {
+    data: LicenseCreateManyCustomerInput | LicenseCreateManyCustomerInput[]
   }
 
   export type UserUpsertWithoutCustomersInput = {
@@ -16668,6 +18891,7 @@ export namespace Prisma {
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomersInput = {
@@ -16681,6 +18905,7 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -16699,6 +18924,22 @@ export namespace Prisma {
     data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutCustomerInput>
   }
 
+  export type LicenseUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: LicenseWhereUniqueInput
+    update: XOR<LicenseUpdateWithoutCustomerInput, LicenseUncheckedUpdateWithoutCustomerInput>
+    create: XOR<LicenseCreateWithoutCustomerInput, LicenseUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type LicenseUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: LicenseWhereUniqueInput
+    data: XOR<LicenseUpdateWithoutCustomerInput, LicenseUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type LicenseUpdateManyWithWhereWithoutCustomerInput = {
+    where: LicenseScalarWhereInput
+    data: XOR<LicenseUpdateManyMutationInput, LicenseUncheckedUpdateManyWithoutCustomerInput>
+  }
+
   export type UserCreateWithoutInvoicesInput = {
     id?: string
     name?: string | null
@@ -16710,6 +18951,7 @@ export namespace Prisma {
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutInvoicesInput = {
@@ -16723,6 +18965,7 @@ export namespace Prisma {
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutInvoicesInput = {
@@ -16743,6 +18986,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCustomersInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutInvoicesInput = {
@@ -16758,6 +19002,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutInvoicesInput = {
@@ -16814,6 +19059,7 @@ export namespace Prisma {
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoicesInput = {
@@ -16827,6 +19073,7 @@ export namespace Prisma {
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type CustomerUpsertWithoutInvoicesInput = {
@@ -16853,6 +19100,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutInvoicesInput = {
@@ -16868,6 +19116,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type InvoiceItemUpsertWithWhereUniqueWithoutInvoiceInput = {
@@ -16931,6 +19180,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -16975,6 +19227,9 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
@@ -17031,6 +19286,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17075,12 +19333,167 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserCreateWithoutLicensesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    customers?: CustomerCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutLicensesInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutLicensesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutLicensesInput, UserUncheckedCreateWithoutLicensesInput>
+  }
+
+  export type CustomerCreateWithoutLicensesInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCustomersInput
+    invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutLicensesInput = {
+    id?: string
+    userId: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutLicensesInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
+  }
+
+  export type UserUpsertWithoutLicensesInput = {
+    update: XOR<UserUpdateWithoutLicensesInput, UserUncheckedUpdateWithoutLicensesInput>
+    create: XOR<UserCreateWithoutLicensesInput, UserUncheckedCreateWithoutLicensesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutLicensesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutLicensesInput, UserUncheckedUpdateWithoutLicensesInput>
+  }
+
+  export type UserUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    customers?: CustomerUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type CustomerUpsertWithoutLicensesInput = {
+    update: XOR<CustomerUpdateWithoutLicensesInput, CustomerUncheckedUpdateWithoutLicensesInput>
+    create: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutLicensesInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutLicensesInput, CustomerUncheckedUpdateWithoutLicensesInput>
+  }
+
+  export type CustomerUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -17158,10 +19571,30 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
     signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateManyUserInput = {
+    id?: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17262,6 +19695,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutUserInput = {
@@ -17277,6 +19711,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateManyWithoutUserInput = {
@@ -17325,6 +19760,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17368,6 +19806,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17410,10 +19851,64 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneWithoutLicensesNestedInput
+  }
+
+  export type LicenseUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -17451,10 +19946,30 @@ export namespace Prisma {
     totalAmount?: number
     notes?: string
     paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
     templateId?: string
     themeColor?: string
     logoUrl?: string | null
     signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateManyCustomerInput = {
+    id?: string
+    userId: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -17491,6 +20006,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17534,6 +20052,9 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17576,10 +20097,64 @@ export namespace Prisma {
     totalAmount?: FloatFieldUpdateOperationsInput | number
     notes?: StringFieldUpdateOperationsInput | string
     paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
     templateId?: StringFieldUpdateOperationsInput | string
     themeColor?: StringFieldUpdateOperationsInput | string
     logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutLicensesNestedInput
+  }
+
+  export type LicenseUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

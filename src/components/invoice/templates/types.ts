@@ -157,6 +157,14 @@ export function adaptInvoiceToInvoify(invoice: InvoiceInput): InvoifyInvoiceType
             costType: "amount",
           }
         : undefined,
+      paymentInformation:
+        (invoice.bankName || invoice.bankAccountName || invoice.bankAccountNumber)
+          ? {
+              bankName: invoice.bankName || "",
+              accountName: invoice.bankAccountName || "",
+              accountNumber: invoice.bankAccountNumber || "",
+            }
+          : undefined,
       subTotal: totals.subTotal,
       totalAmount: totals.totalAmount,
       additionalNotes: invoice.notes || undefined,

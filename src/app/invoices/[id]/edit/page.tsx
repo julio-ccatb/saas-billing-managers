@@ -63,6 +63,9 @@ function InvoiceEditContent({ invoiceId }: { invoiceId: string }) {
         themeColor: (data as any).themeColor ?? "#4F46E5",
         logoUrl: (data as any).logoUrl ?? null,
         signatureData: (data as any).signatureData ?? null,
+        bankName: (data as any).bankName ?? "",
+        bankAccountName: (data as any).bankAccountName ?? "",
+        bankAccountNumber: (data as any).bankAccountNumber ?? "",
       });
     }
   }, [data]);

@@ -67,26 +67,30 @@ model User {
   companyProfile CompanyProfile?
   customers      Customer[]
   invoices       Invoice[]
+  licenses       License[]
 }
 
 model CompanyProfile {
-  id            String   @id @default(cuid())
-  userId        String   @unique
-  companyName   String   @default("")
-  email         String   @default("")
-  phone         String   @default("")
-  address       String   @default("")
-  city          String   @default("")
-  zipCode       String   @default("")
-  country       String   @default("")
-  taxId         String   @default("")
-  logoUrl       String?
-  signatureData String?
-  currency      String   @default("USD")
-  paymentTerms  String   @default("Payment due upon receipt")
-  notes         String   @default("Thank you for your business!")
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  companyName       String   @default("")
+  email             String   @default("")
+  phone             String   @default("")
+  address           String   @default("")
+  city              String   @default("")
+  zipCode           String   @default("")
+  country           String   @default("")
+  taxId             String   @default("")
+  bankName          String   @default("")
+  bankAccountName   String   @default("")
+  bankAccountNumber String   @default("")
+  logoUrl           String?
+  signatureData     String?
+  currency          String   @default("USD")
+  paymentTerms      String   @default("Payment due upon receipt")
+  notes             String   @default("Thank you for your business!")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -107,6 +111,7 @@ model Customer {
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   invoices Invoice[]
+  licenses License[]
 
   @@index([userId, name])
 }
@@ -150,14 +155,17 @@ model Invoice {
   shippingAmount Float @default(0)
   totalAmount    Float @default(0)
 
-  notes         String   @default("")
-  paymentTerms  String   @default("")
-  templateId    String   @default("classic")
-  themeColor    String   @default("#4F46E5")
-  logoUrl       String?
-  signatureData String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  notes             String   @default("")
+  paymentTerms      String   @default("")
+  bankName          String   @default("")
+  bankAccountName   String   @default("")
+  bankAccountNumber String   @default("")
+  templateId        String   @default("classic")
+  themeColor        String   @default("#4F46E5")
+  logoUrl           String?
+  signatureData     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   customer Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
@@ -187,4 +195,28 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model License {
+  id               String    @id @default(cuid())
+  userId           String
+  customerId       String?
+  name             String
+  key              String    @unique
+  status           String    @default("ACTIVE") // ACTIVE, SUSPENDED, REVOKED
+  allowedDomain    String?
+  suspensionNotice String?
+  leaseTtlMinutes  Int       @default(60)
+  gracePeriodHours Int       @default(3)
+  lastCheckedAt    DateTime?
+  lastCheckedIp    String?
+  checkCount       Int       @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([key])
 }
