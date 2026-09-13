@@ -82,10 +82,14 @@ function InvoiceCreateContent() {
       {/* Top Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Button asChild variant="outline" size="icon" className="h-9 w-9">
-            <Link href="/invoices">
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
+          <Button
+            render={<Link href="/invoices" />}
+            nativeButton={false}
+            variant="outline"
+            size="icon"
+            className="h-9 w-9"
+          >
+            <ArrowLeft className="w-4 h-4" />
           </Button>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">New Invoice</h1>

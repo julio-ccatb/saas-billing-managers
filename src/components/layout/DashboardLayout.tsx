@@ -90,14 +90,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Quick Action */}
         <div className="px-4 py-4">
-          <Button asChild className="w-full justify-center gap-2 shadow-xs font-semibold text-xs h-10">
-            <Link
-              href="/invoices/new"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>New Invoice</span>
-            </Link>
+          <Button
+            render={<Link href="/invoices/new" onClick={() => setSidebarOpen(false)} />}
+            nativeButton={false}
+            className="w-full justify-center gap-2 shadow-xs font-semibold text-xs h-10"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>New Invoice</span>
           </Button>
         </div>
 
@@ -161,10 +160,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
           ) : (
-            <Button asChild variant="outline" size="sm" className="w-full">
-              <Link href="/auth/signin">
-                Sign In
-              </Link>
+            <Button
+              render={<Link href="/auth/signin" />}
+              nativeButton={false}
+              variant="outline"
+              size="sm"
+              className="w-full"
+            >
+              Sign In
             </Button>
           )}
         </div>

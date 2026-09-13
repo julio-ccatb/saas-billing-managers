@@ -50,11 +50,13 @@ export default function DashboardPage() {
             <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Financial Overview</h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Track your invoices, revenue, and pending collections</p>
           </div>
-          <Button asChild className="self-start sm:self-auto gap-2">
-            <Link href="/invoices/new">
-              <Plus className="w-4 h-4" />
-              <span>Create Invoice</span>
-            </Link>
+          <Button
+            render={<Link href="/invoices/new" />}
+            nativeButton={false}
+            className="self-start sm:self-auto gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Invoice</span>
           </Button>
         </div>
 
@@ -132,11 +134,15 @@ export default function DashboardPage() {
               <CardTitle className="text-base sm:text-lg">Recent Invoices</CardTitle>
               <p className="text-xs text-muted-foreground mt-0.5">Latest billing activity and updates</p>
             </div>
-            <Button asChild variant="ghost" size="sm" className="text-xs gap-1 text-primary hover:text-primary">
-              <Link href="/invoices">
-                <span>View all</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+            <Button
+              render={<Link href="/invoices" />}
+              nativeButton={false}
+              variant="ghost"
+              size="sm"
+              className="text-xs gap-1 text-primary hover:text-primary"
+            >
+              <span>View all</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Button>
           </CardHeader>
 
@@ -166,10 +172,13 @@ export default function DashboardPage() {
                       <div className="max-w-sm mx-auto space-y-3">
                         <FileText className="w-10 h-10 text-muted-foreground/40 mx-auto" />
                         <p className="text-muted-foreground text-sm font-medium">No invoices created yet</p>
-                        <Button asChild variant="outline" size="sm">
-                          <Link href="/invoices/new">
-                            <Plus className="w-3.5 h-3.5 mr-1" /> Create your first invoice
-                          </Link>
+                        <Button
+                          render={<Link href="/invoices/new" />}
+                          nativeButton={false}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <Plus className="w-3.5 h-3.5 mr-1" /> Create your first invoice
                         </Button>
                       </div>
                     </td>
@@ -193,10 +202,14 @@ export default function DashboardPage() {
                         {getStatusBadge(inv.status)}
                       </td>
                       <td className="py-3.5 px-5 text-right">
-                        <Button asChild variant="ghost" size="sm" className="h-8 text-xs text-primary">
-                          <Link href={`/invoices/${inv.id}/edit`}>
-                            View / Edit
-                          </Link>
+                        <Button
+                          render={<Link href={`/invoices/${inv.id}/edit`} />}
+                          nativeButton={false}
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 text-xs text-primary"
+                        >
+                          View / Edit
                         </Button>
                       </td>
                     </tr>
@@ -216,10 +229,13 @@ export default function DashboardPage() {
               <div className="text-center py-10 px-4 space-y-3">
                 <FileText className="w-10 h-10 text-muted-foreground/40 mx-auto" />
                 <p className="text-muted-foreground text-sm">No invoices created yet</p>
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/invoices/new">
-                    <Plus className="w-3.5 h-3.5 mr-1" /> Create invoice
-                  </Link>
+                <Button
+                  render={<Link href="/invoices/new" />}
+                  nativeButton={false}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Create invoice
                 </Button>
               </div>
             ) : (

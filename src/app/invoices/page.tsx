@@ -93,11 +93,13 @@ export default function InvoicesPage() {
             <h1 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">Invoices</h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage, track, and issue billing statements</p>
           </div>
-          <Button asChild className="gap-2 self-start sm:self-auto">
-            <Link href="/invoices/new">
-              <Plus className="w-4 h-4" />
-              <span>Create Invoice</span>
-            </Link>
+          <Button
+            render={<Link href="/invoices/new" />}
+            nativeButton={false}
+            className="gap-2 self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Invoice</span>
           </Button>
         </div>
 
@@ -221,10 +223,15 @@ export default function InvoicesPage() {
                           >
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button asChild variant="ghost" size="icon" className="text-muted-foreground hover:text-primary hover:bg-primary/10" title="Edit Invoice">
-                            <Link href={`/invoices/${inv.id}/edit`}>
-                              <Eye className="w-4 h-4" />
-                            </Link>
+                          <Button
+                            render={<Link href={`/invoices/${inv.id}/edit`} />}
+                            nativeButton={false}
+                            variant="ghost"
+                            size="icon"
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/10"
+                            title="Edit Invoice"
+                          >
+                            <Eye className="w-4 h-4" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -275,10 +282,14 @@ export default function InvoicesPage() {
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
-                    <Button asChild variant="outline" size="sm" className="h-9 text-xs flex-1">
-                      <Link href={`/invoices/${inv.id}/edit`}>
-                        <Eye className="w-3.5 h-3.5 mr-1" /> View / Edit
-                      </Link>
+                    <Button
+                      render={<Link href={`/invoices/${inv.id}/edit`} />}
+                      nativeButton={false}
+                      variant="outline"
+                      size="sm"
+                      className="h-9 text-xs flex-1"
+                    >
+                      <Eye className="w-3.5 h-3.5 mr-1" /> View / Edit
                     </Button>
                     <Button
                       variant="outline"
