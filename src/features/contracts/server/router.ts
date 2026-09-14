@@ -319,9 +319,25 @@ export const contractRouter = createTRPCRouter({
         });
       }
 
-      const companyProfile = await ctx.db.companyProfile.findUnique({
+      const profile = await ctx.db.companyProfile.findUnique({
         where: { userId },
       });
+
+      const vendorAddressParts = [
+        profile?.address,
+        profile?.city,
+        profile?.zipCode,
+        profile?.country,
+      ].filter(Boolean);
+
+      const resolvedCompanyProfile = {
+        companyName: profile?.companyName || ctx.session.user.name || "Service Provider",
+        email: profile?.email || ctx.session.user.email || "billing@saas.com",
+        phone: profile?.phone || "",
+        address: vendorAddressParts.length > 0 ? vendorAddressParts.join(", ") : "",
+        taxId: profile?.taxId || "",
+        signatureData: profile?.signatureData || null,
+      };
 
       const { createDynamicDocuSealSubmission } = await import("./docusealService");
 
@@ -345,7 +361,7 @@ export const contractRouter = createTRPCRouter({
           address: contract.customer.address,
           taxId: contract.customer.taxId,
         },
-        companyProfile,
+        companyProfile: resolvedCompanyProfile,
       });
 
       await recordAuditLog(ctx.db, {
