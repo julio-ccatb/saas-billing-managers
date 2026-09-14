@@ -4,6 +4,10 @@ import { db } from "~/server/db";
 import { generatePdfFromInvoice } from "~/server/services/pdfService";
 import { invoiceSchema } from "~/lib/schemas/invoice";
 
+// Increase max duration to maximum allowable on Vercel Hobby/Free tier (15s)
+export const maxDuration = 15;
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user) {
