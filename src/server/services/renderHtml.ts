@@ -1,5 +1,5 @@
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server.edge";
+import { renderToReadableStream } from "react-dom/server.edge";
 import type { InvoiceInput } from "~/lib/schemas/invoice";
 import { adaptInvoiceToInvoify } from "~/components/invoice/templates/types";
 import { getTemplateByIdOrSlug } from "~/components/invoice/templates/registry";
@@ -11,9 +11,10 @@ export function getTemplateComponent(invoice: InvoiceInput): React.ReactElement 
   return React.createElement(entry.component, invoifyData);
 }
 
-export function renderInvoiceHtml(invoice: InvoiceInput): string {
+export async function renderInvoiceHtml(invoice: InvoiceInput): Promise<string> {
   const templateComponent = getTemplateComponent(invoice);
-  const innerHtml = renderToStaticMarkup(templateComponent);
+  const stream = await renderToReadableStream(templateComponent);
+  const innerHtml = await new Response(stream).text();
 
   return `
     <!DOCTYPE html>

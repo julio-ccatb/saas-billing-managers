@@ -106,7 +106,7 @@ export async function generatePdfFromInvoice(invoice: InvoiceInput): Promise<Buf
     await page.setViewport({ width: 794, height: 1123, deviceScaleFactor: 1 });
     await page.emulateMediaType("print");
 
-    const html = renderInvoiceHtml(invoice);
+    const html = await renderInvoiceHtml(invoice);
 
     await page.setContent(html, {
       waitUntil: "domcontentloaded",
