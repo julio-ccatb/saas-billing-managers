@@ -11,7 +11,11 @@ import {
   CheckCircle2, 
   Clock, 
   AlertTriangle,
-  ArrowRight
+  ArrowRight,
+  Send,
+  ExternalLink,
+  Copy,
+  Check
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
@@ -34,6 +38,14 @@ export default function ContractsPage() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [terminateContractId, setTerminateContractId] = useState<string | null>(null);
   const [terminateReason, setTerminateReason] = useState("");
+  const [selectedContractDetails, setSelectedContractDetails] = useState<any>(null);
+  const [signingModalData, setSigningModalData] = useState<{
+    signingUrl: string;
+    contractNumber: string;
+  } | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
+  const [customTemplateId, setCustomTemplateId] = useState("");
 
   const [form, setForm] = useState({
     customerId: "",
@@ -87,6 +99,63 @@ export default function ContractsPage() {
       alert(`Error terminating contract: ${err.message}`);
     },
   });
+
+  const sendForSignatureMutation = api.contract.sendForSignature.useMutation({
+    onSuccess: (data) => {
+      setDispatchModalContract(null);
+      setSigningModalData({
+        signingUrl: data.signingUrl,
+        contractNumber: data.contractNumber,
+      });
+      setCopiedLink(false);
+    },
+    onError: (err) => {
+      alert(`DocuSeal submission failed: ${err.message}`);
+    },
+  });
+
+  const renderContractStatus = (c: any) => {
+    if (c.status === "DRAFT") {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+          </span>
+          <span>Awaiting Signature</span>
+        </span>
+      );
+    }
+
+    if (c.status === "ACTIVE") {
+      return (
+        <div className="flex flex-col gap-0.5">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30">
+            <CheckCircle2 className="w-3 h-3" />
+            <span>Active &amp; Signed</span>
+          </span>
+          {c.signedAt && (
+            <span className="text-[10px] font-mono text-muted-foreground">
+              Signed: {formatDate(c.signedAt)}
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    if (c.status === "TERMINATED") {
+      return <Badge variant="destructive">Terminated</Badge>;
+    }
+
+    return <Badge variant="secondary">{c.status}</Badge>;
+  };
+
+  const handleOpenDetails = (contract: any) => {
+    if (typeof window !== "undefined" && typeof navigator !== "undefined" && navigator.vibrate) {
+      navigator.vibrate(15);
+    }
+    setSelectedContractDetails(contract);
+  };
 
   return (
     <div className="space-y-6 sm:space-y-8">
@@ -223,16 +292,17 @@ export default function ContractsPage() {
         </div>
       </Card>
 
-      {/* Contracts Table */}
+      {/* Contracts Presentation: Desktop Table & Mobile Card Stack */}
       <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
               <tr className="bg-muted/40 border-b border-border text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                 <th className="py-3 px-5">Contract #</th>
                 <th className="py-3 px-5">Title &amp; Client</th>
                 <th className="py-3 px-5">Cycle</th>
-                <th className="py-3 px-5">Status</th>
+                <th className="py-3 px-5">Signature &amp; Status</th>
                 <th className="py-3 px-5">Start Date</th>
                 <th className="py-3 px-5 text-right">Value</th>
                 <th className="py-3 px-5 text-right">Actions</th>
@@ -257,10 +327,20 @@ export default function ContractsPage() {
                 contracts.map((c) => (
                   <tr key={c.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3.5 px-5 font-mono text-xs font-semibold text-foreground">
-                      {c.contractNumber}
+                      <button
+                        onClick={() => handleOpenDetails(c)}
+                        className="hover:underline text-left cursor-pointer"
+                      >
+                        {c.contractNumber}
+                      </button>
                     </td>
                     <td className="py-3.5 px-5">
-                      <p className="font-medium text-foreground text-xs sm:text-sm">{c.title}</p>
+                      <button
+                        onClick={() => handleOpenDetails(c)}
+                        className="font-medium text-foreground text-xs sm:text-sm hover:underline text-left cursor-pointer"
+                      >
+                        {c.title}
+                      </button>
                       <Link
                         href={`/dashboard/customers/${c.customerId}`}
                         className="text-[11px] text-primary hover:underline flex items-center gap-1 mt-0.5"
@@ -273,17 +353,7 @@ export default function ContractsPage() {
                       {c.billingCycle}
                     </td>
                     <td className="py-3.5 px-5">
-                      <Badge
-                        variant={
-                          c.status === "ACTIVE"
-                            ? "success"
-                            : c.status === "TERMINATED"
-                            ? "destructive"
-                            : "secondary"
-                        }
-                      >
-                        {c.status}
-                      </Badge>
+                      {renderContractStatus(c)}
                     </td>
                     <td className="py-3.5 px-5 font-mono text-xs text-muted-foreground">
                       {formatDate(c.startDate)}
@@ -292,21 +362,43 @@ export default function ContractsPage() {
                       {formatCurrency(c.value, c.currency)}
                     </td>
                     <td className="py-3.5 px-5 text-right">
-                      {c.status === "ACTIVE" ? (
+                      <div className="flex items-center justify-end gap-1">
+                        {c.status === "DRAFT" && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setDispatchModalContract(c);
+                              setCustomTemplateId("");
+                            }}
+                            className="text-xs h-7 px-2.5 gap-1.5 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                          >
+                            <Send className="w-3 h-3" />
+                            <span>Send e-Sign</span>
+                          </Button>
+                        )}
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            setTerminateContractId(c.id);
-                            setTerminateReason("");
-                          }}
-                          className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleOpenDetails(c)}
+                          className="text-xs h-7 px-2 text-primary"
                         >
-                          Terminate
+                          View
                         </Button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground font-mono">Immutable</span>
-                      )}
+                        {c.status === "ACTIVE" && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setTerminateContractId(c.id);
+                              setTerminateReason("");
+                            }}
+                            className="text-xs h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          >
+                            Terminate
+                          </Button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -314,7 +406,264 @@ export default function ContractsPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Stacked Card View (< 768px) */}
+        <div className="md:hidden divide-y divide-border">
+          {loadingContracts ? (
+            <p className="text-center py-10 text-xs text-muted-foreground">Loading contracts...</p>
+          ) : !contracts || contracts.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground p-4 space-y-1">
+              <FileSignature className="w-8 h-8 mx-auto text-muted-foreground/50" />
+              <p className="text-xs font-semibold">No contracts found</p>
+            </div>
+          ) : (
+            contracts.map((c) => (
+              <div
+                key={c.id}
+                onClick={() => handleOpenDetails(c)}
+                className="p-4 space-y-2.5 active:bg-muted/40 transition-colors cursor-pointer"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="space-y-0.5 min-w-0">
+                    <p className="font-semibold text-sm text-foreground truncate">{c.title}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <span className="font-mono text-[11px] font-semibold">{c.contractNumber}</span>
+                      <span>•</span>
+                      <span className="truncate">{c.customer?.name}</span>
+                    </div>
+                  </div>
+                  {renderContractStatus(c)}
+                </div>
+
+                <div className="flex items-center justify-between text-xs font-mono pt-1">
+                  <span className="text-muted-foreground">
+                    {c.billingCycle} • Starts {formatDate(c.startDate)}
+                  </span>
+                  <span className="font-bold text-foreground text-sm">
+                    {formatCurrency(c.value, c.currency)}
+                  </span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </Card>
+
+      {/* CONTRACT DETAILS MODAL */}
+      <Dialog open={!!selectedContractDetails} onOpenChange={() => setSelectedContractDetails(null)}>
+        <DialogContent className="sm:max-w-lg border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileSignature className="w-5 h-5 text-primary" />
+              <span>Contract Execution Details</span>
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedContractDetails && (
+            <div className="space-y-4 py-2 text-xs">
+              <div className="flex items-center justify-between p-3.5 bg-muted/30 rounded-xl">
+                <div>
+                  <p className="font-mono text-muted-foreground text-[10px] uppercase tracking-wider">
+                    {selectedContractDetails.contractNumber}
+                  </p>
+                  <p className="text-base font-bold text-foreground mt-0.5">
+                    {selectedContractDetails.title}
+                  </p>
+                  <p className="text-xs text-primary font-medium mt-0.5">
+                    {selectedContractDetails.customer?.name}
+                  </p>
+                </div>
+                <div>{renderContractStatus(selectedContractDetails)}</div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 p-3 bg-muted/20 border border-border rounded-xl font-mono">
+                <div>
+                  <span className="text-muted-foreground text-[10px] uppercase">Value &amp; Interval</span>
+                  <p className="font-bold text-foreground text-sm mt-0.5">
+                    {formatCurrency(selectedContractDetails.value, selectedContractDetails.currency)}{" "}
+                    <span className="text-xs font-normal">/ {selectedContractDetails.billingCycle.toLowerCase()}</span>
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground text-[10px] uppercase">Effective Start</span>
+                  <p className="text-foreground mt-0.5">{formatDate(selectedContractDetails.startDate)}</p>
+                </div>
+                {selectedContractDetails.signedAt && (
+                  <div className="col-span-2 pt-1 border-t border-border">
+                    <span className="text-muted-foreground text-[10px] uppercase">E-Signed Timestamp</span>
+                    <p className="text-emerald-600 font-semibold mt-0.5">
+                      {formatDate(selectedContractDetails.signedAt)}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {selectedContractDetails.terms && (
+                <div>
+                  <p className="font-semibold text-foreground mb-1">Contract Commitments &amp; SLA Terms:</p>
+                  <p className="p-3 bg-card border border-border rounded-lg text-foreground leading-relaxed">
+                    {selectedContractDetails.terms}
+                  </p>
+                </div>
+              )}
+
+              <DialogFooter className="pt-2 gap-2 sm:justify-between">
+                <div>
+                  {selectedContractDetails.status === "DRAFT" && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const contractToDispatch = selectedContractDetails;
+                        setSelectedContractDetails(null);
+                        setDispatchModalContract(contractToDispatch);
+                        setCustomTemplateId("");
+                      }}
+                      className="gap-1.5 text-xs text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Send for e-Signature</span>
+                    </Button>
+                  )}
+                </div>
+                <Button variant="outline" size="sm" onClick={() => setSelectedContractDetails(null)}>
+                  Close
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* DISPATCH TO DOCUSEAL MODAL */}
+      <Dialog open={!!dispatchModalContract} onOpenChange={() => setDispatchModalContract(null)}>
+        <DialogContent className="sm:max-w-md border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Send className="w-5 h-5 text-primary" />
+              <span>Send Contract for e-Signature</span>
+            </DialogTitle>
+          </DialogHeader>
+
+          {dispatchModalContract && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendForSignatureMutation.mutate({
+                  contractId: dispatchModalContract.id,
+                  templateId: customTemplateId.trim() || undefined,
+                });
+              }}
+              className="space-y-4 py-2 text-xs"
+            >
+              <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
+                <div className="flex justify-between">
+                  <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
+                  <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
+                </div>
+                <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
+                <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{dispatchModalContract.customer?.name}</strong> ({dispatchModalContract.customer?.email || "No email"})</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  DocuSeal Template ID (Optional)
+                </label>
+                <Input
+                  placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
+                  value={customTemplateId}
+                  onChange={(e) => setCustomTemplateId(e.target.value)}
+                  className="font-mono text-xs"
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">
+                  Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
+                </p>
+              </div>
+
+              <DialogFooter className="gap-2 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setDispatchModalContract(null)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={sendForSignatureMutation.isPending}
+                  className="gap-1.5"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* SIGNING LINK SUCCESS MODAL */}
+      <Dialog open={!!signingModalData} onOpenChange={() => setSigningModalData(null)}>
+        <DialogContent className="sm:max-w-md border-border">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-emerald-600">
+              <CheckCircle2 className="w-5 h-5" />
+              <span>DocuSeal Contract Dispatched!</span>
+            </DialogTitle>
+          </DialogHeader>
+
+          {signingModalData && (
+            <div className="space-y-4 py-2 text-xs">
+              <p className="text-muted-foreground">
+                The dynamic agreement for contract <strong className="font-mono text-foreground">{signingModalData.contractNumber}</strong> has been generated and pushed to DocuSeal.
+              </p>
+
+              <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-2">
+                <span className="text-[10px] font-mono uppercase font-semibold text-muted-foreground">
+                  Client Direct Signing Link
+                </span>
+                <div className="flex items-center gap-2">
+                  <Input
+                    readOnly
+                    value={signingModalData.signingUrl}
+                    className="font-mono text-xs bg-background h-8"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-2.5 gap-1 shrink-0"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(signingModalData.signingUrl);
+                      setCopiedLink(true);
+                      setTimeout(() => setCopiedLink(false), 2000);
+                    }}
+                  >
+                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedLink ? "Copied" : "Copy"}</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2">
+                <a
+                  href={signingModalData.signingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-xs hover:bg-primary/90 transition-colors"
+                >
+                  <span>Open Client Signing View</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+                <p className="text-center text-[11px] text-muted-foreground">
+                  Open this link in a new tab to test signing the document as the client.
+                </p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* CREATE CONTRACT MODAL */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>

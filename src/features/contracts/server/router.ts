@@ -290,4 +290,85 @@ export const contractRouter = createTRPCRouter({
 
       return terminated;
     }),
+
+  sendForSignature: protectedProcedure
+    .input(
+      z.object({
+        contractId: z.string(),
+        templateId: z.union([z.string(), z.number()]).optional().nullable(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const contract = await ctx.db.contract.findUnique({
+        where: { id: input.contractId },
+        include: { customer: true },
+      });
+
+      if (!contract || contract.userId !== userId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Contract not found",
+        });
+      }
+
+      if (contract.status === "TERMINATED") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot send a terminated contract for signature.",
+        });
+      }
+
+      const companyProfile = await ctx.db.companyProfile.findUnique({
+        where: { userId },
+      });
+
+      const { createDynamicDocuSealSubmission } = await import("./docusealService");
+
+      const result = await createDynamicDocuSealSubmission({
+        templateId: input.templateId,
+        contract: {
+          id: contract.id,
+          contractNumber: contract.contractNumber,
+          title: contract.title,
+          value: contract.value,
+          currency: contract.currency,
+          billingCycle: contract.billingCycle,
+          startDate: contract.startDate,
+          endDate: contract.endDate,
+          terms: contract.terms,
+        },
+        customer: {
+          name: contract.customer.name,
+          email: contract.customer.email,
+          phone: contract.customer.phone,
+          address: contract.customer.address,
+          taxId: contract.customer.taxId,
+        },
+        companyProfile,
+      });
+
+      await recordAuditLog(ctx.db, {
+        userId,
+        operatorId: ctx.session.user.email ?? userId,
+        action: "CONTRACT_DISPATCHED_FOR_SIGNATURE",
+        entityType: "CONTRACT",
+        entityId: contract.id,
+        reason: `Dispatched e-signature request to DocuSeal (Submission #${result.submissionId})`,
+        metadata: {
+          submissionId: result.submissionId,
+          templateId: input.templateId ?? null,
+          slug: result.slug,
+          signingUrl: result.signingUrl,
+          customerEmail: contract.customer.email,
+        },
+      });
+
+      return {
+        success: true,
+        signingUrl: result.signingUrl,
+        submissionId: result.submissionId,
+        contractNumber: contract.contractNumber,
+      };
+    }),
 });

@@ -14,6 +14,10 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     DATABASE_URL: z.string().url(),
+    DOCUSEAL_WEBHOOK_SECRET: z.string().optional(),
+    DOCUSEAL_API_URL: z.string().optional(),
+    DOCUSEAL_API_KEY: z.string().optional(),
+    DOCUSEAL_TEMPLATE_ID: z.string().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -37,6 +41,10 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     DATABASE_URL: process.env.DATABASE_URL,
+    DOCUSEAL_WEBHOOK_SECRET: process.env.DOCUSEAL_WEBHOOK_SECRET,
+    DOCUSEAL_API_URL: process.env.DOCUSEAL_API_URL,
+    DOCUSEAL_API_KEY: process.env.DOCUSEAL_API_KEY,
+    DOCUSEAL_TEMPLATE_ID: process.env.DOCUSEAL_TEMPLATE_ID,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**
