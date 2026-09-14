@@ -26,18 +26,22 @@ async function getBrowser(): Promise<Browser> {
       const chromium = (await import("@sparticuz/chromium")).default;
       const puppeteer = (await import("puppeteer-core")).default;
 
-      // Disable graphics mode to save memory on serverless
-      chromium.setGraphicsMode = false;
-
-      // Allow specifying custom tarball pack or use default release pack to stay under 50MB Vercel limit
-      const remotePackUrl =
-        process.env.CHROMIUM_EXECUTABLE_PATH ||
-        "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar";
-
-      const executablePath = await chromium.executablePath(remotePackUrl);
+      let executablePath: string;
+      try {
+        if (process.env.CHROMIUM_EXECUTABLE_PATH) {
+          executablePath = await chromium.executablePath(process.env.CHROMIUM_EXECUTABLE_PATH);
+        } else {
+          executablePath = await chromium.executablePath();
+        }
+      } catch (err: any) {
+        console.warn("Local executablePath failed, attempting remote pack:", err?.message);
+        executablePath = await chromium.executablePath(
+          "https://github.com/Sparticuz/chromium/releases/download/v131.0.1/chromium-v131.0.1-pack.tar"
+        );
+      }
 
       return puppeteer.launch({
-        args: [...chromium.args, "--hide-scrollbars", "--disable-web-security", "--disable-dev-shm-usage"],
+        args: chromium.args,
         executablePath,
         headless: true,
       });
