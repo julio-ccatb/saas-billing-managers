@@ -40,11 +40,25 @@ async function getBrowser(): Promise<Browser> {
         );
       }
 
-      return puppeteer.launch({
-        args: chromium.args,
-        executablePath,
-        headless: true,
-      });
+      try {
+        return await puppeteer.launch({
+          args: [
+            ...chromium.args,
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--no-first-run",
+            "--no-zygote",
+            "--single-process",
+          ],
+          executablePath,
+          headless: true,
+        });
+      } catch (launchErr) {
+        browserPromise = null;
+        throw launchErr;
+      }
     }
 
     // Local / Self-hosted environment

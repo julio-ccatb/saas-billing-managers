@@ -55,7 +55,11 @@ export default function InvoicesPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: inv.id }),
       });
-      if (!res.ok) throw new Error("Failed to generate PDF");
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        const detailMsg = errorData?.message || errorData?.error || `HTTP error ${res.status}`;
+        throw new Error(detailMsg);
+      }
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");

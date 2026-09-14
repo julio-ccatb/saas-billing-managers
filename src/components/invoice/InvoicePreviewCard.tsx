@@ -33,7 +33,9 @@ export function InvoicePreviewCard() {
       });
 
       if (!res.ok) {
-        throw new Error("Server failed to generate PDF");
+        const errorData = await res.json().catch(() => null);
+        const detailMsg = errorData?.message || errorData?.error || `HTTP error ${res.status}`;
+        throw new Error(detailMsg);
       }
 
       const blob = await res.blob();
