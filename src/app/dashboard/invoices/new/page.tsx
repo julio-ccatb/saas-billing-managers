@@ -10,6 +10,7 @@ import { InvoicePreviewCard } from "~/components/invoice/InvoicePreviewCard";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { api } from "~/trpc/react";
+import { AppRoutes } from "~/config/routes";
 
 function InvoiceCreateContent() {
   const router = useRouter();
@@ -52,7 +53,7 @@ function InvoiceCreateContent() {
 
   const createInvoiceMutation = api.invoice.create.useMutation({
     onSuccess: () => {
-      router.push("/invoices");
+      router.push(AppRoutes.INVOICES);
     },
     onError: (err) => {
       alert(`Error saving invoice: ${err.message}`);
@@ -82,7 +83,7 @@ function InvoiceCreateContent() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
           <Button
-            render={<Link href="/invoices" />}
+            render={<Link href={AppRoutes.INVOICES} />}
             nativeButton={false}
             variant="outline"
             size="icon"

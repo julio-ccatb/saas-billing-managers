@@ -23,6 +23,7 @@ import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { AppRoutes } from "~/config/routes";
 import { Textarea } from "~/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -382,7 +383,7 @@ export default function ContractsPage() {
                         {c.title}
                       </button>
                       <Link
-                        href={`/dashboard/customers/${c.customerId}`}
+                        href={AppRoutes.CUSTOMER_DETAILS(c.customerId)}
                         className="text-[11px] text-primary hover:underline flex items-center gap-1 mt-0.5"
                       >
                         <Building2 className="w-3 h-3" />

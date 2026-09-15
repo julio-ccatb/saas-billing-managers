@@ -17,6 +17,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent } from "~/components/ui/card";
+import { AppRoutes } from "~/config/routes";
 
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<"ALL" | "DRAFT" | "PENDING" | "PAID" | "OVERDUE">("ALL");
@@ -96,7 +97,7 @@ export default function InvoicesPage() {
             <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Manage, track, and issue billing statements</p>
           </div>
           <Button
-            render={<Link href="/invoices/new" />}
+            render={<Link href={AppRoutes.INVOICE_NEW()} />}
             nativeButton={false}
             className="gap-2 self-start sm:self-auto"
           >
@@ -226,7 +227,7 @@ export default function InvoicesPage() {
                             <Download className="w-4 h-4" />
                           </Button>
                           <Button
-                            render={<Link href={`/invoices/${inv.id}/edit`} />}
+                            render={<Link href={AppRoutes.INVOICE_EDIT(inv.id)} />}
                             nativeButton={false}
                             variant="ghost"
                             size="icon"

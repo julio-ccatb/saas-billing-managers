@@ -30,6 +30,7 @@ import {
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
+import { AppRoutes } from "~/config/routes";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Input } from "~/components/ui/input";
@@ -209,7 +210,7 @@ export default function CustomerOperationsHubPage() {
     return (
       <div className="p-8 text-center space-y-3">
         <p className="text-foreground font-semibold">Client not found or access denied.</p>
-        <Button render={<Link href="/dashboard/customers" />} nativeButton={false} variant="outline" size="sm">
+        <Button render={<Link href={AppRoutes.CUSTOMERS} />} nativeButton={false} variant="outline" size="sm">
           Return to Clients
         </Button>
       </div>
@@ -234,7 +235,7 @@ export default function CustomerOperationsHubPage() {
       {/* Navigation Bar */}
       <div className="flex items-center justify-between">
         <Button
-          render={<Link href="/dashboard/customers" />}
+          render={<Link href={AppRoutes.CUSTOMERS} />}
           nativeButton={false}
           variant="ghost"
           size="sm"
@@ -255,7 +256,7 @@ export default function CustomerOperationsHubPage() {
             <span>New Contract</span>
           </Button>
           <Button
-            render={<Link href="/dashboard/invoices/new" />}
+            render={<Link href={AppRoutes.INVOICE_NEW(customer.id)} />}
             nativeButton={false}
             size="sm"
             className="gap-1.5"
@@ -512,7 +513,7 @@ export default function CustomerOperationsHubPage() {
             </p>
           </div>
           <Button
-            render={<Link href="/dashboard/licenses" />}
+            render={<Link href={AppRoutes.LICENSES} />}
             nativeButton={false}
             variant="outline"
             size="sm"
@@ -535,7 +536,7 @@ export default function CustomerOperationsHubPage() {
                 <th className="py-3 px-5 text-right">Switchboard</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y border-border">
               {!customer.licenses || customer.licenses.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="text-center py-8 text-xs text-muted-foreground">
@@ -619,7 +620,7 @@ export default function CustomerOperationsHubPage() {
             </p>
           </div>
           <Button
-            render={<Link href={`/dashboard/invoices/new?customerId=${customer.id}`} />}
+            render={<Link href={AppRoutes.INVOICE_NEW(customer.id)} />}
             nativeButton={false}
             size="sm"
             className="gap-1.5 text-xs"
@@ -652,7 +653,7 @@ export default function CustomerOperationsHubPage() {
                   <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
                     <td className="py-3.5 px-5">
                       <Link
-                        href={`/dashboard/invoices/${inv.id}`}
+                        href={AppRoutes.INVOICE_DETAILS(inv.id)}
                         className="font-mono text-xs font-semibold text-foreground hover:text-primary transition-colors"
                       >
                         {inv.invoiceNumber}

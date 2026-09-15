@@ -1,6 +1,7 @@
 import { AppSidebar } from "~/components/app-sidebar"
 import { CompanyProvider } from "~/components/company/CompanyContext"
 import { CreateCompanyModal } from "~/components/company/CreateCompanyModal"
+import { AppRoutes } from "~/config/routes"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -32,7 +33,7 @@ export default function DashboardAppLayout({ children }: { children: React.React
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="/dashboard">
+                    <BreadcrumbLink href={AppRoutes.DASHBOARD}>
                       Dashboard
                     </BreadcrumbLink>
                   </BreadcrumbItem>

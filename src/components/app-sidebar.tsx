@@ -26,6 +26,8 @@ import {
 } from "~/components/ui/sidebar"
 import { api } from "~/trpc/react"
 
+import { AppRoutes } from "~/config/routes"
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: profile } = api.profile.get.useQuery()
 
@@ -38,47 +40,47 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navMain = [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: AppRoutes.DASHBOARD,
       icon: <LayoutDashboardIcon />,
     },
     {
       title: "Invoices",
-      url: "/dashboard/invoices",
+      url: AppRoutes.INVOICES,
       icon: <ReceiptTextIcon />,
       items: [
         {
           title: "All Invoices",
-          url: "/dashboard/invoices",
+          url: AppRoutes.INVOICES,
         },
         {
           title: "New Invoice",
-          url: "/dashboard/invoices/new",
+          url: AppRoutes.INVOICE_NEW(),
         },
       ],
     },
     {
       title: "Customers",
-      url: "/dashboard/customers",
+      url: AppRoutes.CUSTOMERS,
       icon: <UsersIcon />,
     },
     {
       title: "Contracts",
-      url: "/dashboard/contracts",
+      url: AppRoutes.CONTRACTS,
       icon: <CreditCardIcon />,
     },
     {
       title: "Licenses & Services",
-      url: "/dashboard/licenses",
+      url: AppRoutes.LICENSES,
       icon: <KeyRoundIcon />,
     },
     {
       title: "Audit Ledger",
-      url: "/dashboard/audit",
+      url: AppRoutes.AUDIT,
       icon: <Building2Icon />,
     },
     {
       title: "Settings",
-      url: "/dashboard/settings",
+      url: AppRoutes.SETTINGS,
       icon: <Settings2Icon />,
     },
   ]
@@ -86,22 +88,22 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const quickActions = [
     {
       name: "Onboard Client",
-      url: "/dashboard/customers/new",
+      url: AppRoutes.CUSTOMER_NEW,
       icon: <UsersIcon />,
     },
     {
       name: "New Invoice",
-      url: "/dashboard/invoices/new",
+      url: AppRoutes.INVOICE_NEW(),
       icon: <FilePlusIcon />,
     },
     {
       name: "Manage Clients",
-      url: "/dashboard/customers",
+      url: AppRoutes.CUSTOMERS,
       icon: <Building2Icon />,
     },
     {
       name: "Company & Banking",
-      url: "/dashboard/settings",
+      url: AppRoutes.SETTINGS,
       icon: <CreditCardIcon />,
     },
   ]

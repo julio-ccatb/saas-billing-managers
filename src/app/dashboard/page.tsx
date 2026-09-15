@@ -23,6 +23,7 @@ import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
+import { AppRoutes } from "~/config/routes";
 import { Badge } from "~/components/ui/badge";
 
 export default function DashboardPage() {
@@ -94,7 +95,7 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <Button
-            render={<Link href="/dashboard/customers/new" />}
+            render={<Link href={AppRoutes.CUSTOMER_NEW} />}
             nativeButton={false}
             variant="outline"
             size="sm"
@@ -104,7 +105,7 @@ export default function DashboardPage() {
             <span>Onboard Client</span>
           </Button>
           <Button
-            render={<Link href="/dashboard/contracts" />}
+            render={<Link href={AppRoutes.CONTRACTS} />}
             nativeButton={false}
             variant="outline"
             size="sm"
@@ -114,7 +115,7 @@ export default function DashboardPage() {
             <span>New Contract</span>
           </Button>
           <Button
-            render={<Link href="/dashboard/invoices/new" />}
+            render={<Link href={AppRoutes.INVOICE_NEW()} />}
             nativeButton={false}
             size="sm"
             className="gap-1.5"
@@ -246,7 +247,7 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground mt-0.5">Latest transactions and status changes</p>
             </div>
             <Button
-              render={<Link href="/dashboard/invoices" />}
+              render={<Link href={AppRoutes.INVOICES} />}
               nativeButton={false}
               variant="ghost"
               size="sm"
@@ -286,7 +287,7 @@ export default function DashboardPage() {
                     <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-3.5 px-5">
                         <Link
-                          href={`/dashboard/invoices/${inv.id}`}
+                          href={AppRoutes.INVOICE_DETAILS(inv.id)}
                           className="font-mono font-medium text-foreground hover:text-primary transition-colors text-xs sm:text-sm"
                         >
                           {inv.invoiceNumber}
@@ -328,7 +329,7 @@ export default function DashboardPage() {
               </div>
             </div>
             <Button
-              render={<Link href="/dashboard/audit" />}
+              render={<Link href={AppRoutes.AUDIT} />}
               nativeButton={false}
               variant="ghost"
               size="sm"

@@ -26,6 +26,7 @@ import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import { AppRoutes } from "~/config/routes";
 
 type Step = "profile" | "contract" | "license" | "invoice" | "review";
 
@@ -76,7 +77,7 @@ export function OnboardingWizard() {
   const onboardMutation = api.customer.onboardClient.useMutation({
     onSuccess: (data) => {
       // Direct redirect to the new Client 360° Operations Hub
-      router.push(`/dashboard/customers/${data.customerId}`);
+      router.push(AppRoutes.CUSTOMER_DETAILS(data.customerId));
     },
     onError: (err) => {
       alert(`Onboarding error: ${err.message}`);
@@ -119,7 +120,7 @@ export function OnboardingWizard() {
         <div>
           <div className="flex items-center gap-2">
             <Link
-              href="/dashboard/customers"
+              href={AppRoutes.CUSTOMERS}
               className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               <ArrowLeft className="w-3 h-3" />
@@ -136,7 +137,7 @@ export function OnboardingWizard() {
           </p>
         </div>
         <Button
-          render={<Link href="/dashboard/customers" />}
+          render={<Link href={AppRoutes.CUSTOMERS} />}
           nativeButton={false}
           variant="outline"
           size="sm"
@@ -277,7 +278,7 @@ export function OnboardingWizard() {
 
             <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
               <Button
-                render={<Link href="/dashboard/customers" />}
+                render={<Link href={AppRoutes.CUSTOMERS} />}
                 nativeButton={false}
                 variant="ghost"
                 size="sm"

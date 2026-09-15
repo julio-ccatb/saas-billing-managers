@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/components/ui/dialog";
+import { AppRoutes } from "~/config/routes";
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -114,7 +115,7 @@ export default function CustomersPage() {
               <span>Quick Add</span>
             </Button>
             <Button
-              render={<Link href="/dashboard/customers/new" />}
+              render={<Link href={AppRoutes.CUSTOMER_NEW} />}
               nativeButton={false}
               size="sm"
               className="gap-1.5"
@@ -159,7 +160,7 @@ export default function CustomersPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <CardTitle className="text-base text-foreground font-semibold">
-                        <Link href={`/dashboard/customers/${c.id}`} className="hover:text-primary transition-colors">
+                        <Link href={AppRoutes.CUSTOMER_DETAILS(c.id)} className="hover:text-primary transition-colors">
                           {c.name}
                         </Link>
                       </CardTitle>

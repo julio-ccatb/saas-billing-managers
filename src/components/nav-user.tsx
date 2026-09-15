@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { signOut } from "next-auth/react"
+import { AppRoutes } from "~/config/routes"
 import {
   Avatar,
   AvatarFallback,
@@ -75,11 +76,11 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem render={<Link href="/dashboard/settings" />}>
+              <DropdownMenuItem render={<Link href={AppRoutes.SETTINGS} />}>
                 <BadgeCheckIcon />
                 <span>Account & Settings</span>
               </DropdownMenuItem>
-              <DropdownMenuItem render={<Link href="/dashboard/invoices" />}>
+              <DropdownMenuItem render={<Link href={AppRoutes.INVOICES} />}>
                 <CreditCardIcon />
                 <span>Invoices & Billing</span>
               </DropdownMenuItem>
@@ -87,7 +88,7 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => signOut({ callbackUrl: "/auth/signin" })}
+              onClick={() => signOut({ callbackUrl: AppRoutes.SIGN_IN })}
             >
               <LogOutIcon />
               <span>Log out</span>
