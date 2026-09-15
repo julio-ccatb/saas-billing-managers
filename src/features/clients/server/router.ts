@@ -5,6 +5,7 @@ import { customerSchema } from "~/lib/schemas/invoice";
 import { clientOnboardingSchema } from "../schemas/onboarding.schema";
 import { generateLicenseKey } from "~/features/licenses/server/keygen";
 import { recordAuditLog } from "~/features/audit/server/auditService";
+import bcrypt from "bcryptjs";
 
 export const customerRouter = createTRPCRouter({
   getAll: companyProcedure
@@ -31,6 +32,13 @@ export const customerRouter = createTRPCRouter({
         where,
         orderBy: { name: "asc" },
         include: {
+          clientUser: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
           _count: {
             select: {
               invoices: true,
@@ -48,6 +56,13 @@ export const customerRouter = createTRPCRouter({
       const customer = await ctx.db.customer.findUnique({
         where: { id: input.id },
         include: {
+          clientUser: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
           contracts: {
             orderBy: { createdAt: "desc" },
           },
@@ -56,6 +71,11 @@ export const customerRouter = createTRPCRouter({
           },
           invoices: {
             orderBy: { issueDate: "desc" },
+            include: {
+              receipts: {
+                orderBy: { createdAt: "desc" },
+              },
+            },
           },
         },
       });
@@ -290,4 +310,133 @@ export const customerRouter = createTRPCRouter({
         };
       });
     }),
+
+  /**
+   * Enable, disable, or update Client Portal login credentials for a customer.
+   */
+  setPortalAccess: companyProcedure
+    .input(
+      z.object({
+        customerId: z.string(),
+        email: z.string().email(),
+        password: z.string().min(6, "Password must be at least 6 characters").optional(),
+        portalEnabled: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const customer = await ctx.db.customer.findUnique({
+        where: { id: input.customerId },
+        include: { clientUser: true },
+      });
+
+      if (!customer || customer.companyId !== ctx.companyId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Customer not found or unauthorized.",
+        });
+      }
+
+      const email = input.email.trim().toLowerCase();
+
+      let clientUserId = customer.clientUserId;
+
+      if (input.portalEnabled) {
+        // If updating or creating password
+        let passwordHash: string | undefined;
+        if (input.password) {
+          passwordHash = await bcrypt.hash(input.password, 10);
+        }
+
+        if (customer.clientUser) {
+          // Update existing client user
+          const updatedUser = await ctx.db.user.update({
+            where: { id: customer.clientUser.id },
+            data: {
+              email,
+              ...(passwordHash ? { passwordHash } : {}),
+              userRole: "CLIENT",
+            },
+          });
+          clientUserId = updatedUser.id;
+        } else {
+          // Check if user with this email already exists
+          const existingUser = await ctx.db.user.findUnique({
+            where: { email },
+          });
+
+          if (existingUser) {
+            if (!passwordHash && !existingUser.passwordHash) {
+              throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: "Password is required to set up portal access for this client.",
+              });
+            }
+            const updatedUser = await ctx.db.user.update({
+              where: { id: existingUser.id },
+              data: {
+                userRole: "CLIENT",
+                ...(passwordHash ? { passwordHash } : {}),
+              },
+            });
+            clientUserId = updatedUser.id;
+          } else {
+            if (!passwordHash) {
+              throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: "Password is required to create new client credentials.",
+              });
+            }
+            const newUser = await ctx.db.user.create({
+              data: {
+                email,
+                name: customer.name,
+                passwordHash,
+                userRole: "CLIENT",
+                image: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(customer.name)}`,
+              },
+            });
+            clientUserId = newUser.id;
+          }
+        }
+      }
+
+      const updatedCustomer = await ctx.db.customer.update({
+        where: { id: customer.id },
+        data: {
+          clientUserId,
+          portalEnabled: input.portalEnabled,
+          email,
+        },
+        include: {
+          clientUser: {
+            select: {
+              id: true,
+              email: true,
+              name: true,
+            },
+          },
+        },
+      });
+
+      await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "BILLING_OVERRIDE",
+        entityType: "CUSTOMER",
+        entityId: customer.id,
+        reason: input.portalEnabled
+          ? `Client Portal access enabled for ${customer.name} (${email})`
+          : `Client Portal access revoked for ${customer.name}`,
+        metadata: {
+          customerId: customer.id,
+          customerName: customer.name,
+          portalEnabled: input.portalEnabled,
+          clientEmail: email,
+        },
+      });
+
+      return updatedCustomer;
+    }),
 });
+

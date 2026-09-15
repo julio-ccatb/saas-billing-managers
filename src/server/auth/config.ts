@@ -7,6 +7,8 @@ import { db } from "~/server/db";
 
 import { env } from "~/env";
 
+import bcrypt from "bcryptjs";
+
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
@@ -15,7 +17,14 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      role: string;
+      customerId?: string | null;
     } & DefaultSession["user"];
+  }
+
+  interface User {
+    role?: string;
+    customerId?: string | null;
   }
 }
 
@@ -35,30 +44,63 @@ export const authConfig = {
       clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
     CredentialsProvider({
-      name: "Demo Account",
+      name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "demo@invoify.com" },
-        name: { label: "Name", type: "text", placeholder: "Demo User" },
+        email: { label: "Email", type: "email", placeholder: "user@example.com" },
+        password: { label: "Password", type: "password" },
+        name: { label: "Name", type: "text", placeholder: "User" },
       },
       async authorize(credentials) {
-        const email = (credentials?.email as string)?.trim() || "demo@invoify.com";
-        const name = (credentials?.name as string)?.trim() || "Demo Founder";
+        const email = (credentials?.email as string)?.trim().toLowerCase();
+        const password = (credentials?.password as string)?.trim();
+        const name = (credentials?.name as string)?.trim() || "User";
 
-        // Upsert demo user so all records link to a real user in SQLite/Prisma
+        if (!email) {
+          return null;
+        }
+
+        // 1. Look for existing user
         let user = await db.user.findUnique({
           where: { email },
+          include: {
+            clientProfile: true,
+          },
         });
 
+        // 2. If password provided, verify hash
+        if (password) {
+          if (!user || !user.passwordHash) {
+            return null;
+          }
+          const isMatch = await bcrypt.compare(password, user.passwordHash);
+          if (!isMatch) {
+            return null;
+          }
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            image: user.image,
+            role: user.userRole,
+            customerId: user.clientProfile?.id ?? null,
+          };
+        }
+
+        // 3. Passwordless / Demo fallback for testing operator
         if (!user) {
           user = await db.user.create({
             data: {
               email,
               name,
+              userRole: "OPERATOR",
               image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
+            },
+            include: {
+              clientProfile: true,
             },
           });
 
-          // Pre-populate company workspace for the user
+          // Pre-populate company workspace for the operator user
           await db.company.create({
             data: {
               name: `${name}'s Workspace`,
@@ -81,6 +123,8 @@ export const authConfig = {
           name: user.name,
           email: user.email,
           image: user.image,
+          role: user.userRole,
+          customerId: user.clientProfile?.id ?? null,
         };
       },
     }),
@@ -90,6 +134,8 @@ export const authConfig = {
     jwt: async ({ token, user }) => {
       if (user) {
         token.id = user.id;
+        token.role = user.role ?? "OPERATOR";
+        token.customerId = user.customerId ?? null;
       }
       return token;
     },
@@ -98,6 +144,8 @@ export const authConfig = {
       user: {
         ...session.user,
         id: (token.id as string) ?? session.user.id,
+        role: (token.role as string) ?? "OPERATOR",
+        customerId: (token.customerId as string | null) ?? null,
       },
     }),
   },

@@ -3,6 +3,7 @@ import { customerRouter } from "~/features/clients/server/router";
 import { licenseRouter } from "~/features/licenses/server/router";
 import { contractRouter } from "~/features/contracts/server/router";
 import { auditRouter } from "~/features/audit/server/router";
+import { portalRouter } from "~/features/portal/server/router";
 import { profileRouter } from "~/server/api/routers/profile";
 import { companyRouter } from "~/server/api/routers/company";
 import { postRouter } from "~/server/api/routers/post";
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
   license: licenseRouter,
   contract: contractRouter,
   audit: auditRouter,
+  portal: portalRouter,
 });
 
 // export type definition of API

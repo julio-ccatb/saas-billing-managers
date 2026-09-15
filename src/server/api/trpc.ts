@@ -225,3 +225,42 @@ export const companyProcedure = protectedProcedure.use(async ({ ctx, next }) => 
     },
   });
 });
+
+/**
+ * Client procedure
+ *
+ * Guaranteed procedure for authenticated clients in the Client Portal.
+ * Verifies that the user has userRole === "CLIENT" and resolves their linked Customer profile.
+ */
+export const clientProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  const userId = ctx.session.user.id;
+
+  const customer = await ctx.db.customer.findFirst({
+    where: {
+      OR: [
+        { clientUserId: userId },
+        { email: ctx.session.user.email ?? "" },
+      ],
+    },
+    include: {
+      company: true,
+    },
+  });
+
+  if (!customer) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "No customer client account associated with this user session.",
+    });
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      customer,
+      customerId: customer.id,
+      company: customer.company,
+      companyId: customer.company.id,
+    },
+  });
+});

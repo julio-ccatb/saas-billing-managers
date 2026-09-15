@@ -9,7 +9,7 @@ export const invoiceRouter = createTRPCRouter({
   getAll: companyProcedure
     .input(
       z.object({
-        status: z.enum(["ALL", "DRAFT", "PENDING", "PAID", "OVERDUE"]).default("ALL"),
+        status: z.enum(["ALL", "DRAFT", "PENDING", "PAYMENT_PENDING_VERIFICATION", "PAID", "OVERDUE"]).default("ALL"),
         search: z.string().optional(),
         page: z.number().min(1).default(1),
         pageSize: z.number().min(1).max(100).default(20),
@@ -43,6 +43,9 @@ export const invoiceRouter = createTRPCRouter({
               orderBy: { orderIndex: "asc" },
             },
             customer: true,
+            receipts: {
+              orderBy: { createdAt: "desc" },
+            },
           },
         }),
       ]);
@@ -66,6 +69,9 @@ export const invoiceRouter = createTRPCRouter({
             orderBy: { orderIndex: "asc" },
           },
           customer: true,
+          receipts: {
+            orderBy: { createdAt: "desc" },
+          },
         },
       });
 
@@ -342,5 +348,83 @@ export const invoiceRouter = createTRPCRouter({
       });
 
       return deleted;
+    }),
+
+  /**
+   * Verify an uploaded client payment receipt (Approve or Reject)
+   */
+  verifyReceipt: companyProcedure
+    .input(
+      z.object({
+        receiptId: z.string(),
+        action: z.enum(["APPROVE", "REJECT"]),
+        reason: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const receipt = await ctx.db.paymentReceipt.findUnique({
+        where: { id: input.receiptId },
+        include: {
+          invoice: true,
+          customer: true,
+        },
+      });
+
+      if (!receipt || receipt.invoice.companyId !== ctx.companyId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Payment receipt not found or unauthorized.",
+        });
+      }
+
+      const isApprove = input.action === "APPROVE";
+      const now = new Date();
+
+      const [updatedReceipt, updatedInvoice] = await ctx.db.$transaction([
+        ctx.db.paymentReceipt.update({
+          where: { id: receipt.id },
+          data: {
+            status: isApprove ? "APPROVED" : "REJECTED",
+            rejectionReason: !isApprove ? input.reason ?? "Payment receipt rejected by operator" : null,
+            reviewedById: ctx.session.user.id,
+            reviewedAt: now,
+          },
+        }),
+        ctx.db.invoice.update({
+          where: { id: receipt.invoiceId },
+          data: {
+            status: isApprove
+              ? "PAID"
+              : receipt.invoice.dueDate < now
+              ? "OVERDUE"
+              : "PENDING",
+          },
+        }),
+      ]);
+
+      await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: isApprove ? "BILLING_OVERRIDE" : "BILLING_OVERRIDE",
+        entityType: "INVOICE",
+        entityId: receipt.invoiceId,
+        reason: isApprove
+          ? `Payment receipt ${receipt.fileName} approved. Invoice marked as PAID.`
+          : `Payment receipt ${receipt.fileName} rejected: ${input.reason ?? "Unverified proof"}.`,
+        metadata: {
+          receiptId: receipt.id,
+          invoiceNumber: receipt.invoice.invoiceNumber,
+          action: input.action,
+          reason: input.reason,
+          totalAmount: receipt.invoice.totalAmount,
+        },
+      });
+
+      return {
+        success: true,
+        receipt: updatedReceipt,
+        invoice: updatedInvoice,
+      };
     }),
 });

@@ -56,6 +56,12 @@ export default function CustomerOperationsHubPage() {
   const [killSwitchReason, setKillSwitchReason] = useState("");
   const [killSwitchNotice, setKillSwitchNotice] = useState("");
 
+  // Portal Access Modal state
+  const [portalModalOpen, setPortalModalOpen] = useState(false);
+  const [portalEmail, setPortalEmail] = useState("");
+  const [portalPassword, setPortalPassword] = useState("");
+  const [portalEnabled, setPortalEnabled] = useState(true);
+
   // New contract modal state
   const [contractModalOpen, setContractModalOpen] = useState(false);
   const [contractForm, setContractForm] = useState({
@@ -125,6 +131,17 @@ export default function CustomerOperationsHubPage() {
     },
     onError: (err) => {
       alert(`Error terminating contract: ${err.message}`);
+    },
+  });
+
+  const setPortalAccessMutation = api.customer.setPortalAccess.useMutation({
+    onSuccess: () => {
+      utils.customer.getById.invalidate({ id: customerId });
+      setPortalModalOpen(false);
+      setPortalPassword("");
+    },
+    onError: (err) => {
+      alert(`Portal access error: ${err.message}`);
     },
   });
 
@@ -313,7 +330,7 @@ export default function CustomerOperationsHubPage() {
             </div>
 
             {/* Quick Metrics Badge Group */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="text-right">
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Contract MRR</p>
                 <p className="text-lg font-bold text-foreground font-mono">{formatCurrency(totalContractMRR)}</p>
@@ -329,6 +346,24 @@ export default function CustomerOperationsHubPage() {
                     </span>
                   )}
                 </p>
+              </div>
+              <div className="h-8 w-px bg-border hidden sm:block" />
+              <div className="flex items-center gap-1.5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setPortalEmail(customer.email || "");
+                    setPortalEnabled(customer.portalEnabled);
+                    setPortalModalOpen(true);
+                  }}
+                  className="gap-1.5 text-xs h-9"
+                >
+                  <KeyRound className="w-3.5 h-3.5 text-primary" />
+                  <span>
+                    {customer.portalEnabled ? "Portal: Active" : "Enable Portal Access"}
+                  </span>
+                </Button>
               </div>
             </div>
           </div>
@@ -1056,6 +1091,115 @@ export default function CustomerOperationsHubPage() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Client Portal Credentials Management Dialog */}
+      <Dialog open={portalModalOpen} onOpenChange={(open) => !open && setPortalModalOpen(false)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-bold flex items-center gap-2">
+              <KeyRound className="w-4 h-4 text-primary" />
+              <span>Client Portal Access &amp; Credentials</span>
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Configure email and password authentication for {customer.name}.
+            </p>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setPortalAccessMutation.mutate({
+                customerId: customer.id,
+                email: portalEmail.trim().toLowerCase(),
+                password: portalPassword.trim() || undefined,
+                portalEnabled,
+              });
+            }}
+            className="space-y-4 py-2"
+          >
+            {/* Status toggle */}
+            <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border">
+              <div>
+                <p className="text-xs font-semibold text-foreground">Portal Access Status</p>
+                <p className="text-[11px] text-muted-foreground">
+                  {portalEnabled ? "Client can log into /portal" : "Portal access is disabled for this client"}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant={portalEnabled ? "default" : "outline"}
+                size="sm"
+                onClick={() => setPortalEnabled(!portalEnabled)}
+                className="text-xs h-8"
+              >
+                {portalEnabled ? "Active" : "Disabled"}
+              </Button>
+            </div>
+
+            {/* Email Field */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground">Client Login Email</label>
+              <Input
+                type="email"
+                required
+                value={portalEmail}
+                onChange={(e) => setPortalEmail(e.target.value)}
+                placeholder="client@company.com"
+                className="text-xs h-9"
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-foreground">
+                  {customer.clientUser ? "New Password (leave blank to keep current)" : "Initial Password"}
+                </label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const generated = Math.random().toString(36).slice(-8) + "!9A";
+                    setPortalPassword(generated);
+                  }}
+                  className="text-[11px] text-primary hover:underline cursor-pointer"
+                >
+                  Generate Password
+                </button>
+              </div>
+              <Input
+                type="text"
+                value={portalPassword}
+                onChange={(e) => setPortalPassword(e.target.value)}
+                placeholder={customer.clientUser ? "Leave blank to keep existing password" : "Enter temporary password (min 6 chars)"}
+                className="text-xs h-9 font-mono"
+              />
+              <p className="text-[10px] text-muted-foreground">
+                Client login page: <span className="font-mono text-foreground">http://localhost:3000/portal/login</span>
+              </p>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setPortalModalOpen(false)}
+                disabled={setPortalAccessMutation.isPending}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={setPortalAccessMutation.isPending}
+                className="gap-1.5"
+              >
+                <span>Save Credentials</span>
+              </Button>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Dialog>
     </div>

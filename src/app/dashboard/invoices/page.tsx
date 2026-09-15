@@ -18,12 +18,16 @@ import { Input } from "~/components/ui/input";
 import { Badge } from "~/components/ui/badge";
 import { Card, CardContent } from "~/components/ui/card";
 import { AppRoutes } from "~/config/routes";
+import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
 
 export default function InvoicesPage() {
-  const [statusFilter, setStatusFilter] = useState<"ALL" | "DRAFT" | "PENDING" | "PAID" | "OVERDUE">("ALL");
+  const [statusFilter, setStatusFilter] = useState<
+    "ALL" | "DRAFT" | "PENDING" | "PAYMENT_PENDING_VERIFICATION" | "PAID" | "OVERDUE"
+  >("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [reviewingReceipt, setReviewingReceipt] = useState<any>(null);
 
   const utils = api.useUtils();
 
@@ -48,25 +52,38 @@ export default function InvoicesPage() {
     },
   });
 
+  const verifyReceiptMutation = api.invoice.verifyReceipt.useMutation({
+    onSuccess: () => {
+      utils.invoice.getAll.invalidate();
+      utils.invoice.getMetrics.invalidate();
+      setReviewingReceipt(null);
+    },
+    onError: (err) => {
+      alert(`Verification error: ${err.message}`);
+    },
+  });
+
   const handleDownloadPdf = async (inv: any) => {
     try {
       setDownloadingId(inv.id);
       const res = await fetch("/api/invoice/export-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: inv.id }),
+        body: JSON.stringify(inv),
       });
+
       if (!res.ok) {
-        const errorData = await res.json().catch(() => null);
-        const detailMsg = errorData?.message || errorData?.error || `HTTP error ${res.status}`;
-        throw new Error(detailMsg);
+        throw new Error("Failed to generate PDF");
       }
+
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `invoice-${inv.invoiceNumber}.pdf`;
-      a.click();
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `invoice-${inv.invoiceNumber}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
       alert(`Error downloading PDF: ${err.message}`);
@@ -79,6 +96,8 @@ export default function InvoicesPage() {
     switch (status) {
       case "PAID":
         return <Badge variant="success">Paid</Badge>;
+      case "PAYMENT_PENDING_VERIFICATION":
+        return <Badge variant="verification">Verification Pending</Badge>;
       case "OVERDUE":
         return <Badge variant="destructive">Overdue</Badge>;
       case "DRAFT":
@@ -126,7 +145,7 @@ export default function InvoicesPage() {
 
             {/* Status Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-              {(["ALL", "PENDING", "PAID", "OVERDUE", "DRAFT"] as const).map((st) => (
+              {(["ALL", "PENDING", "PAYMENT_PENDING_VERIFICATION", "PAID", "OVERDUE", "DRAFT"] as const).map((st) => (
                 <button
                   key={st}
                   onClick={() => {
@@ -139,7 +158,11 @@ export default function InvoicesPage() {
                       : "bg-secondary text-secondary-foreground hover:bg-muted"
                   }`}
                 >
-                  {st}
+                  {st === "PAYMENT_PENDING_VERIFICATION"
+                    ? "In Verification"
+                    : st === "ALL"
+                    ? "All"
+                    : st.charAt(0) + st.slice(1).toLowerCase()}
                 </button>
               ))}
             </div>
@@ -203,6 +226,17 @@ export default function InvoicesPage() {
                       </td>
                       <td className="py-4 px-5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
+                          {inv.receipts && inv.receipts.length > 0 && inv.status === "PAYMENT_PENDING_VERIFICATION" && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setReviewingReceipt({ ...inv.receipts[0], invoice: inv })}
+                              className="text-xs h-8 gap-1.5 border-purple-500/30 text-purple-600 dark:text-purple-400 bg-purple-500/5 hover:bg-purple-500/15"
+                            >
+                              <FileText className="w-3.5 h-3.5" />
+                              <span>Verify Proof</span>
+                            </Button>
+                          )}
                           {inv.status !== "PAID" && (
                             <Button
                               variant="ghost"
@@ -285,6 +319,17 @@ export default function InvoicesPage() {
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
+                    {inv.receipts && inv.receipts.length > 0 && inv.status === "PAYMENT_PENDING_VERIFICATION" && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setReviewingReceipt({ ...inv.receipts[0], invoice: inv })}
+                        className="h-9 text-xs px-2.5 gap-1 border-purple-500/30 text-purple-600 dark:text-purple-400 bg-purple-500/5 hover:bg-purple-500/15"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Verify Proof</span>
+                      </Button>
+                    )}
                     <Button
                       render={<Link href={`/invoices/${inv.id}/edit`} />}
                       nativeButton={false}
@@ -365,6 +410,27 @@ export default function InvoicesPage() {
             </div>
           )}
         </Card>
+
+        {/* Operator Review & Verification Modal */}
+        <VerifyPaymentProofModal
+          receipt={reviewingReceipt}
+          isOpen={!!reviewingReceipt}
+          onClose={() => setReviewingReceipt(null)}
+          onApprove={(receiptId) => {
+            verifyReceiptMutation.mutate({
+              receiptId,
+              action: "APPROVE",
+            });
+          }}
+          onReject={(receiptId, reason) => {
+            verifyReceiptMutation.mutate({
+              receiptId,
+              action: "REJECT",
+              reason,
+            });
+          }}
+          isProcessing={verifyReceiptMutation.isPending}
+        />
       </div>
   );
 }

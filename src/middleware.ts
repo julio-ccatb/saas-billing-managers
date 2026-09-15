@@ -14,21 +14,34 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = Boolean(sessionToken);
 
   // Paths that require authentication
-  const isProtectedPath =
+  const isDashboardPath =
     pathname === "/" ||
+    pathname.startsWith("/dashboard") ||
     pathname.startsWith("/invoices") ||
     pathname.startsWith("/customers") ||
     pathname.startsWith("/settings");
 
-  if (isProtectedPath && !isAuthenticated) {
+  const isPortalProtected = pathname.startsWith("/portal") && pathname !== "/portal/login";
+
+  if (isDashboardPath && !isAuthenticated) {
     const signInUrl = new URL("/auth/signin", request.url);
     signInUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(signInUrl);
   }
 
-  // If already logged in and visiting /auth/signin, redirect to dashboard
+  if (isPortalProtected && !isAuthenticated) {
+    const portalLoginUrl = new URL("/portal/login", request.url);
+    portalLoginUrl.searchParams.set("callbackUrl", pathname);
+    return NextResponse.redirect(portalLoginUrl);
+  }
+
+  // If already logged in and visiting auth pages
+  if (pathname === "/portal/login" && isAuthenticated) {
+    return NextResponse.redirect(new URL("/portal", request.url));
+  }
+
   if (pathname === "/auth/signin" && isAuthenticated) {
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();

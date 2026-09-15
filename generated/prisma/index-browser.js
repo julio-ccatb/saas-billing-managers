@@ -157,7 +157,9 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   emailVerified: 'emailVerified',
-  image: 'image'
+  image: 'image',
+  passwordHash: 'passwordHash',
+  userRole: 'userRole'
 };
 
 exports.Prisma.CompanyScalarFieldEnum = {
@@ -194,6 +196,8 @@ exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
   companyId: 'companyId',
   userId: 'userId',
+  clientUserId: 'clientUserId',
+  portalEnabled: 'portalEnabled',
   name: 'name',
   email: 'email',
   phone: 'phone',
@@ -323,6 +327,24 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PaymentReceiptScalarFieldEnum = {
+  id: 'id',
+  invoiceId: 'invoiceId',
+  customerId: 'customerId',
+  uploadedById: 'uploadedById',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  fileData: 'fileData',
+  notes: 'notes',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -352,7 +374,8 @@ exports.Prisma.ModelName = {
   VerificationToken: 'VerificationToken',
   License: 'License',
   Contract: 'Contract',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  PaymentReceipt: 'PaymentReceipt'
 };
 
 /**

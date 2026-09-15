@@ -32,6 +32,12 @@ export const AppRoutes = {
   // Licenses & Services
   LICENSES: "/dashboard/licenses",
 
+  // Client Portal (External Client Access)
+  PORTAL: "/portal",
+  PORTAL_LOGIN: "/portal/login",
+  PORTAL_INVOICES: "/portal/invoices",
+  PORTAL_INVOICE_DETAILS: (id: string) => `/portal/invoices/${id}`,
+
   // API Endpoints
   API: {
     EXPORT_PDF: "/api/invoice/export-pdf",

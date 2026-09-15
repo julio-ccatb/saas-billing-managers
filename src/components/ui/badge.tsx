@@ -17,6 +17,8 @@ const badgeVariants = cva(
           "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/20 [a]:hover:bg-emerald-500/25",
         warning:
           "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/20 [a]:hover:bg-amber-500/25",
+        verification:
+          "bg-purple-500/15 text-purple-700 dark:text-purple-400 border-purple-500/20 [a]:hover:bg-purple-500/25",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:

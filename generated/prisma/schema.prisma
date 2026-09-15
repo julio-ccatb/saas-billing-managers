@@ -52,20 +52,24 @@ model Session {
 }
 
 model User {
-  id             String          @id @default(cuid())
-  name           String?
-  email          String?         @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  posts          Post[]
-  companyMembers CompanyMember[]
-  customers      Customer[]
-  invoices       Invoice[]
-  licenses       License[]
-  contracts      Contract[]
-  auditLogs      AuditLog[]
+  id               String           @id @default(cuid())
+  name             String?
+  email            String?          @unique
+  emailVerified    DateTime?
+  image            String?
+  passwordHash     String?
+  userRole         String           @default("OPERATOR") // OPERATOR, CLIENT
+  accounts         Account[]
+  sessions         Session[]
+  posts            Post[]
+  companyMembers   CompanyMember[]
+  customers        Customer[]       @relation("OperatorCustomers")
+  clientProfile    Customer?        @relation("ClientUser")
+  invoices         Invoice[]
+  licenses         License[]
+  contracts        Contract[]
+  auditLogs        AuditLog[]
+  receiptsUploaded PaymentReceipt[]
 }
 
 model Company {
@@ -114,25 +118,29 @@ model CompanyMember {
 }
 
 model Customer {
-  id        String   @id @default(cuid())
-  companyId String
-  userId    String
-  name      String
-  email     String   @default("")
-  phone     String   @default("")
-  address   String   @default("")
-  city      String   @default("")
-  zipCode   String   @default("")
-  country   String   @default("")
-  taxId     String   @default("")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  companyId     String
+  userId        String
+  clientUserId  String?  @unique
+  portalEnabled Boolean  @default(false)
+  name          String
+  email         String   @default("")
+  phone         String   @default("")
+  address       String   @default("")
+  city          String   @default("")
+  zipCode       String   @default("")
+  country       String   @default("")
+  taxId         String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invoices  Invoice[]
-  licenses  License[]
-  contracts Contract[]
+  company    Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user       User             @relation("OperatorCustomers", fields: [userId], references: [id], onDelete: Cascade)
+  clientUser User?            @relation("ClientUser", fields: [clientUserId], references: [id], onDelete: SetNull)
+  invoices   Invoice[]
+  licenses   License[]
+  contracts  Contract[]
+  receipts   PaymentReceipt[]
 
   @@index([companyId, name])
   @@index([userId])
@@ -146,7 +154,7 @@ model Invoice {
   invoiceNumber String
   issueDate     DateTime @default(now())
   dueDate       DateTime
-  status        String   @default("PENDING") // DRAFT, PENDING, PAID, OVERDUE
+  status        String   @default("PENDING") // DRAFT, PENDING, PAYMENT_PENDING_VERIFICATION, PAID, OVERDUE
   currency      String   @default("USD")
 
   // Sender details snapshotted at time of invoice
@@ -190,10 +198,11 @@ model Invoice {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  company  Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  customer Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  company  Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer Customer?        @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items    InvoiceItem[]
+  receipts PaymentReceipt[]
 
   @@index([companyId, status])
   @@index([companyId, invoiceNumber])
@@ -300,4 +309,31 @@ model AuditLog {
   @@index([companyId, entityType, entityId])
   @@index([userId])
   @@index([action])
+}
+
+model PaymentReceipt {
+  id              String    @id @default(cuid())
+  invoiceId       String
+  customerId      String
+  uploadedById    String
+  fileName        String
+  fileSize        Int
+  mimeType        String
+  fileData        String // Base64 encoded string
+  notes           String?   @default("")
+  status          String    @default("PENDING_REVIEW") // PENDING_REVIEW, APPROVED, REJECTED
+  rejectionReason String?
+  reviewedById    String?
+  reviewedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  invoice    Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  uploadedBy User     @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([customerId])
+  @@index([uploadedById])
+  @@index([status])
 }

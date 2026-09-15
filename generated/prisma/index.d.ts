@@ -78,6 +78,11 @@ export type Contract = $Result.DefaultSelection<Prisma.$ContractPayload>
  * 
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model PaymentReceipt
+ * 
+ */
+export type PaymentReceipt = $Result.DefaultSelection<Prisma.$PaymentReceiptPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -326,6 +331,16 @@ export class PrismaClient<
     * ```
     */
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentReceipt`: Exposes CRUD operations for the **PaymentReceipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentReceipts
+    * const paymentReceipts = await prisma.paymentReceipt.findMany()
+    * ```
+    */
+  get paymentReceipt(): Prisma.PaymentReceiptDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -779,7 +794,8 @@ export namespace Prisma {
     VerificationToken: 'VerificationToken',
     License: 'License',
     Contract: 'Contract',
-    AuditLog: 'AuditLog'
+    AuditLog: 'AuditLog',
+    PaymentReceipt: 'PaymentReceipt'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -798,7 +814,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "account" | "session" | "user" | "company" | "companyMember" | "customer" | "invoice" | "invoiceItem" | "verificationToken" | "license" | "contract" | "auditLog"
+      modelProps: "post" | "account" | "session" | "user" | "company" | "companyMember" | "customer" | "invoice" | "invoiceItem" | "verificationToken" | "license" | "contract" | "auditLog" | "paymentReceipt"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1764,6 +1780,80 @@ export namespace Prisma {
           }
         }
       }
+      PaymentReceipt: {
+        payload: Prisma.$PaymentReceiptPayload<ExtArgs>
+        fields: Prisma.PaymentReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          update: {
+            args: Prisma.PaymentReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentReceipt>
+          }
+          groupBy: {
+            args: Prisma.PaymentReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentReceiptCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1873,6 +1963,7 @@ export namespace Prisma {
     license?: LicenseOmit
     contract?: ContractOmit
     auditLog?: AuditLogOmit
+    paymentReceipt?: PaymentReceiptOmit
   }
 
   /* Types for Logging */
@@ -1962,6 +2053,7 @@ export namespace Prisma {
     licenses: number
     contracts: number
     auditLogs: number
+    receiptsUploaded: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1974,6 +2066,7 @@ export namespace Prisma {
     licenses?: boolean | UserCountOutputTypeCountLicensesArgs
     contracts?: boolean | UserCountOutputTypeCountContractsArgs
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+    receiptsUploaded?: boolean | UserCountOutputTypeCountReceiptsUploadedArgs
   }
 
   // Custom InputTypes
@@ -2048,6 +2141,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountReceiptsUploadedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentReceiptWhereInput
   }
 
 
@@ -2135,12 +2235,14 @@ export namespace Prisma {
     invoices: number
     licenses: number
     contracts: number
+    receipts: number
   }
 
   export type CustomerCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     invoices?: boolean | CustomerCountOutputTypeCountInvoicesArgs
     licenses?: boolean | CustomerCountOutputTypeCountLicensesArgs
     contracts?: boolean | CustomerCountOutputTypeCountContractsArgs
+    receipts?: boolean | CustomerCountOutputTypeCountReceiptsArgs
   }
 
   // Custom InputTypes
@@ -2175,6 +2277,13 @@ export namespace Prisma {
     where?: ContractWhereInput
   }
 
+  /**
+   * CustomerCountOutputType without action
+   */
+  export type CustomerCountOutputTypeCountReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentReceiptWhereInput
+  }
+
 
   /**
    * Count Type InvoiceCountOutputType
@@ -2182,10 +2291,12 @@ export namespace Prisma {
 
   export type InvoiceCountOutputType = {
     items: number
+    receipts: number
   }
 
   export type InvoiceCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     items?: boolean | InvoiceCountOutputTypeCountItemsArgs
+    receipts?: boolean | InvoiceCountOutputTypeCountReceiptsArgs
   }
 
   // Custom InputTypes
@@ -2204,6 +2315,13 @@ export namespace Prisma {
    */
   export type InvoiceCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvoiceItemWhereInput
+  }
+
+  /**
+   * InvoiceCountOutputType without action
+   */
+  export type InvoiceCountOutputTypeCountReceiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentReceiptWhereInput
   }
 
 
@@ -5564,6 +5682,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    passwordHash: string | null
+    userRole: string | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -5572,6 +5692,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    passwordHash: string | null
+    userRole: string | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -5580,6 +5702,8 @@ export namespace Prisma {
     email: number
     emailVerified: number
     image: number
+    passwordHash: number
+    userRole: number
     _all: number
   }
 
@@ -5590,6 +5714,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    passwordHash?: true
+    userRole?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -5598,6 +5724,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    passwordHash?: true
+    userRole?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -5606,6 +5734,8 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
+    passwordHash?: true
+    userRole?: true
     _all?: true
   }
 
@@ -5687,6 +5817,8 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
+    passwordHash: string | null
+    userRole: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -5712,15 +5844,19 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    passwordHash?: boolean
+    userRole?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     companyMembers?: boolean | User$companyMembersArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
+    clientProfile?: boolean | User$clientProfileArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     licenses?: boolean | User$licensesArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
+    receiptsUploaded?: boolean | User$receiptsUploadedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5730,6 +5866,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    passwordHash?: boolean
+    userRole?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5738,6 +5876,8 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    passwordHash?: boolean
+    userRole?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -5746,19 +5886,23 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
+    passwordHash?: boolean
+    userRole?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "passwordHash" | "userRole", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     companyMembers?: boolean | User$companyMembersArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
+    clientProfile?: boolean | User$clientProfileArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     licenses?: boolean | User$licensesArgs<ExtArgs>
     contracts?: boolean | User$contractsArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
+    receiptsUploaded?: boolean | User$receiptsUploadedArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -5772,10 +5916,12 @@ export namespace Prisma {
       posts: Prisma.$PostPayload<ExtArgs>[]
       companyMembers: Prisma.$CompanyMemberPayload<ExtArgs>[]
       customers: Prisma.$CustomerPayload<ExtArgs>[]
+      clientProfile: Prisma.$CustomerPayload<ExtArgs> | null
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       licenses: Prisma.$LicensePayload<ExtArgs>[]
       contracts: Prisma.$ContractPayload<ExtArgs>[]
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      receiptsUploaded: Prisma.$PaymentReceiptPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5783,6 +5929,8 @@ export namespace Prisma {
       email: string | null
       emailVerified: Date | null
       image: string | null
+      passwordHash: string | null
+      userRole: string
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -6182,10 +6330,12 @@ export namespace Prisma {
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     companyMembers<T extends User$companyMembersArgs<ExtArgs> = {}>(args?: Subset<T, User$companyMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customers<T extends User$customersArgs<ExtArgs> = {}>(args?: Subset<T, User$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clientProfile<T extends User$clientProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$clientProfileArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     licenses<T extends User$licensesArgs<ExtArgs> = {}>(args?: Subset<T, User$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contracts<T extends User$contractsArgs<ExtArgs> = {}>(args?: Subset<T, User$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receiptsUploaded<T extends User$receiptsUploadedArgs<ExtArgs> = {}>(args?: Subset<T, User$receiptsUploadedArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6220,6 +6370,8 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
+    readonly passwordHash: FieldRef<"User", 'String'>
+    readonly userRole: FieldRef<"User", 'String'>
   }
     
 
@@ -6728,6 +6880,25 @@ export namespace Prisma {
   }
 
   /**
+   * User.clientProfile
+   */
+  export type User$clientProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Customer
+     */
+    select?: CustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Customer
+     */
+    omit?: CustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInclude<ExtArgs> | null
+    where?: CustomerWhereInput
+  }
+
+  /**
    * User.invoices
    */
   export type User$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6821,6 +6992,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * User.receiptsUploaded
+   */
+  export type User$receiptsUploadedArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    where?: PaymentReceiptWhereInput
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    cursor?: PaymentReceiptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
   }
 
   /**
@@ -9314,6 +9509,8 @@ export namespace Prisma {
     id: string | null
     companyId: string | null
     userId: string | null
+    clientUserId: string | null
+    portalEnabled: boolean | null
     name: string | null
     email: string | null
     phone: string | null
@@ -9330,6 +9527,8 @@ export namespace Prisma {
     id: string | null
     companyId: string | null
     userId: string | null
+    clientUserId: string | null
+    portalEnabled: boolean | null
     name: string | null
     email: string | null
     phone: string | null
@@ -9346,6 +9545,8 @@ export namespace Prisma {
     id: number
     companyId: number
     userId: number
+    clientUserId: number
+    portalEnabled: number
     name: number
     email: number
     phone: number
@@ -9364,6 +9565,8 @@ export namespace Prisma {
     id?: true
     companyId?: true
     userId?: true
+    clientUserId?: true
+    portalEnabled?: true
     name?: true
     email?: true
     phone?: true
@@ -9380,6 +9583,8 @@ export namespace Prisma {
     id?: true
     companyId?: true
     userId?: true
+    clientUserId?: true
+    portalEnabled?: true
     name?: true
     email?: true
     phone?: true
@@ -9396,6 +9601,8 @@ export namespace Prisma {
     id?: true
     companyId?: true
     userId?: true
+    clientUserId?: true
+    portalEnabled?: true
     name?: true
     email?: true
     phone?: true
@@ -9485,6 +9692,8 @@ export namespace Prisma {
     id: string
     companyId: string
     userId: string
+    clientUserId: string | null
+    portalEnabled: boolean
     name: string
     email: string
     phone: string
@@ -9518,6 +9727,8 @@ export namespace Prisma {
     id?: boolean
     companyId?: boolean
     userId?: boolean
+    clientUserId?: boolean
+    portalEnabled?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -9530,9 +9741,11 @@ export namespace Prisma {
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
     licenses?: boolean | Customer$licensesArgs<ExtArgs>
     contracts?: boolean | Customer$contractsArgs<ExtArgs>
+    receipts?: boolean | Customer$receiptsArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
@@ -9540,6 +9753,8 @@ export namespace Prisma {
     id?: boolean
     companyId?: boolean
     userId?: boolean
+    clientUserId?: boolean
+    portalEnabled?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -9552,12 +9767,15 @@ export namespace Prisma {
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     companyId?: boolean
     userId?: boolean
+    clientUserId?: boolean
+    portalEnabled?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -9570,12 +9788,15 @@ export namespace Prisma {
     updatedAt?: boolean
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
     id?: boolean
     companyId?: boolean
     userId?: boolean
+    clientUserId?: boolean
+    portalEnabled?: boolean
     name?: boolean
     email?: boolean
     phone?: boolean
@@ -9588,22 +9809,26 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "name" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "clientUserId" | "portalEnabled" | "name" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
     licenses?: boolean | Customer$licensesArgs<ExtArgs>
     contracts?: boolean | Customer$contractsArgs<ExtArgs>
+    receipts?: boolean | Customer$receiptsArgs<ExtArgs>
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
   }
   export type CustomerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
+    clientUser?: boolean | Customer$clientUserArgs<ExtArgs>
   }
 
   export type $CustomerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9611,14 +9836,18 @@ export namespace Prisma {
     objects: {
       company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
+      clientUser: Prisma.$UserPayload<ExtArgs> | null
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       licenses: Prisma.$LicensePayload<ExtArgs>[]
       contracts: Prisma.$ContractPayload<ExtArgs>[]
+      receipts: Prisma.$PaymentReceiptPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       companyId: string
       userId: string
+      clientUserId: string | null
+      portalEnabled: boolean
       name: string
       email: string
       phone: string
@@ -10025,9 +10254,11 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    clientUser<T extends Customer$clientUserArgs<ExtArgs> = {}>(args?: Subset<T, Customer$clientUserArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     invoices<T extends Customer$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     licenses<T extends Customer$licensesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contracts<T extends Customer$contractsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receipts<T extends Customer$receiptsArgs<ExtArgs> = {}>(args?: Subset<T, Customer$receiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10060,6 +10291,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Customer", 'String'>
     readonly companyId: FieldRef<"Customer", 'String'>
     readonly userId: FieldRef<"Customer", 'String'>
+    readonly clientUserId: FieldRef<"Customer", 'String'>
+    readonly portalEnabled: FieldRef<"Customer", 'Boolean'>
     readonly name: FieldRef<"Customer", 'String'>
     readonly email: FieldRef<"Customer", 'String'>
     readonly phone: FieldRef<"Customer", 'String'>
@@ -10466,6 +10699,25 @@ export namespace Prisma {
   }
 
   /**
+   * Customer.clientUser
+   */
+  export type Customer$clientUserArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
    * Customer.invoices
    */
   export type Customer$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10535,6 +10787,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Customer.receipts
+   */
+  export type Customer$receiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    where?: PaymentReceiptWhereInput
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    cursor?: PaymentReceiptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
   }
 
   /**
@@ -11086,6 +11362,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
     items?: boolean | Invoice$itemsArgs<ExtArgs>
+    receipts?: boolean | Invoice$receiptsArgs<ExtArgs>
     _count?: boolean | InvoiceCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["invoice"]>
 
@@ -11239,6 +11516,7 @@ export namespace Prisma {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
     items?: boolean | Invoice$itemsArgs<ExtArgs>
+    receipts?: boolean | Invoice$receiptsArgs<ExtArgs>
     _count?: boolean | InvoiceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InvoiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -11259,6 +11537,7 @@ export namespace Prisma {
       user: Prisma.$UserPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       items: Prisma.$InvoiceItemPayload<ExtArgs>[]
+      receipts: Prisma.$PaymentReceiptPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11702,6 +11981,7 @@ export namespace Prisma {
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends Invoice$customerArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends Invoice$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoiceItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receipts<T extends Invoice$receiptsArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$receiptsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12210,6 +12490,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvoiceItemScalarFieldEnum | InvoiceItemScalarFieldEnum[]
+  }
+
+  /**
+   * Invoice.receipts
+   */
+  export type Invoice$receiptsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    where?: PaymentReceiptWhereInput
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    cursor?: PaymentReceiptWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
   }
 
   /**
@@ -18047,6 +18351,1244 @@ export namespace Prisma {
 
 
   /**
+   * Model PaymentReceipt
+   */
+
+  export type AggregatePaymentReceipt = {
+    _count: PaymentReceiptCountAggregateOutputType | null
+    _avg: PaymentReceiptAvgAggregateOutputType | null
+    _sum: PaymentReceiptSumAggregateOutputType | null
+    _min: PaymentReceiptMinAggregateOutputType | null
+    _max: PaymentReceiptMaxAggregateOutputType | null
+  }
+
+  export type PaymentReceiptAvgAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type PaymentReceiptSumAggregateOutputType = {
+    fileSize: number | null
+  }
+
+  export type PaymentReceiptMinAggregateOutputType = {
+    id: string | null
+    invoiceId: string | null
+    customerId: string | null
+    uploadedById: string | null
+    fileName: string | null
+    fileSize: number | null
+    mimeType: string | null
+    fileData: string | null
+    notes: string | null
+    status: string | null
+    rejectionReason: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentReceiptMaxAggregateOutputType = {
+    id: string | null
+    invoiceId: string | null
+    customerId: string | null
+    uploadedById: string | null
+    fileName: string | null
+    fileSize: number | null
+    mimeType: string | null
+    fileData: string | null
+    notes: string | null
+    status: string | null
+    rejectionReason: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentReceiptCountAggregateOutputType = {
+    id: number
+    invoiceId: number
+    customerId: number
+    uploadedById: number
+    fileName: number
+    fileSize: number
+    mimeType: number
+    fileData: number
+    notes: number
+    status: number
+    rejectionReason: number
+    reviewedById: number
+    reviewedAt: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PaymentReceiptAvgAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type PaymentReceiptSumAggregateInputType = {
+    fileSize?: true
+  }
+
+  export type PaymentReceiptMinAggregateInputType = {
+    id?: true
+    invoiceId?: true
+    customerId?: true
+    uploadedById?: true
+    fileName?: true
+    fileSize?: true
+    mimeType?: true
+    fileData?: true
+    notes?: true
+    status?: true
+    rejectionReason?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentReceiptMaxAggregateInputType = {
+    id?: true
+    invoiceId?: true
+    customerId?: true
+    uploadedById?: true
+    fileName?: true
+    fileSize?: true
+    mimeType?: true
+    fileData?: true
+    notes?: true
+    status?: true
+    rejectionReason?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentReceiptCountAggregateInputType = {
+    id?: true
+    invoiceId?: true
+    customerId?: true
+    uploadedById?: true
+    fileName?: true
+    fileSize?: true
+    mimeType?: true
+    fileData?: true
+    notes?: true
+    status?: true
+    rejectionReason?: true
+    reviewedById?: true
+    reviewedAt?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PaymentReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentReceipt to aggregate.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentReceipts
+    **/
+    _count?: true | PaymentReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PaymentReceiptAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PaymentReceiptSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentReceiptMaxAggregateInputType
+  }
+
+  export type GetPaymentReceiptAggregateType<T extends PaymentReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentReceipt[P]>
+      : GetScalarType<T[P], AggregatePaymentReceipt[P]>
+  }
+
+
+
+
+  export type PaymentReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentReceiptWhereInput
+    orderBy?: PaymentReceiptOrderByWithAggregationInput | PaymentReceiptOrderByWithAggregationInput[]
+    by: PaymentReceiptScalarFieldEnum[] | PaymentReceiptScalarFieldEnum
+    having?: PaymentReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentReceiptCountAggregateInputType | true
+    _avg?: PaymentReceiptAvgAggregateInputType
+    _sum?: PaymentReceiptSumAggregateInputType
+    _min?: PaymentReceiptMinAggregateInputType
+    _max?: PaymentReceiptMaxAggregateInputType
+  }
+
+  export type PaymentReceiptGroupByOutputType = {
+    id: string
+    invoiceId: string
+    customerId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes: string | null
+    status: string
+    rejectionReason: string | null
+    reviewedById: string | null
+    reviewedAt: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PaymentReceiptCountAggregateOutputType | null
+    _avg: PaymentReceiptAvgAggregateOutputType | null
+    _sum: PaymentReceiptSumAggregateOutputType | null
+    _min: PaymentReceiptMinAggregateOutputType | null
+    _max: PaymentReceiptMaxAggregateOutputType | null
+  }
+
+  type GetPaymentReceiptGroupByPayload<T extends PaymentReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    invoiceId?: boolean
+    customerId?: boolean
+    uploadedById?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    fileData?: boolean
+    notes?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    invoiceId?: boolean
+    customerId?: boolean
+    uploadedById?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    fileData?: boolean
+    notes?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    invoiceId?: boolean
+    customerId?: boolean
+    uploadedById?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    fileData?: boolean
+    notes?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectScalar = {
+    id?: boolean
+    invoiceId?: boolean
+    customerId?: boolean
+    uploadedById?: boolean
+    fileName?: boolean
+    fileSize?: boolean
+    mimeType?: boolean
+    fileData?: boolean
+    notes?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    reviewedById?: boolean
+    reviewedAt?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PaymentReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "invoiceId" | "customerId" | "uploadedById" | "fileName" | "fileSize" | "mimeType" | "fileData" | "notes" | "status" | "rejectionReason" | "reviewedById" | "reviewedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentReceipt"]>
+  export type PaymentReceiptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PaymentReceiptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PaymentReceiptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    invoice?: boolean | InvoiceDefaultArgs<ExtArgs>
+    customer?: boolean | CustomerDefaultArgs<ExtArgs>
+    uploadedBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentReceipt"
+    objects: {
+      invoice: Prisma.$InvoicePayload<ExtArgs>
+      customer: Prisma.$CustomerPayload<ExtArgs>
+      uploadedBy: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      invoiceId: string
+      customerId: string
+      uploadedById: string
+      fileName: string
+      fileSize: number
+      mimeType: string
+      fileData: string
+      notes: string | null
+      status: string
+      rejectionReason: string | null
+      reviewedById: string | null
+      reviewedAt: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["paymentReceipt"]>
+    composites: {}
+  }
+
+  type PaymentReceiptGetPayload<S extends boolean | null | undefined | PaymentReceiptDefaultArgs> = $Result.GetResult<Prisma.$PaymentReceiptPayload, S>
+
+  type PaymentReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentReceiptCountAggregateInputType | true
+    }
+
+  export interface PaymentReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentReceipt'], meta: { name: 'PaymentReceipt' } }
+    /**
+     * Find zero or one PaymentReceipt that matches the filter.
+     * @param {PaymentReceiptFindUniqueArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentReceiptFindUniqueArgs>(args: SelectSubset<T, PaymentReceiptFindUniqueArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentReceipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentReceiptFindUniqueOrThrowArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentReceipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindFirstArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentReceiptFindFirstArgs>(args?: SelectSubset<T, PaymentReceiptFindFirstArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentReceipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindFirstOrThrowArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentReceipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentReceipts
+     * const paymentReceipts = await prisma.paymentReceipt.findMany()
+     * 
+     * // Get first 10 PaymentReceipts
+     * const paymentReceipts = await prisma.paymentReceipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentReceiptFindManyArgs>(args?: SelectSubset<T, PaymentReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentReceipt.
+     * @param {PaymentReceiptCreateArgs} args - Arguments to create a PaymentReceipt.
+     * @example
+     * // Create one PaymentReceipt
+     * const PaymentReceipt = await prisma.paymentReceipt.create({
+     *   data: {
+     *     // ... data to create a PaymentReceipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentReceiptCreateArgs>(args: SelectSubset<T, PaymentReceiptCreateArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentReceipts.
+     * @param {PaymentReceiptCreateManyArgs} args - Arguments to create many PaymentReceipts.
+     * @example
+     * // Create many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentReceiptCreateManyArgs>(args?: SelectSubset<T, PaymentReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentReceipts and returns the data saved in the database.
+     * @param {PaymentReceiptCreateManyAndReturnArgs} args - Arguments to create many PaymentReceipts.
+     * @example
+     * // Create many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentReceipts and only return the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentReceipt.
+     * @param {PaymentReceiptDeleteArgs} args - Arguments to delete one PaymentReceipt.
+     * @example
+     * // Delete one PaymentReceipt
+     * const PaymentReceipt = await prisma.paymentReceipt.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentReceipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentReceiptDeleteArgs>(args: SelectSubset<T, PaymentReceiptDeleteArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentReceipt.
+     * @param {PaymentReceiptUpdateArgs} args - Arguments to update one PaymentReceipt.
+     * @example
+     * // Update one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentReceiptUpdateArgs>(args: SelectSubset<T, PaymentReceiptUpdateArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentReceipts.
+     * @param {PaymentReceiptDeleteManyArgs} args - Arguments to filter PaymentReceipts to delete.
+     * @example
+     * // Delete a few PaymentReceipts
+     * const { count } = await prisma.paymentReceipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentReceiptDeleteManyArgs>(args?: SelectSubset<T, PaymentReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentReceiptUpdateManyArgs>(args: SelectSubset<T, PaymentReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentReceipts and returns the data updated in the database.
+     * @param {PaymentReceiptUpdateManyAndReturnArgs} args - Arguments to update many PaymentReceipts.
+     * @example
+     * // Update many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentReceipts and only return the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentReceipt.
+     * @param {PaymentReceiptUpsertArgs} args - Arguments to update or create a PaymentReceipt.
+     * @example
+     * // Update or create a PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.upsert({
+     *   create: {
+     *     // ... data to create a PaymentReceipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentReceipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentReceiptUpsertArgs>(args: SelectSubset<T, PaymentReceiptUpsertArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptCountArgs} args - Arguments to filter PaymentReceipts to count.
+     * @example
+     * // Count the number of PaymentReceipts
+     * const count = await prisma.paymentReceipt.count({
+     *   where: {
+     *     // ... the filter for the PaymentReceipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentReceiptCountArgs>(
+      args?: Subset<T, PaymentReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentReceiptAggregateArgs>(args: Subset<T, PaymentReceiptAggregateArgs>): Prisma.PrismaPromise<GetPaymentReceiptAggregateType<T>>
+
+    /**
+     * Group by PaymentReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentReceipt model
+   */
+  readonly fields: PaymentReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentReceipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    invoice<T extends InvoiceDefaultArgs<ExtArgs> = {}>(args?: Subset<T, InvoiceDefaultArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    uploadedBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentReceipt model
+   */
+  interface PaymentReceiptFieldRefs {
+    readonly id: FieldRef<"PaymentReceipt", 'String'>
+    readonly invoiceId: FieldRef<"PaymentReceipt", 'String'>
+    readonly customerId: FieldRef<"PaymentReceipt", 'String'>
+    readonly uploadedById: FieldRef<"PaymentReceipt", 'String'>
+    readonly fileName: FieldRef<"PaymentReceipt", 'String'>
+    readonly fileSize: FieldRef<"PaymentReceipt", 'Int'>
+    readonly mimeType: FieldRef<"PaymentReceipt", 'String'>
+    readonly fileData: FieldRef<"PaymentReceipt", 'String'>
+    readonly notes: FieldRef<"PaymentReceipt", 'String'>
+    readonly status: FieldRef<"PaymentReceipt", 'String'>
+    readonly rejectionReason: FieldRef<"PaymentReceipt", 'String'>
+    readonly reviewedById: FieldRef<"PaymentReceipt", 'String'>
+    readonly reviewedAt: FieldRef<"PaymentReceipt", 'DateTime'>
+    readonly createdAt: FieldRef<"PaymentReceipt", 'DateTime'>
+    readonly updatedAt: FieldRef<"PaymentReceipt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentReceipt findUnique
+   */
+  export type PaymentReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt findUniqueOrThrow
+   */
+  export type PaymentReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt findFirst
+   */
+  export type PaymentReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentReceipts.
+     */
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt findFirstOrThrow
+   */
+  export type PaymentReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentReceipts.
+     */
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt findMany
+   */
+  export type PaymentReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipts to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt create
+   */
+  export type PaymentReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentReceipt.
+     */
+    data: XOR<PaymentReceiptCreateInput, PaymentReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentReceipt createMany
+   */
+  export type PaymentReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentReceipts.
+     */
+    data: PaymentReceiptCreateManyInput | PaymentReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PaymentReceipt createManyAndReturn
+   */
+  export type PaymentReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentReceipts.
+     */
+    data: PaymentReceiptCreateManyInput | PaymentReceiptCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentReceipt update
+   */
+  export type PaymentReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentReceipt.
+     */
+    data: XOR<PaymentReceiptUpdateInput, PaymentReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentReceipt to update.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt updateMany
+   */
+  export type PaymentReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentReceipts.
+     */
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentReceipts to update
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentReceipt updateManyAndReturn
+   */
+  export type PaymentReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentReceipts.
+     */
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentReceipts to update
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentReceipt upsert
+   */
+  export type PaymentReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentReceipt to update in case it exists.
+     */
+    where: PaymentReceiptWhereUniqueInput
+    /**
+     * In case the PaymentReceipt found by the `where` argument doesn't exist, create a new PaymentReceipt with this data.
+     */
+    create: XOR<PaymentReceiptCreateInput, PaymentReceiptUncheckedCreateInput>
+    /**
+     * In case the PaymentReceipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentReceiptUpdateInput, PaymentReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentReceipt delete
+   */
+  export type PaymentReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentReceipt to delete.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt deleteMany
+   */
+  export type PaymentReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentReceipts to delete
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentReceipt without action
+   */
+  export type PaymentReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18105,7 +19647,9 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     emailVerified: 'emailVerified',
-    image: 'image'
+    image: 'image',
+    passwordHash: 'passwordHash',
+    userRole: 'userRole'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -18151,6 +19695,8 @@ export namespace Prisma {
     id: 'id',
     companyId: 'companyId',
     userId: 'userId',
+    clientUserId: 'clientUserId',
+    portalEnabled: 'portalEnabled',
     name: 'name',
     email: 'email',
     phone: 'phone',
@@ -18301,6 +19847,27 @@ export namespace Prisma {
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+  export const PaymentReceiptScalarFieldEnum: {
+    id: 'id',
+    invoiceId: 'invoiceId',
+    customerId: 'customerId',
+    uploadedById: 'uploadedById',
+    fileName: 'fileName',
+    fileSize: 'fileSize',
+    mimeType: 'mimeType',
+    fileData: 'fileData',
+    notes: 'notes',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    reviewedById: 'reviewedById',
+    reviewedAt: 'reviewedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PaymentReceiptScalarFieldEnum = (typeof PaymentReceiptScalarFieldEnum)[keyof typeof PaymentReceiptScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -18369,6 +19936,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -18603,15 +20177,19 @@ export namespace Prisma {
     email?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    passwordHash?: StringNullableFilter<"User"> | string | null
+    userRole?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
     companyMembers?: CompanyMemberListRelationFilter
     customers?: CustomerListRelationFilter
+    clientProfile?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
     contracts?: ContractListRelationFilter
     auditLogs?: AuditLogListRelationFilter
+    receiptsUploaded?: PaymentReceiptListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -18620,15 +20198,19 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    userRole?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     companyMembers?: CompanyMemberOrderByRelationAggregateInput
     customers?: CustomerOrderByRelationAggregateInput
+    clientProfile?: CustomerOrderByWithRelationInput
     invoices?: InvoiceOrderByRelationAggregateInput
     licenses?: LicenseOrderByRelationAggregateInput
     contracts?: ContractOrderByRelationAggregateInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
+    receiptsUploaded?: PaymentReceiptOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -18640,15 +20222,19 @@ export namespace Prisma {
     name?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    passwordHash?: StringNullableFilter<"User"> | string | null
+    userRole?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
     companyMembers?: CompanyMemberListRelationFilter
     customers?: CustomerListRelationFilter
+    clientProfile?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
     contracts?: ContractListRelationFilter
     auditLogs?: AuditLogListRelationFilter
+    receiptsUploaded?: PaymentReceiptListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -18657,6 +20243,8 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    passwordHash?: SortOrderInput | SortOrder
+    userRole?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -18671,6 +20259,8 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+    passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
+    userRole?: StringWithAggregatesFilter<"User"> | string
   }
 
   export type CompanyWhereInput = {
@@ -18879,6 +20469,8 @@ export namespace Prisma {
     id?: StringFilter<"Customer"> | string
     companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
+    clientUserId?: StringNullableFilter<"Customer"> | string | null
+    portalEnabled?: BoolFilter<"Customer"> | boolean
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
     phone?: StringFilter<"Customer"> | string
@@ -18891,15 +20483,19 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    clientUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
     contracts?: ContractListRelationFilter
+    receipts?: PaymentReceiptListRelationFilter
   }
 
   export type CustomerOrderByWithRelationInput = {
     id?: SortOrder
     companyId?: SortOrder
     userId?: SortOrder
+    clientUserId?: SortOrderInput | SortOrder
+    portalEnabled?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -18912,18 +20508,22 @@ export namespace Prisma {
     updatedAt?: SortOrder
     company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
+    clientUser?: UserOrderByWithRelationInput
     invoices?: InvoiceOrderByRelationAggregateInput
     licenses?: LicenseOrderByRelationAggregateInput
     contracts?: ContractOrderByRelationAggregateInput
+    receipts?: PaymentReceiptOrderByRelationAggregateInput
   }
 
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    clientUserId?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
     companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
+    portalEnabled?: BoolFilter<"Customer"> | boolean
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
     phone?: StringFilter<"Customer"> | string
@@ -18936,15 +20536,19 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    clientUser?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
     contracts?: ContractListRelationFilter
-  }, "id">
+    receipts?: PaymentReceiptListRelationFilter
+  }, "id" | "clientUserId">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
     companyId?: SortOrder
     userId?: SortOrder
+    clientUserId?: SortOrderInput | SortOrder
+    portalEnabled?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -18967,6 +20571,8 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Customer"> | string
     companyId?: StringWithAggregatesFilter<"Customer"> | string
     userId?: StringWithAggregatesFilter<"Customer"> | string
+    clientUserId?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    portalEnabled?: BoolWithAggregatesFilter<"Customer"> | boolean
     name?: StringWithAggregatesFilter<"Customer"> | string
     email?: StringWithAggregatesFilter<"Customer"> | string
     phone?: StringWithAggregatesFilter<"Customer"> | string
@@ -19030,6 +20636,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     items?: InvoiceItemListRelationFilter
+    receipts?: PaymentReceiptListRelationFilter
   }
 
   export type InvoiceOrderByWithRelationInput = {
@@ -19080,6 +20687,7 @@ export namespace Prisma {
     user?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     items?: InvoiceItemOrderByRelationAggregateInput
+    receipts?: PaymentReceiptOrderByRelationAggregateInput
   }
 
   export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
@@ -19133,6 +20741,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     items?: InvoiceItemListRelationFilter
+    receipts?: PaymentReceiptListRelationFilter
   }, "id">
 
   export type InvoiceOrderByWithAggregationInput = {
@@ -19684,6 +21293,119 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
+  export type PaymentReceiptWhereInput = {
+    AND?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    OR?: PaymentReceiptWhereInput[]
+    NOT?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    id?: StringFilter<"PaymentReceipt"> | string
+    invoiceId?: StringFilter<"PaymentReceipt"> | string
+    customerId?: StringFilter<"PaymentReceipt"> | string
+    uploadedById?: StringFilter<"PaymentReceipt"> | string
+    fileName?: StringFilter<"PaymentReceipt"> | string
+    fileSize?: IntFilter<"PaymentReceipt"> | number
+    mimeType?: StringFilter<"PaymentReceipt"> | string
+    fileData?: StringFilter<"PaymentReceipt"> | string
+    notes?: StringNullableFilter<"PaymentReceipt"> | string | null
+    status?: StringFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedById?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"PaymentReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    invoice?: XOR<InvoiceScalarRelationFilter, InvoiceWhereInput>
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    uploadedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PaymentReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    invoiceId?: SortOrder
+    customerId?: SortOrder
+    uploadedById?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    fileData?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    invoice?: InvoiceOrderByWithRelationInput
+    customer?: CustomerOrderByWithRelationInput
+    uploadedBy?: UserOrderByWithRelationInput
+  }
+
+  export type PaymentReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    OR?: PaymentReceiptWhereInput[]
+    NOT?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    invoiceId?: StringFilter<"PaymentReceipt"> | string
+    customerId?: StringFilter<"PaymentReceipt"> | string
+    uploadedById?: StringFilter<"PaymentReceipt"> | string
+    fileName?: StringFilter<"PaymentReceipt"> | string
+    fileSize?: IntFilter<"PaymentReceipt"> | number
+    mimeType?: StringFilter<"PaymentReceipt"> | string
+    fileData?: StringFilter<"PaymentReceipt"> | string
+    notes?: StringNullableFilter<"PaymentReceipt"> | string | null
+    status?: StringFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedById?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"PaymentReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    invoice?: XOR<InvoiceScalarRelationFilter, InvoiceWhereInput>
+    customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
+    uploadedBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type PaymentReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    invoiceId?: SortOrder
+    customerId?: SortOrder
+    uploadedById?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    fileData?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    reviewedById?: SortOrderInput | SortOrder
+    reviewedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PaymentReceiptCountOrderByAggregateInput
+    _avg?: PaymentReceiptAvgOrderByAggregateInput
+    _max?: PaymentReceiptMaxOrderByAggregateInput
+    _min?: PaymentReceiptMinOrderByAggregateInput
+    _sum?: PaymentReceiptSumOrderByAggregateInput
+  }
+
+  export type PaymentReceiptScalarWhereWithAggregatesInput = {
+    AND?: PaymentReceiptScalarWhereWithAggregatesInput | PaymentReceiptScalarWhereWithAggregatesInput[]
+    OR?: PaymentReceiptScalarWhereWithAggregatesInput[]
+    NOT?: PaymentReceiptScalarWhereWithAggregatesInput | PaymentReceiptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    invoiceId?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    customerId?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    uploadedById?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    fileName?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    fileSize?: IntWithAggregatesFilter<"PaymentReceipt"> | number
+    mimeType?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    fileData?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    notes?: StringNullableWithAggregatesFilter<"PaymentReceipt"> | string | null
+    status?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableWithAggregatesFilter<"PaymentReceipt"> | string | null
+    reviewedById?: StringNullableWithAggregatesFilter<"PaymentReceipt"> | string | null
+    reviewedAt?: DateTimeNullableWithAggregatesFilter<"PaymentReceipt"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PaymentReceipt"> | Date | string
+  }
+
   export type PostCreateInput = {
     name: string
     createdAt?: Date | string
@@ -19901,15 +21623,19 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -19918,15 +21644,19 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUpdateInput = {
@@ -19935,15 +21665,19 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -19952,15 +21686,19 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -19969,6 +21707,8 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
   }
 
   export type UserUpdateManyMutationInput = {
@@ -19977,6 +21717,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -19985,6 +21727,8 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
   }
 
   export type CompanyCreateInput = {
@@ -20221,6 +21965,7 @@ export namespace Prisma {
 
   export type CustomerCreateInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -20233,15 +21978,19 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateInput = {
     id?: string
     companyId: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -20255,10 +22004,12 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -20271,15 +22022,19 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -20293,12 +22048,15 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerCreateManyInput = {
     id?: string
     companyId: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -20313,6 +22071,7 @@ export namespace Prisma {
 
   export type CustomerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -20329,6 +22088,8 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -20386,6 +22147,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateInput = {
@@ -20433,6 +22195,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUpdateInput = {
@@ -20480,6 +22243,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateInput = {
@@ -20527,6 +22291,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceCreateManyInput = {
@@ -21152,6 +22917,129 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PaymentReceiptCreateInput = {
+    id?: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoice: InvoiceCreateNestedOneWithoutReceiptsInput
+    customer: CustomerCreateNestedOneWithoutReceiptsInput
+    uploadedBy: UserCreateNestedOneWithoutReceiptsUploadedInput
+  }
+
+  export type PaymentReceiptUncheckedCreateInput = {
+    id?: string
+    invoiceId: string
+    customerId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoice?: InvoiceUpdateOneRequiredWithoutReceiptsNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutReceiptsNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutReceiptsUploadedNestedInput
+  }
+
+  export type PaymentReceiptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptCreateManyInput = {
+    id?: string
+    invoiceId: string
+    customerId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -21464,6 +23352,11 @@ export namespace Prisma {
     none?: CustomerWhereInput
   }
 
+  export type CustomerNullableScalarRelationFilter = {
+    is?: CustomerWhereInput | null
+    isNot?: CustomerWhereInput | null
+  }
+
   export type InvoiceListRelationFilter = {
     every?: InvoiceWhereInput
     some?: InvoiceWhereInput
@@ -21486,6 +23379,12 @@ export namespace Prisma {
     every?: AuditLogWhereInput
     some?: AuditLogWhereInput
     none?: AuditLogWhereInput
+  }
+
+  export type PaymentReceiptListRelationFilter = {
+    every?: PaymentReceiptWhereInput
+    some?: PaymentReceiptWhereInput
+    none?: PaymentReceiptWhereInput
   }
 
   export type AccountOrderByRelationAggregateInput = {
@@ -21524,12 +23423,18 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type PaymentReceiptOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    passwordHash?: SortOrder
+    userRole?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -21538,6 +23443,8 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    passwordHash?: SortOrder
+    userRole?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -21546,6 +23453,8 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
+    passwordHash?: SortOrder
+    userRole?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -21662,10 +23571,22 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
     companyId?: SortOrder
     userId?: SortOrder
+    clientUserId?: SortOrder
+    portalEnabled?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -21682,6 +23603,8 @@ export namespace Prisma {
     id?: SortOrder
     companyId?: SortOrder
     userId?: SortOrder
+    clientUserId?: SortOrder
+    portalEnabled?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -21698,6 +23621,8 @@ export namespace Prisma {
     id?: SortOrder
     companyId?: SortOrder
     userId?: SortOrder
+    clientUserId?: SortOrder
+    portalEnabled?: SortOrder
     name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
@@ -21710,6 +23635,14 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -21719,11 +23652,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type CustomerNullableScalarRelationFilter = {
-    is?: CustomerWhereInput | null
-    isNot?: CustomerWhereInput | null
   }
 
   export type InvoiceItemListRelationFilter = {
@@ -22174,6 +24102,68 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
+  export type PaymentReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceId?: SortOrder
+    customerId?: SortOrder
+    uploadedById?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    fileData?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptAvgOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
+  export type PaymentReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceId?: SortOrder
+    customerId?: SortOrder
+    uploadedById?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    fileData?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    invoiceId?: SortOrder
+    customerId?: SortOrder
+    uploadedById?: SortOrder
+    fileName?: SortOrder
+    fileSize?: SortOrder
+    mimeType?: SortOrder
+    fileData?: SortOrder
+    notes?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    reviewedById?: SortOrder
+    reviewedAt?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptSumOrderByAggregateInput = {
+    fileSize?: SortOrder
+  }
+
   export type UserCreateNestedOneWithoutPostsInput = {
     create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPostsInput
@@ -22279,6 +24269,12 @@ export namespace Prisma {
     connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
   }
 
+  export type CustomerCreateNestedOneWithoutClientUserInput = {
+    create?: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutClientUserInput
+    connect?: CustomerWhereUniqueInput
+  }
+
   export type InvoiceCreateNestedManyWithoutUserInput = {
     create?: XOR<InvoiceCreateWithoutUserInput, InvoiceUncheckedCreateWithoutUserInput> | InvoiceCreateWithoutUserInput[] | InvoiceUncheckedCreateWithoutUserInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutUserInput | InvoiceCreateOrConnectWithoutUserInput[]
@@ -22305,6 +24301,13 @@ export namespace Prisma {
     connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
     createMany?: AuditLogCreateManyUserInputEnvelope
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput> | PaymentReceiptCreateWithoutUploadedByInput[] | PaymentReceiptUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutUploadedByInput | PaymentReceiptCreateOrConnectWithoutUploadedByInput[]
+    createMany?: PaymentReceiptCreateManyUploadedByInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
   }
 
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
@@ -22342,6 +24345,12 @@ export namespace Prisma {
     connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
   }
 
+  export type CustomerUncheckedCreateNestedOneWithoutClientUserInput = {
+    create?: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutClientUserInput
+    connect?: CustomerWhereUniqueInput
+  }
+
   export type InvoiceUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<InvoiceCreateWithoutUserInput, InvoiceUncheckedCreateWithoutUserInput> | InvoiceCreateWithoutUserInput[] | InvoiceUncheckedCreateWithoutUserInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutUserInput | InvoiceCreateOrConnectWithoutUserInput[]
@@ -22368,6 +24377,13 @@ export namespace Prisma {
     connectOrCreate?: AuditLogCreateOrConnectWithoutUserInput | AuditLogCreateOrConnectWithoutUserInput[]
     createMany?: AuditLogCreateManyUserInputEnvelope
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput> | PaymentReceiptCreateWithoutUploadedByInput[] | PaymentReceiptUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutUploadedByInput | PaymentReceiptCreateOrConnectWithoutUploadedByInput[]
+    createMany?: PaymentReceiptCreateManyUploadedByInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -22444,6 +24460,16 @@ export namespace Prisma {
     deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
   }
 
+  export type CustomerUpdateOneWithoutClientUserNestedInput = {
+    create?: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutClientUserInput
+    upsert?: CustomerUpsertWithoutClientUserInput
+    disconnect?: CustomerWhereInput | boolean
+    delete?: CustomerWhereInput | boolean
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutClientUserInput, CustomerUpdateWithoutClientUserInput>, CustomerUncheckedUpdateWithoutClientUserInput>
+  }
+
   export type InvoiceUpdateManyWithoutUserNestedInput = {
     create?: XOR<InvoiceCreateWithoutUserInput, InvoiceUncheckedCreateWithoutUserInput> | InvoiceCreateWithoutUserInput[] | InvoiceUncheckedCreateWithoutUserInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutUserInput | InvoiceCreateOrConnectWithoutUserInput[]
@@ -22498,6 +24524,20 @@ export namespace Prisma {
     update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type PaymentReceiptUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput> | PaymentReceiptCreateWithoutUploadedByInput[] | PaymentReceiptUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutUploadedByInput | PaymentReceiptCreateOrConnectWithoutUploadedByInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutUploadedByInput | PaymentReceiptUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: PaymentReceiptCreateManyUploadedByInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutUploadedByInput | PaymentReceiptUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutUploadedByInput | PaymentReceiptUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
   }
 
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
@@ -22570,6 +24610,16 @@ export namespace Prisma {
     deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
   }
 
+  export type CustomerUncheckedUpdateOneWithoutClientUserNestedInput = {
+    create?: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutClientUserInput
+    upsert?: CustomerUpsertWithoutClientUserInput
+    disconnect?: CustomerWhereInput | boolean
+    delete?: CustomerWhereInput | boolean
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutClientUserInput, CustomerUpdateWithoutClientUserInput>, CustomerUncheckedUpdateWithoutClientUserInput>
+  }
+
   export type InvoiceUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<InvoiceCreateWithoutUserInput, InvoiceUncheckedCreateWithoutUserInput> | InvoiceCreateWithoutUserInput[] | InvoiceUncheckedCreateWithoutUserInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutUserInput | InvoiceCreateOrConnectWithoutUserInput[]
@@ -22624,6 +24674,20 @@ export namespace Prisma {
     update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput> | PaymentReceiptCreateWithoutUploadedByInput[] | PaymentReceiptUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutUploadedByInput | PaymentReceiptCreateOrConnectWithoutUploadedByInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutUploadedByInput | PaymentReceiptUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: PaymentReceiptCreateManyUploadedByInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutUploadedByInput | PaymentReceiptUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutUploadedByInput | PaymentReceiptUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
   }
 
   export type CompanyMemberCreateNestedManyWithoutCompanyInput = {
@@ -22918,6 +24982,12 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutClientProfileInput = {
+    create?: XOR<UserCreateWithoutClientProfileInput, UserUncheckedCreateWithoutClientProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type InvoiceCreateNestedManyWithoutCustomerInput = {
     create?: XOR<InvoiceCreateWithoutCustomerInput, InvoiceUncheckedCreateWithoutCustomerInput> | InvoiceCreateWithoutCustomerInput[] | InvoiceUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutCustomerInput | InvoiceCreateOrConnectWithoutCustomerInput[]
@@ -22937,6 +25007,13 @@ export namespace Prisma {
     connectOrCreate?: ContractCreateOrConnectWithoutCustomerInput | ContractCreateOrConnectWithoutCustomerInput[]
     createMany?: ContractCreateManyCustomerInputEnvelope
     connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput> | PaymentReceiptCreateWithoutCustomerInput[] | PaymentReceiptUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutCustomerInput | PaymentReceiptCreateOrConnectWithoutCustomerInput[]
+    createMany?: PaymentReceiptCreateManyCustomerInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
   }
 
   export type InvoiceUncheckedCreateNestedManyWithoutCustomerInput = {
@@ -22960,6 +25037,17 @@ export namespace Prisma {
     connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
   }
 
+  export type PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput = {
+    create?: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput> | PaymentReceiptCreateWithoutCustomerInput[] | PaymentReceiptUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutCustomerInput | PaymentReceiptCreateOrConnectWithoutCustomerInput[]
+    createMany?: PaymentReceiptCreateManyCustomerInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type CompanyUpdateOneRequiredWithoutCustomersNestedInput = {
     create?: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
     connectOrCreate?: CompanyCreateOrConnectWithoutCustomersInput
@@ -22974,6 +25062,16 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutCustomersInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCustomersInput, UserUpdateWithoutCustomersInput>, UserUncheckedUpdateWithoutCustomersInput>
+  }
+
+  export type UserUpdateOneWithoutClientProfileNestedInput = {
+    create?: XOR<UserCreateWithoutClientProfileInput, UserUncheckedCreateWithoutClientProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutClientProfileInput
+    upsert?: UserUpsertWithoutClientProfileInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutClientProfileInput, UserUpdateWithoutClientProfileInput>, UserUncheckedUpdateWithoutClientProfileInput>
   }
 
   export type InvoiceUpdateManyWithoutCustomerNestedInput = {
@@ -23018,6 +25116,20 @@ export namespace Prisma {
     deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
   }
 
+  export type PaymentReceiptUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput> | PaymentReceiptCreateWithoutCustomerInput[] | PaymentReceiptUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutCustomerInput | PaymentReceiptCreateOrConnectWithoutCustomerInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutCustomerInput | PaymentReceiptUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: PaymentReceiptCreateManyCustomerInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutCustomerInput | PaymentReceiptUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutCustomerInput | PaymentReceiptUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
+  }
+
   export type InvoiceUncheckedUpdateManyWithoutCustomerNestedInput = {
     create?: XOR<InvoiceCreateWithoutCustomerInput, InvoiceUncheckedCreateWithoutCustomerInput> | InvoiceCreateWithoutCustomerInput[] | InvoiceUncheckedCreateWithoutCustomerInput[]
     connectOrCreate?: InvoiceCreateOrConnectWithoutCustomerInput | InvoiceCreateOrConnectWithoutCustomerInput[]
@@ -23060,6 +25172,20 @@ export namespace Prisma {
     deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
   }
 
+  export type PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput> | PaymentReceiptCreateWithoutCustomerInput[] | PaymentReceiptUncheckedCreateWithoutCustomerInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutCustomerInput | PaymentReceiptCreateOrConnectWithoutCustomerInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutCustomerInput | PaymentReceiptUpsertWithWhereUniqueWithoutCustomerInput[]
+    createMany?: PaymentReceiptCreateManyCustomerInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutCustomerInput | PaymentReceiptUpdateWithWhereUniqueWithoutCustomerInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutCustomerInput | PaymentReceiptUpdateManyWithWhereWithoutCustomerInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
+  }
+
   export type CompanyCreateNestedOneWithoutInvoicesInput = {
     create?: XOR<CompanyCreateWithoutInvoicesInput, CompanyUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: CompanyCreateOrConnectWithoutInvoicesInput
@@ -23085,11 +25211,25 @@ export namespace Prisma {
     connect?: InvoiceItemWhereUniqueInput | InvoiceItemWhereUniqueInput[]
   }
 
+  export type PaymentReceiptCreateNestedManyWithoutInvoiceInput = {
+    create?: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput> | PaymentReceiptCreateWithoutInvoiceInput[] | PaymentReceiptUncheckedCreateWithoutInvoiceInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutInvoiceInput | PaymentReceiptCreateOrConnectWithoutInvoiceInput[]
+    createMany?: PaymentReceiptCreateManyInvoiceInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+  }
+
   export type InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput = {
     create?: XOR<InvoiceItemCreateWithoutInvoiceInput, InvoiceItemUncheckedCreateWithoutInvoiceInput> | InvoiceItemCreateWithoutInvoiceInput[] | InvoiceItemUncheckedCreateWithoutInvoiceInput[]
     connectOrCreate?: InvoiceItemCreateOrConnectWithoutInvoiceInput | InvoiceItemCreateOrConnectWithoutInvoiceInput[]
     createMany?: InvoiceItemCreateManyInvoiceInputEnvelope
     connect?: InvoiceItemWhereUniqueInput | InvoiceItemWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput = {
+    create?: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput> | PaymentReceiptCreateWithoutInvoiceInput[] | PaymentReceiptUncheckedCreateWithoutInvoiceInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutInvoiceInput | PaymentReceiptCreateOrConnectWithoutInvoiceInput[]
+    createMany?: PaymentReceiptCreateManyInvoiceInputEnvelope
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -23140,6 +25280,20 @@ export namespace Prisma {
     deleteMany?: InvoiceItemScalarWhereInput | InvoiceItemScalarWhereInput[]
   }
 
+  export type PaymentReceiptUpdateManyWithoutInvoiceNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput> | PaymentReceiptCreateWithoutInvoiceInput[] | PaymentReceiptUncheckedCreateWithoutInvoiceInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutInvoiceInput | PaymentReceiptCreateOrConnectWithoutInvoiceInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutInvoiceInput | PaymentReceiptUpsertWithWhereUniqueWithoutInvoiceInput[]
+    createMany?: PaymentReceiptCreateManyInvoiceInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutInvoiceInput | PaymentReceiptUpdateWithWhereUniqueWithoutInvoiceInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutInvoiceInput | PaymentReceiptUpdateManyWithWhereWithoutInvoiceInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
+  }
+
   export type InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput = {
     create?: XOR<InvoiceItemCreateWithoutInvoiceInput, InvoiceItemUncheckedCreateWithoutInvoiceInput> | InvoiceItemCreateWithoutInvoiceInput[] | InvoiceItemUncheckedCreateWithoutInvoiceInput[]
     connectOrCreate?: InvoiceItemCreateOrConnectWithoutInvoiceInput | InvoiceItemCreateOrConnectWithoutInvoiceInput[]
@@ -23152,6 +25306,20 @@ export namespace Prisma {
     update?: InvoiceItemUpdateWithWhereUniqueWithoutInvoiceInput | InvoiceItemUpdateWithWhereUniqueWithoutInvoiceInput[]
     updateMany?: InvoiceItemUpdateManyWithWhereWithoutInvoiceInput | InvoiceItemUpdateManyWithWhereWithoutInvoiceInput[]
     deleteMany?: InvoiceItemScalarWhereInput | InvoiceItemScalarWhereInput[]
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput> | PaymentReceiptCreateWithoutInvoiceInput[] | PaymentReceiptUncheckedCreateWithoutInvoiceInput[]
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutInvoiceInput | PaymentReceiptCreateOrConnectWithoutInvoiceInput[]
+    upsert?: PaymentReceiptUpsertWithWhereUniqueWithoutInvoiceInput | PaymentReceiptUpsertWithWhereUniqueWithoutInvoiceInput[]
+    createMany?: PaymentReceiptCreateManyInvoiceInputEnvelope
+    set?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    disconnect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    delete?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    connect?: PaymentReceiptWhereUniqueInput | PaymentReceiptWhereUniqueInput[]
+    update?: PaymentReceiptUpdateWithWhereUniqueWithoutInvoiceInput | PaymentReceiptUpdateWithWhereUniqueWithoutInvoiceInput[]
+    updateMany?: PaymentReceiptUpdateManyWithWhereWithoutInvoiceInput | PaymentReceiptUpdateManyWithWhereWithoutInvoiceInput[]
+    deleteMany?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
   }
 
   export type InvoiceCreateNestedOneWithoutItemsInput = {
@@ -23280,6 +25448,48 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAuditLogsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type InvoiceCreateNestedOneWithoutReceiptsInput = {
+    create?: XOR<InvoiceCreateWithoutReceiptsInput, InvoiceUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutReceiptsInput
+    connect?: InvoiceWhereUniqueInput
+  }
+
+  export type CustomerCreateNestedOneWithoutReceiptsInput = {
+    create?: XOR<CustomerCreateWithoutReceiptsInput, CustomerUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutReceiptsInput
+    connect?: CustomerWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutReceiptsUploadedInput = {
+    create?: XOR<UserCreateWithoutReceiptsUploadedInput, UserUncheckedCreateWithoutReceiptsUploadedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceiptsUploadedInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type InvoiceUpdateOneRequiredWithoutReceiptsNestedInput = {
+    create?: XOR<InvoiceCreateWithoutReceiptsInput, InvoiceUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutReceiptsInput
+    upsert?: InvoiceUpsertWithoutReceiptsInput
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutReceiptsInput, InvoiceUpdateWithoutReceiptsInput>, InvoiceUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type CustomerUpdateOneRequiredWithoutReceiptsNestedInput = {
+    create?: XOR<CustomerCreateWithoutReceiptsInput, CustomerUncheckedCreateWithoutReceiptsInput>
+    connectOrCreate?: CustomerCreateOrConnectWithoutReceiptsInput
+    upsert?: CustomerUpsertWithoutReceiptsInput
+    connect?: CustomerWhereUniqueInput
+    update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutReceiptsInput, CustomerUpdateWithoutReceiptsInput>, CustomerUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutReceiptsUploadedNestedInput = {
+    create?: XOR<UserCreateWithoutReceiptsUploadedInput, UserUncheckedCreateWithoutReceiptsUploadedInput>
+    connectOrCreate?: UserCreateOrConnectWithoutReceiptsUploadedInput
+    upsert?: UserUpsertWithoutReceiptsUploadedInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutReceiptsUploadedInput, UserUpdateWithoutReceiptsUploadedInput>, UserUncheckedUpdateWithoutReceiptsUploadedInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -23470,6 +25680,19 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -23492,14 +25715,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -23508,14 +25735,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -23540,14 +25771,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -23556,14 +25791,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -23572,14 +25811,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -23588,14 +25831,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -23620,14 +25867,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -23636,14 +25887,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -23652,14 +25907,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -23668,14 +25927,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -23700,14 +25963,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -23716,14 +25983,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type AccountCreateWithoutUserInput = {
@@ -23837,6 +26108,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutUserInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -23848,14 +26120,18 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutUserInput = {
     id?: string
     companyId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -23869,6 +26145,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutUserInput = {
@@ -23879,6 +26156,53 @@ export namespace Prisma {
   export type CustomerCreateManyUserInputEnvelope = {
     data: CustomerCreateManyUserInput | CustomerCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type CustomerCreateWithoutClientUserInput = {
+    id?: string
+    portalEnabled?: boolean
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
+    user: UserCreateNestedOneWithoutCustomersInput
+    invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
+    contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutClientUserInput = {
+    id?: string
+    companyId: string
+    userId: string
+    portalEnabled?: boolean
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutClientUserInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
   }
 
   export type InvoiceCreateWithoutUserInput = {
@@ -23925,6 +26249,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutUserInput = {
@@ -23971,6 +26296,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceCreateOrConnectWithoutUserInput = {
@@ -24117,6 +26443,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PaymentReceiptCreateWithoutUploadedByInput = {
+    id?: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoice: InvoiceCreateNestedOneWithoutReceiptsInput
+    customer: CustomerCreateNestedOneWithoutReceiptsInput
+  }
+
+  export type PaymentReceiptUncheckedCreateWithoutUploadedByInput = {
+    id?: string
+    invoiceId: string
+    customerId: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptCreateOrConnectWithoutUploadedByInput = {
+    where: PaymentReceiptWhereUniqueInput
+    create: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type PaymentReceiptCreateManyUploadedByInputEnvelope = {
+    data: PaymentReceiptCreateManyUploadedByInput | PaymentReceiptCreateManyUploadedByInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutUserInput, AccountUncheckedUpdateWithoutUserInput>
@@ -24255,6 +26625,8 @@ export namespace Prisma {
     id?: StringFilter<"Customer"> | string
     companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
+    clientUserId?: StringNullableFilter<"Customer"> | string | null
+    portalEnabled?: BoolFilter<"Customer"> | boolean
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
     phone?: StringFilter<"Customer"> | string
@@ -24265,6 +26637,59 @@ export namespace Prisma {
     taxId?: StringFilter<"Customer"> | string
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
+  }
+
+  export type CustomerUpsertWithoutClientUserInput = {
+    update: XOR<CustomerUpdateWithoutClientUserInput, CustomerUncheckedUpdateWithoutClientUserInput>
+    create: XOR<CustomerCreateWithoutClientUserInput, CustomerUncheckedCreateWithoutClientUserInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutClientUserInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutClientUserInput, CustomerUncheckedUpdateWithoutClientUserInput>
+  }
+
+  export type CustomerUpdateWithoutClientUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
+    user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutClientUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutUserInput = {
@@ -24444,6 +26869,43 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
   }
 
+  export type PaymentReceiptUpsertWithWhereUniqueWithoutUploadedByInput = {
+    where: PaymentReceiptWhereUniqueInput
+    update: XOR<PaymentReceiptUpdateWithoutUploadedByInput, PaymentReceiptUncheckedUpdateWithoutUploadedByInput>
+    create: XOR<PaymentReceiptCreateWithoutUploadedByInput, PaymentReceiptUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type PaymentReceiptUpdateWithWhereUniqueWithoutUploadedByInput = {
+    where: PaymentReceiptWhereUniqueInput
+    data: XOR<PaymentReceiptUpdateWithoutUploadedByInput, PaymentReceiptUncheckedUpdateWithoutUploadedByInput>
+  }
+
+  export type PaymentReceiptUpdateManyWithWhereWithoutUploadedByInput = {
+    where: PaymentReceiptScalarWhereInput
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyWithoutUploadedByInput>
+  }
+
+  export type PaymentReceiptScalarWhereInput = {
+    AND?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
+    OR?: PaymentReceiptScalarWhereInput[]
+    NOT?: PaymentReceiptScalarWhereInput | PaymentReceiptScalarWhereInput[]
+    id?: StringFilter<"PaymentReceipt"> | string
+    invoiceId?: StringFilter<"PaymentReceipt"> | string
+    customerId?: StringFilter<"PaymentReceipt"> | string
+    uploadedById?: StringFilter<"PaymentReceipt"> | string
+    fileName?: StringFilter<"PaymentReceipt"> | string
+    fileSize?: IntFilter<"PaymentReceipt"> | number
+    mimeType?: StringFilter<"PaymentReceipt"> | string
+    fileData?: StringFilter<"PaymentReceipt"> | string
+    notes?: StringNullableFilter<"PaymentReceipt"> | string | null
+    status?: StringFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedById?: StringNullableFilter<"PaymentReceipt"> | string | null
+    reviewedAt?: DateTimeNullableFilter<"PaymentReceipt"> | Date | string | null
+    createdAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+  }
+
   export type CompanyMemberCreateWithoutCompanyInput = {
     id?: string
     role?: string
@@ -24470,6 +26932,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutCompanyInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -24481,14 +26944,18 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutCompanyInput = {
     id?: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -24502,6 +26969,7 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutCompanyInput = {
@@ -24558,6 +27026,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutCompanyInput = {
@@ -24604,6 +27073,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceCreateOrConnectWithoutCompanyInput = {
@@ -24911,14 +27381,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutCompanyMembersInput = {
@@ -24927,14 +27401,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutCompanyMembersInput = {
@@ -25024,14 +27502,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCompanyMembersInput = {
@@ -25040,14 +27522,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type CompanyCreateWithoutCustomersInput = {
@@ -25115,14 +27601,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutCustomersInput = {
@@ -25131,19 +27621,68 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutCustomersInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutCustomersInput, UserUncheckedCreateWithoutCustomersInput>
+  }
+
+  export type UserCreateWithoutClientProfileInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    passwordHash?: string | null
+    userRole?: string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    customers?: CustomerCreateNestedManyWithoutUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
+  }
+
+  export type UserUncheckedCreateWithoutClientProfileInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    passwordHash?: string | null
+    userRole?: string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
+  }
+
+  export type UserCreateOrConnectWithoutClientProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutClientProfileInput, UserUncheckedCreateWithoutClientProfileInput>
   }
 
   export type InvoiceCreateWithoutCustomerInput = {
@@ -25190,6 +27729,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutInvoicesInput
     user: UserCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutCustomerInput = {
@@ -25236,6 +27776,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceCreateOrConnectWithoutCustomerInput = {
@@ -25346,6 +27887,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PaymentReceiptCreateWithoutCustomerInput = {
+    id?: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoice: InvoiceCreateNestedOneWithoutReceiptsInput
+    uploadedBy: UserCreateNestedOneWithoutReceiptsUploadedInput
+  }
+
+  export type PaymentReceiptUncheckedCreateWithoutCustomerInput = {
+    id?: string
+    invoiceId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptCreateOrConnectWithoutCustomerInput = {
+    where: PaymentReceiptWhereUniqueInput
+    create: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type PaymentReceiptCreateManyCustomerInputEnvelope = {
+    data: PaymentReceiptCreateManyCustomerInput | PaymentReceiptCreateManyCustomerInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CompanyUpsertWithoutCustomersInput = {
     update: XOR<CompanyUpdateWithoutCustomersInput, CompanyUncheckedUpdateWithoutCustomersInput>
     create: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
@@ -25428,14 +28013,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCustomersInput = {
@@ -25444,14 +28033,69 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
+  }
+
+  export type UserUpsertWithoutClientProfileInput = {
+    update: XOR<UserUpdateWithoutClientProfileInput, UserUncheckedUpdateWithoutClientProfileInput>
+    create: XOR<UserCreateWithoutClientProfileInput, UserUncheckedCreateWithoutClientProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutClientProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutClientProfileInput, UserUncheckedUpdateWithoutClientProfileInput>
+  }
+
+  export type UserUpdateWithoutClientProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    customers?: CustomerUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutClientProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type InvoiceUpsertWithWhereUniqueWithoutCustomerInput = {
@@ -25500,6 +28144,22 @@ export namespace Prisma {
   export type ContractUpdateManyWithWhereWithoutCustomerInput = {
     where: ContractScalarWhereInput
     data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutCustomerInput>
+  }
+
+  export type PaymentReceiptUpsertWithWhereUniqueWithoutCustomerInput = {
+    where: PaymentReceiptWhereUniqueInput
+    update: XOR<PaymentReceiptUpdateWithoutCustomerInput, PaymentReceiptUncheckedUpdateWithoutCustomerInput>
+    create: XOR<PaymentReceiptCreateWithoutCustomerInput, PaymentReceiptUncheckedCreateWithoutCustomerInput>
+  }
+
+  export type PaymentReceiptUpdateWithWhereUniqueWithoutCustomerInput = {
+    where: PaymentReceiptWhereUniqueInput
+    data: XOR<PaymentReceiptUpdateWithoutCustomerInput, PaymentReceiptUncheckedUpdateWithoutCustomerInput>
+  }
+
+  export type PaymentReceiptUpdateManyWithWhereWithoutCustomerInput = {
+    where: PaymentReceiptScalarWhereInput
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyWithoutCustomerInput>
   }
 
   export type CompanyCreateWithoutInvoicesInput = {
@@ -25567,14 +28227,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutInvoicesInput = {
@@ -25583,14 +28247,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutInvoicesInput = {
@@ -25600,6 +28268,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutInvoicesInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -25612,14 +28281,18 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutInvoicesInput = {
     id?: string
     companyId: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -25632,6 +28305,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutInvoicesInput = {
@@ -25664,6 +28338,50 @@ export namespace Prisma {
 
   export type InvoiceItemCreateManyInvoiceInputEnvelope = {
     data: InvoiceItemCreateManyInvoiceInput | InvoiceItemCreateManyInvoiceInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PaymentReceiptCreateWithoutInvoiceInput = {
+    id?: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customer: CustomerCreateNestedOneWithoutReceiptsInput
+    uploadedBy: UserCreateNestedOneWithoutReceiptsUploadedInput
+  }
+
+  export type PaymentReceiptUncheckedCreateWithoutInvoiceInput = {
+    id?: string
+    customerId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptCreateOrConnectWithoutInvoiceInput = {
+    where: PaymentReceiptWhereUniqueInput
+    create: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type PaymentReceiptCreateManyInvoiceInputEnvelope = {
+    data: PaymentReceiptCreateManyInvoiceInput | PaymentReceiptCreateManyInvoiceInput[]
     skipDuplicates?: boolean
   }
 
@@ -25749,14 +28467,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutInvoicesInput = {
@@ -25765,14 +28487,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type CustomerUpsertWithoutInvoicesInput = {
@@ -25788,6 +28514,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -25800,14 +28527,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -25820,6 +28551,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type InvoiceItemUpsertWithWhereUniqueWithoutInvoiceInput = {
@@ -25849,6 +28581,22 @@ export namespace Prisma {
     unitPrice?: FloatFilter<"InvoiceItem"> | number
     total?: FloatFilter<"InvoiceItem"> | number
     orderIndex?: IntFilter<"InvoiceItem"> | number
+  }
+
+  export type PaymentReceiptUpsertWithWhereUniqueWithoutInvoiceInput = {
+    where: PaymentReceiptWhereUniqueInput
+    update: XOR<PaymentReceiptUpdateWithoutInvoiceInput, PaymentReceiptUncheckedUpdateWithoutInvoiceInput>
+    create: XOR<PaymentReceiptCreateWithoutInvoiceInput, PaymentReceiptUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type PaymentReceiptUpdateWithWhereUniqueWithoutInvoiceInput = {
+    where: PaymentReceiptWhereUniqueInput
+    data: XOR<PaymentReceiptUpdateWithoutInvoiceInput, PaymentReceiptUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type PaymentReceiptUpdateManyWithWhereWithoutInvoiceInput = {
+    where: PaymentReceiptScalarWhereInput
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyWithoutInvoiceInput>
   }
 
   export type InvoiceCreateWithoutItemsInput = {
@@ -25895,6 +28643,7 @@ export namespace Prisma {
     company: CompanyCreateNestedOneWithoutInvoicesInput
     user: UserCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutItemsInput = {
@@ -25941,6 +28690,7 @@ export namespace Prisma {
     signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceCreateOrConnectWithoutItemsInput = {
@@ -26003,6 +28753,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutItemsInput = {
@@ -26049,6 +28800,7 @@ export namespace Prisma {
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput
   }
 
   export type CompanyCreateWithoutLicensesInput = {
@@ -26116,14 +28868,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutLicensesInput = {
@@ -26132,14 +28888,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutLicensesInput = {
@@ -26149,6 +28909,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutLicensesInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -26161,14 +28922,18 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutLicensesInput = {
     id?: string
     companyId: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -26181,6 +28946,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
     contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutLicensesInput = {
@@ -26270,14 +29036,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutLicensesInput = {
@@ -26286,14 +29056,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type CustomerUpsertWithoutLicensesInput = {
@@ -26309,6 +29083,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutLicensesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26321,14 +29096,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutLicensesInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26341,6 +29120,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CompanyCreateWithoutContractsInput = {
@@ -26408,14 +29188,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutContractsInput = {
@@ -26424,14 +29208,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutContractsInput = {
@@ -26441,6 +29229,7 @@ export namespace Prisma {
 
   export type CustomerCreateWithoutContractsInput = {
     id?: string
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -26453,14 +29242,18 @@ export namespace Prisma {
     updatedAt?: Date | string
     company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerUncheckedCreateWithoutContractsInput = {
     id?: string
     companyId: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -26473,6 +29266,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
+    receipts?: PaymentReceiptUncheckedCreateNestedManyWithoutCustomerInput
   }
 
   export type CustomerCreateOrConnectWithoutContractsInput = {
@@ -26562,14 +29356,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutContractsInput = {
@@ -26578,14 +29376,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
   }
 
   export type CustomerUpsertWithoutContractsInput = {
@@ -26601,6 +29403,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutContractsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26613,14 +29416,18 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutContractsInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -26633,6 +29440,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CompanyCreateWithoutAuditLogsInput = {
@@ -26700,14 +29508,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -26716,14 +29528,18 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
+    passwordHash?: string | null
+    userRole?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    receiptsUploaded?: PaymentReceiptUncheckedCreateNestedManyWithoutUploadedByInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -26813,14 +29629,18 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUpdateManyWithoutUploadedByNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -26829,14 +29649,418 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    receiptsUploaded?: PaymentReceiptUncheckedUpdateManyWithoutUploadedByNestedInput
+  }
+
+  export type InvoiceCreateWithoutReceiptsInput = {
+    id?: string
+    invoiceNumber: string
+    issueDate?: Date | string
+    dueDate: Date | string
+    status?: string
+    currency?: string
+    senderName?: string
+    senderEmail?: string
+    senderPhone?: string
+    senderAddress?: string
+    senderCity?: string
+    senderZipCode?: string
+    senderCountry?: string
+    senderTaxId?: string
+    receiverName?: string
+    receiverEmail?: string
+    receiverPhone?: string
+    receiverAddress?: string
+    receiverCity?: string
+    receiverZipCode?: string
+    receiverCountry?: string
+    receiverTaxId?: string
+    subTotal?: number
+    taxRate?: number
+    taxAmount?: number
+    discountRate?: number
+    discountAmount?: number
+    shippingAmount?: number
+    totalAmount?: number
+    notes?: string
+    paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInvoicesInput
+    user: UserCreateNestedOneWithoutInvoicesInput
+    customer?: CustomerCreateNestedOneWithoutInvoicesInput
+    items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutReceiptsInput = {
+    id?: string
+    companyId: string
+    userId: string
+    customerId?: string | null
+    invoiceNumber: string
+    issueDate?: Date | string
+    dueDate: Date | string
+    status?: string
+    currency?: string
+    senderName?: string
+    senderEmail?: string
+    senderPhone?: string
+    senderAddress?: string
+    senderCity?: string
+    senderZipCode?: string
+    senderCountry?: string
+    senderTaxId?: string
+    receiverName?: string
+    receiverEmail?: string
+    receiverPhone?: string
+    receiverAddress?: string
+    receiverCity?: string
+    receiverZipCode?: string
+    receiverCountry?: string
+    receiverTaxId?: string
+    subTotal?: number
+    taxRate?: number
+    taxAmount?: number
+    discountRate?: number
+    discountAmount?: number
+    shippingAmount?: number
+    totalAmount?: number
+    notes?: string
+    paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+  }
+
+  export type InvoiceCreateOrConnectWithoutReceiptsInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutReceiptsInput, InvoiceUncheckedCreateWithoutReceiptsInput>
+  }
+
+  export type CustomerCreateWithoutReceiptsInput = {
+    id?: string
+    portalEnabled?: boolean
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
+    user: UserCreateNestedOneWithoutCustomersInput
+    clientUser?: UserCreateNestedOneWithoutClientProfileInput
+    invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
+    contracts?: ContractCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutReceiptsInput = {
+    id?: string
+    companyId: string
+    userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutReceiptsInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutReceiptsInput, CustomerUncheckedCreateWithoutReceiptsInput>
+  }
+
+  export type UserCreateWithoutReceiptsUploadedInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    passwordHash?: string | null
+    userRole?: string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
+    customers?: CustomerCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerCreateNestedOneWithoutClientUserInput
+    invoices?: InvoiceCreateNestedManyWithoutUserInput
+    licenses?: LicenseCreateNestedManyWithoutUserInput
+    contracts?: ContractCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutReceiptsUploadedInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    passwordHash?: string | null
+    userRole?: string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
+    clientProfile?: CustomerUncheckedCreateNestedOneWithoutClientUserInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutReceiptsUploadedInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutReceiptsUploadedInput, UserUncheckedCreateWithoutReceiptsUploadedInput>
+  }
+
+  export type InvoiceUpsertWithoutReceiptsInput = {
+    update: XOR<InvoiceUpdateWithoutReceiptsInput, InvoiceUncheckedUpdateWithoutReceiptsInput>
+    create: XOR<InvoiceCreateWithoutReceiptsInput, InvoiceUncheckedCreateWithoutReceiptsInput>
+    where?: InvoiceWhereInput
+  }
+
+  export type InvoiceUpdateToOneWithWhereWithoutReceiptsInput = {
+    where?: InvoiceWhereInput
+    data: XOR<InvoiceUpdateWithoutReceiptsInput, InvoiceUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type InvoiceUpdateWithoutReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    senderPhone?: StringFieldUpdateOperationsInput | string
+    senderAddress?: StringFieldUpdateOperationsInput | string
+    senderCity?: StringFieldUpdateOperationsInput | string
+    senderZipCode?: StringFieldUpdateOperationsInput | string
+    senderCountry?: StringFieldUpdateOperationsInput | string
+    senderTaxId?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    receiverEmail?: StringFieldUpdateOperationsInput | string
+    receiverPhone?: StringFieldUpdateOperationsInput | string
+    receiverAddress?: StringFieldUpdateOperationsInput | string
+    receiverCity?: StringFieldUpdateOperationsInput | string
+    receiverZipCode?: StringFieldUpdateOperationsInput | string
+    receiverCountry?: StringFieldUpdateOperationsInput | string
+    receiverTaxId?: StringFieldUpdateOperationsInput | string
+    subTotal?: FloatFieldUpdateOperationsInput | number
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    discountRate?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    shippingAmount?: FloatFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    notes?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
+    user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
+    customer?: CustomerUpdateOneWithoutInvoicesNestedInput
+    items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    senderPhone?: StringFieldUpdateOperationsInput | string
+    senderAddress?: StringFieldUpdateOperationsInput | string
+    senderCity?: StringFieldUpdateOperationsInput | string
+    senderZipCode?: StringFieldUpdateOperationsInput | string
+    senderCountry?: StringFieldUpdateOperationsInput | string
+    senderTaxId?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    receiverEmail?: StringFieldUpdateOperationsInput | string
+    receiverPhone?: StringFieldUpdateOperationsInput | string
+    receiverAddress?: StringFieldUpdateOperationsInput | string
+    receiverCity?: StringFieldUpdateOperationsInput | string
+    receiverZipCode?: StringFieldUpdateOperationsInput | string
+    receiverCountry?: StringFieldUpdateOperationsInput | string
+    receiverTaxId?: StringFieldUpdateOperationsInput | string
+    subTotal?: FloatFieldUpdateOperationsInput | number
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    discountRate?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    shippingAmount?: FloatFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    notes?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+  }
+
+  export type CustomerUpsertWithoutReceiptsInput = {
+    update: XOR<CustomerUpdateWithoutReceiptsInput, CustomerUncheckedUpdateWithoutReceiptsInput>
+    create: XOR<CustomerCreateWithoutReceiptsInput, CustomerUncheckedCreateWithoutReceiptsInput>
+    where?: CustomerWhereInput
+  }
+
+  export type CustomerUpdateToOneWithWhereWithoutReceiptsInput = {
+    where?: CustomerWhereInput
+    data: XOR<CustomerUpdateWithoutReceiptsInput, CustomerUncheckedUpdateWithoutReceiptsInput>
+  }
+
+  export type CustomerUpdateWithoutReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
+    user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
+    invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutReceiptsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type UserUpsertWithoutReceiptsUploadedInput = {
+    update: XOR<UserUpdateWithoutReceiptsUploadedInput, UserUncheckedUpdateWithoutReceiptsUploadedInput>
+    create: XOR<UserCreateWithoutReceiptsUploadedInput, UserUncheckedCreateWithoutReceiptsUploadedInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutReceiptsUploadedInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutReceiptsUploadedInput, UserUncheckedUpdateWithoutReceiptsUploadedInput>
+  }
+
+  export type UserUpdateWithoutReceiptsUploadedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
+    customers?: CustomerUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUpdateOneWithoutClientUserNestedInput
+    invoices?: InvoiceUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUpdateManyWithoutUserNestedInput
+    contracts?: ContractUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutReceiptsUploadedInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
+    userRole?: StringFieldUpdateOperationsInput | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
+    clientProfile?: CustomerUncheckedUpdateOneWithoutClientUserNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -26877,6 +30101,8 @@ export namespace Prisma {
   export type CustomerCreateManyUserInput = {
     id?: string
     companyId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -26986,6 +30212,23 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type PaymentReceiptCreateManyUploadedByInput = {
+    id?: string
+    invoiceId: string
+    customerId: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AccountUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
@@ -27092,6 +30335,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27103,14 +30347,18 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27124,11 +30372,14 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     companyId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27185,6 +30436,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutUserInput = {
@@ -27231,6 +30483,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateManyWithoutUserInput = {
@@ -27434,6 +30687,57 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PaymentReceiptUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoice?: InvoiceUpdateOneRequiredWithoutReceiptsNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutReceiptsNestedInput
+  }
+
+  export type PaymentReceiptUncheckedUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CompanyMemberCreateManyCompanyInput = {
     id?: string
     userId: string
@@ -27444,6 +30748,8 @@ export namespace Prisma {
   export type CustomerCreateManyCompanyInput = {
     id?: string
     userId: string
+    clientUserId?: string | null
+    portalEnabled?: boolean
     name: string
     email?: string
     phone?: string
@@ -27576,6 +30882,7 @@ export namespace Prisma {
 
   export type CustomerUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27587,14 +30894,18 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    clientUser?: UserUpdateOneWithoutClientProfileNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27608,11 +30919,14 @@ export namespace Prisma {
     invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
   export type CustomerUncheckedUpdateManyWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
+    clientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    portalEnabled?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -27669,6 +30983,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutCompanyInput = {
@@ -27715,6 +31030,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateManyWithoutCompanyInput = {
@@ -28002,6 +31318,23 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type PaymentReceiptCreateManyCustomerInput = {
+    id?: string
+    invoiceId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type InvoiceUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
@@ -28046,6 +31379,7 @@ export namespace Prisma {
     company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutCustomerInput = {
@@ -28092,6 +31426,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+    receipts?: PaymentReceiptUncheckedUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateManyWithoutCustomerInput = {
@@ -28256,6 +31591,57 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PaymentReceiptUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoice?: InvoiceUpdateOneRequiredWithoutReceiptsNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutReceiptsUploadedNestedInput
+  }
+
+  export type PaymentReceiptUncheckedUpdateWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyWithoutCustomerInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type InvoiceItemCreateManyInvoiceInput = {
     id?: string
     description: string
@@ -28263,6 +31649,23 @@ export namespace Prisma {
     unitPrice?: number
     total?: number
     orderIndex?: number
+  }
+
+  export type PaymentReceiptCreateManyInvoiceInput = {
+    id?: string
+    customerId: string
+    uploadedById: string
+    fileName: string
+    fileSize: number
+    mimeType: string
+    fileData: string
+    notes?: string | null
+    status?: string
+    rejectionReason?: string | null
+    reviewedById?: string | null
+    reviewedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type InvoiceItemUpdateWithoutInvoiceInput = {
@@ -28290,6 +31693,57 @@ export namespace Prisma {
     unitPrice?: FloatFieldUpdateOperationsInput | number
     total?: FloatFieldUpdateOperationsInput | number
     orderIndex?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PaymentReceiptUpdateWithoutInvoiceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customer?: CustomerUpdateOneRequiredWithoutReceiptsNestedInput
+    uploadedBy?: UserUpdateOneRequiredWithoutReceiptsUploadedNestedInput
+  }
+
+  export type PaymentReceiptUncheckedUpdateWithoutInvoiceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyWithoutInvoiceInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    uploadedById?: StringFieldUpdateOperationsInput | string
+    fileName?: StringFieldUpdateOperationsInput | string
+    fileSize?: IntFieldUpdateOperationsInput | number
+    mimeType?: StringFieldUpdateOperationsInput | string
+    fileData?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedById?: NullableStringFieldUpdateOperationsInput | string | null
+    reviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
