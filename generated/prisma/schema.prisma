@@ -60,7 +60,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   posts          Post[]
-  companyProfile CompanyProfile?
+  companyMembers CompanyMember[]
   customers      Customer[]
   invoices       Invoice[]
   licenses       License[]
@@ -68,10 +68,9 @@ model User {
   auditLogs      AuditLog[]
 }
 
-model CompanyProfile {
+model Company {
   id                String   @id @default(cuid())
-  userId            String   @unique
-  companyName       String   @default("")
+  name              String
   email             String   @default("")
   phone             String   @default("")
   address           String   @default("")
@@ -90,11 +89,33 @@ model CompanyProfile {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  members   CompanyMember[]
+  customers Customer[]
+  invoices  Invoice[]
+  contracts Contract[]
+  licenses  License[]
+  auditLogs AuditLog[]
+
+  @@index([name])
+}
+
+model CompanyMember {
+  id        String   @id @default(cuid())
+  companyId String
+  userId    String
+  role      String   @default("OWNER") // OWNER, ADMIN, MEMBER
+  createdAt DateTime @default(now())
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([companyId, userId])
+  @@index([userId])
 }
 
 model Customer {
   id        String   @id @default(cuid())
+  companyId String
   userId    String
   name      String
   email     String   @default("")
@@ -107,16 +128,19 @@ model Customer {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   invoices  Invoice[]
   licenses  License[]
   contracts Contract[]
 
-  @@index([userId, name])
+  @@index([companyId, name])
+  @@index([userId])
 }
 
 model Invoice {
   id            String   @id @default(cuid())
+  companyId     String
   userId        String
   customerId    String?
   invoiceNumber String
@@ -166,12 +190,14 @@ model Invoice {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
+  company  Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   customer Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items    InvoiceItem[]
 
-  @@index([userId, status])
-  @@index([userId, invoiceNumber])
+  @@index([companyId, status])
+  @@index([companyId, invoiceNumber])
+  @@index([userId])
 }
 
 model InvoiceItem {
@@ -198,6 +224,7 @@ model VerificationToken {
 
 model License {
   id               String    @id @default(cuid())
+  companyId        String
   userId           String
   customerId       String?
   name             String
@@ -213,15 +240,18 @@ model License {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   customer Customer? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
-  @@index([userId, status])
+  @@index([companyId, status])
+  @@index([userId])
   @@index([key])
 }
 
 model Contract {
   id                String    @id @default(cuid())
+  companyId         String
   userId            String
   customerId        String
   contractNumber    String
@@ -240,16 +270,19 @@ model Contract {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
+  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
-  @@index([userId, status])
+  @@index([companyId, status])
+  @@index([userId])
   @@index([customerId])
-  @@index([userId, contractNumber])
+  @@index([companyId, contractNumber])
 }
 
 model AuditLog {
   id         String   @id @default(cuid())
+  companyId  String
   userId     String
   operatorId String
   action     String // SERVICE_SUSPENDED, SERVICE_ACTIVATED, KEY_REGENERATED, BILLING_OVERRIDE, CONTRACT_CREATED, CONTRACT_TERMINATED, LICENSE_DELETED
@@ -260,9 +293,11 @@ model AuditLog {
   ipAddress  String?
   createdAt  DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, createdAt])
-  @@index([userId, entityType, entityId])
+  @@index([companyId, createdAt])
+  @@index([companyId, entityType, entityId])
+  @@index([userId])
   @@index([action])
 }

@@ -17,6 +17,7 @@ export type AuditAction =
 export type AuditEntityType = "LICENSE" | "CONTRACT" | "INVOICE" | "CUSTOMER";
 
 export interface RecordAuditParams {
+  companyId: string;
   userId: string;
   operatorId: string;
   action: AuditAction | (string & {});
@@ -37,6 +38,7 @@ export async function recordAuditLog(
 ) {
   return db.auditLog.create({
     data: {
+      companyId: params.companyId,
       userId: params.userId,
       operatorId: params.operatorId,
       action: params.action,

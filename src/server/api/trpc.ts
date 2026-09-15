@@ -131,3 +131,97 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+/**
+ * Company procedure
+ *
+ * Extends protectedProcedure to guarantee an active Company workspace context.
+ * Resolves the active company from the 'x-company-id' header or 'active_company_id' cookie,
+ * or defaults to the user's first company membership. If the user has no company, automatically
+ * provisions an initial default company.
+ */
+export const companyProcedure = protectedProcedure.use(async ({ ctx, next }) => {
+  const userId = ctx.session.user.id;
+  const rawHeaders = ctx.headers;
+
+  let requestedCompanyId: string | null = null;
+
+  if (rawHeaders) {
+    requestedCompanyId = rawHeaders.get("x-company-id");
+    if (!requestedCompanyId) {
+      const cookieHeader = rawHeaders.get("cookie");
+      if (cookieHeader) {
+        const match = cookieHeader.match(/active_company_id=([^;]+)/);
+        if (match?.[1]) {
+          requestedCompanyId = decodeURIComponent(match[1]);
+        }
+      }
+    }
+  }
+
+  // Find user's company memberships
+  let membership = null;
+
+  if (requestedCompanyId) {
+    membership = await ctx.db.companyMember.findUnique({
+      where: {
+        companyId_userId: {
+          companyId: requestedCompanyId,
+          userId,
+        },
+      },
+      include: {
+        company: true,
+      },
+    });
+  }
+
+  // If requested company not found or not provided, fallback to user's first company
+  if (!membership) {
+    membership = await ctx.db.companyMember.findFirst({
+      where: { userId },
+      orderBy: { createdAt: "asc" },
+      include: {
+        company: true,
+      },
+    });
+  }
+
+  // If user still has no company at all, auto-provision their initial default company
+  if (!membership) {
+    const defaultCompanyName = ctx.session.user.name
+      ? `${ctx.session.user.name}'s Workspace`
+      : "My Workspace";
+
+    const newCompany = await ctx.db.company.create({
+      data: {
+        name: defaultCompanyName,
+        email: ctx.session.user.email ?? "",
+        members: {
+          create: {
+            userId,
+            role: "OWNER",
+          },
+        },
+      },
+    });
+
+    membership = {
+      id: "auto-init",
+      companyId: newCompany.id,
+      userId,
+      role: "OWNER",
+      createdAt: new Date(),
+      company: newCompany,
+    };
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      company: membership.company,
+      companyId: membership.company.id,
+      membership,
+    },
+  });
+});

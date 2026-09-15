@@ -112,6 +112,7 @@ export async function POST(req: Request) {
       if (contract) {
         await db.auditLog.create({
           data: {
+            companyId: contract.companyId,
             userId: contract.userId,
             operatorId: "SYSTEM_DOCUSEAL_WEBHOOK",
             action: "CONTRACT_DECLINED",

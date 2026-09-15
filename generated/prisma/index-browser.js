@@ -160,10 +160,9 @@ exports.Prisma.UserScalarFieldEnum = {
   image: 'image'
 };
 
-exports.Prisma.CompanyProfileScalarFieldEnum = {
+exports.Prisma.CompanyScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
-  companyName: 'companyName',
+  name: 'name',
   email: 'email',
   phone: 'phone',
   address: 'address',
@@ -183,8 +182,17 @@ exports.Prisma.CompanyProfileScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.CompanyMemberScalarFieldEnum = {
+  id: 'id',
+  companyId: 'companyId',
+  userId: 'userId',
+  role: 'role',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.CustomerScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   userId: 'userId',
   name: 'name',
   email: 'email',
@@ -200,6 +208,7 @@ exports.Prisma.CustomerScalarFieldEnum = {
 
 exports.Prisma.InvoiceScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   userId: 'userId',
   customerId: 'customerId',
   invoiceNumber: 'invoiceNumber',
@@ -261,6 +270,7 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
 
 exports.Prisma.LicenseScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   userId: 'userId',
   customerId: 'customerId',
   name: 'name',
@@ -279,6 +289,7 @@ exports.Prisma.LicenseScalarFieldEnum = {
 
 exports.Prisma.ContractScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   userId: 'userId',
   customerId: 'customerId',
   contractNumber: 'contractNumber',
@@ -300,6 +311,7 @@ exports.Prisma.ContractScalarFieldEnum = {
 
 exports.Prisma.AuditLogScalarFieldEnum = {
   id: 'id',
+  companyId: 'companyId',
   userId: 'userId',
   operatorId: 'operatorId',
   action: 'action',
@@ -332,7 +344,8 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Session: 'Session',
   User: 'User',
-  CompanyProfile: 'CompanyProfile',
+  Company: 'Company',
+  CompanyMember: 'CompanyMember',
   Customer: 'Customer',
   Invoice: 'Invoice',
   InvoiceItem: 'InvoiceItem',

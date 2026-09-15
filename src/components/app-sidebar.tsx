@@ -35,14 +35,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: profile?.logoUrl || "/avatars/user.jpg",
   }
 
-  const teams = [
-    {
-      name: profile?.companyName || "Invoify Workspace",
-      logo: <Building2Icon className="size-4" />,
-      plan: "Production",
-    },
-  ]
-
   const navMain = [
     {
       title: "Dashboard",
@@ -117,7 +109,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={navMain} />

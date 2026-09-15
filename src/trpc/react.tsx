@@ -55,6 +55,17 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
           headers: () => {
             const headers = new Headers();
             headers.set("x-trpc-source", "nextjs-react");
+            if (typeof document !== "undefined") {
+              const match = document.cookie.match(/active_company_id=([^;]+)/);
+              if (match?.[1]) {
+                headers.set("x-company-id", decodeURIComponent(match[1]));
+              } else {
+                const storedId = localStorage.getItem("active_company_id");
+                if (storedId) {
+                  headers.set("x-company-id", storedId);
+                }
+              }
+            }
             return headers;
           },
         }),

@@ -1,12 +1,12 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { invoiceSchema } from "~/lib/schemas/invoice";
 import { calculateInvoiceTotals } from "~/lib/utils/format";
 import { recordAuditLog } from "~/features/audit/server/auditService";
 
 export const invoiceRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: companyProcedure
     .input(
       z.object({
         status: z.enum(["ALL", "DRAFT", "PENDING", "PAID", "OVERDUE"]).default("ALL"),
@@ -17,9 +17,9 @@ export const invoiceRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { status, search, page, pageSize } = input;
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
 
-      const where: any = { userId };
+      const where: any = { companyId };
       if (status !== "ALL") {
         where.status = status;
       }
@@ -56,7 +56,7 @@ export const invoiceRouter = createTRPCRouter({
       };
     }),
 
-  getById: protectedProcedure
+  getById: companyProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const invoice = await ctx.db.invoice.findUnique({
@@ -69,7 +69,7 @@ export const invoiceRouter = createTRPCRouter({
         },
       });
 
-      if (!invoice || invoice.userId !== ctx.session.user.id) {
+      if (!invoice || invoice.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Invoice not found",
@@ -79,18 +79,18 @@ export const invoiceRouter = createTRPCRouter({
       return invoice;
     }),
 
-  getNextInvoiceNumber: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id;
-    const count = await ctx.db.invoice.count({ where: { userId } });
+  getNextInvoiceNumber: companyProcedure.query(async ({ ctx }) => {
+    const companyId = ctx.companyId;
+    const count = await ctx.db.invoice.count({ where: { companyId } });
     const year = new Date().getFullYear();
     const nextNum = (count + 1).toString().padStart(4, "0");
     return `INV-${year}-${nextNum}`;
   }),
 
-  getMetrics: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id;
+  getMetrics: companyProcedure.query(async ({ ctx }) => {
+    const companyId = ctx.companyId;
     const invoices = await ctx.db.invoice.findMany({
-      where: { userId },
+      where: { companyId },
       select: {
         status: true,
         totalAmount: true,
@@ -162,9 +162,10 @@ export const invoiceRouter = createTRPCRouter({
     };
   }),
 
-  create: protectedProcedure
+  create: companyProcedure
     .input(invoiceSchema)
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const { items, ...invoiceData } = input;
 
@@ -178,6 +179,7 @@ export const invoiceRouter = createTRPCRouter({
       return ctx.db.invoice.create({
         data: {
           ...invoiceData,
+          companyId,
           userId,
           subTotal: totals.subTotal,
           taxAmount: totals.taxAmount,
@@ -199,21 +201,21 @@ export const invoiceRouter = createTRPCRouter({
       });
     }),
 
-  update: protectedProcedure
+  update: companyProcedure
     .input(
       invoiceSchema.extend({
         id: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const { id, items, ...invoiceData } = input;
 
       const existing = await ctx.db.invoice.findUnique({
         where: { id },
       });
 
-      if (!existing || existing.userId !== userId) {
+      if (!existing || existing.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Invoice not found or unauthorized",
@@ -257,7 +259,7 @@ export const invoiceRouter = createTRPCRouter({
       });
     }),
 
-  updateStatus: protectedProcedure
+  updateStatus: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -270,7 +272,7 @@ export const invoiceRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!existing || existing.userId !== ctx.session.user.id) {
+      if (!existing || existing.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Invoice not found",
@@ -283,6 +285,7 @@ export const invoiceRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: "BILLING_OVERRIDE",
@@ -300,7 +303,7 @@ export const invoiceRouter = createTRPCRouter({
       return updated;
     }),
 
-  delete: protectedProcedure
+  delete: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -312,7 +315,7 @@ export const invoiceRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!existing || existing.userId !== ctx.session.user.id) {
+      if (!existing || existing.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Invoice not found",
@@ -324,6 +327,7 @@ export const invoiceRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: "BILLING_OVERRIDE",

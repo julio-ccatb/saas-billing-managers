@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 
 export const auditRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: companyProcedure
     .input(
       z
         .object({
@@ -15,7 +15,7 @@ export const auditRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const page = input?.page ?? 1;
       const pageSize = input?.pageSize ?? 25;
       const skip = (page - 1) * pageSize;
@@ -23,7 +23,7 @@ export const auditRouter = createTRPCRouter({
       const entityType = input?.entityType?.trim();
       const search = input?.search?.trim();
 
-      const where: any = { userId };
+      const where: any = { companyId };
       if (action && action !== "ALL") {
         where.action = action;
       }
@@ -57,7 +57,7 @@ export const auditRouter = createTRPCRouter({
       };
     }),
 
-  getRecent: protectedProcedure
+  getRecent: companyProcedure
     .input(
       z
         .object({
@@ -66,11 +66,11 @@ export const auditRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const limit = input?.limit ?? 5;
 
       return ctx.db.auditLog.findMany({
-        where: { userId },
+        where: { companyId },
         orderBy: { createdAt: "desc" },
         take: limit,
       });

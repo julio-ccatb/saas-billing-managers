@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { customerSchema } from "~/lib/schemas/invoice";
 import { clientOnboardingSchema } from "../schemas/onboarding.schema";
 import { generateLicenseKey } from "~/features/licenses/server/keygen";
 import { recordAuditLog } from "~/features/audit/server/auditService";
 
 export const customerRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: companyProcedure
     .input(
       z
         .object({
@@ -16,10 +16,10 @@ export const customerRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const search = input?.search?.trim();
 
-      const where: any = { userId };
+      const where: any = { companyId };
       if (search) {
         where.OR = [
           { name: { contains: search } },
@@ -42,7 +42,7 @@ export const customerRouter = createTRPCRouter({
       });
     }),
 
-  getById: protectedProcedure
+  getById: companyProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const customer = await ctx.db.customer.findUnique({
@@ -60,7 +60,7 @@ export const customerRouter = createTRPCRouter({
         },
       });
 
-      if (!customer || customer.userId !== ctx.session.user.id) {
+      if (!customer || customer.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Customer not found",
@@ -70,15 +70,16 @@ export const customerRouter = createTRPCRouter({
       return customer;
     }),
 
-  upsert: protectedProcedure
+  upsert: companyProcedure
     .input(customerSchema)
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const { id, ...data } = input;
 
       if (id) {
         const existing = await ctx.db.customer.findUnique({ where: { id } });
-        if (!existing || existing.userId !== userId) {
+        if (!existing || existing.companyId !== companyId) {
           throw new TRPCError({ code: "NOT_FOUND", message: "Customer not found" });
         }
         return ctx.db.customer.update({
@@ -90,12 +91,13 @@ export const customerRouter = createTRPCRouter({
       return ctx.db.customer.create({
         data: {
           ...data,
+          companyId,
           userId,
         },
       });
     }),
 
-  delete: protectedProcedure
+  delete: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -104,7 +106,7 @@ export const customerRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const existing = await ctx.db.customer.findUnique({ where: { id: input.id } });
-      if (!existing || existing.userId !== ctx.session.user.id) {
+      if (!existing || existing.companyId !== ctx.companyId) {
         throw new TRPCError({ code: "NOT_FOUND", message: "Customer not found" });
       }
 
@@ -113,6 +115,7 @@ export const customerRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: "CUSTOMER_DELETED",
@@ -132,16 +135,19 @@ export const customerRouter = createTRPCRouter({
    * Unified, atomic Client Onboarding Procedure.
    * Creates Customer + Contract + License + Initial Invoice in a single transaction.
    */
-  onboardClient: protectedProcedure
+  onboardClient: companyProcedure
     .input(clientOnboardingSchema)
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
+      const company = ctx.company;
       const { profile, contract: contractInput, license: licenseInput, invoice: invoiceInput } = input;
 
       return ctx.db.$transaction(async (tx) => {
         // 1. Create the Customer
         const customer = await tx.customer.create({
           data: {
+            companyId,
             userId,
             name: profile.name.trim(),
             email: profile.email.trim(),
@@ -161,6 +167,7 @@ export const customerRouter = createTRPCRouter({
           const isDirectActive = contractInput.status === "ACTIVE";
           contract = await tx.contract.create({
             data: {
+              companyId,
               userId,
               customerId: customer.id,
               contractNumber,
@@ -182,6 +189,7 @@ export const customerRouter = createTRPCRouter({
           const key = generateLicenseKey();
           license = await tx.license.create({
             data: {
+              companyId,
               userId,
               customerId: customer.id,
               name: licenseInput.name.trim() || "Production API License",
@@ -198,34 +206,30 @@ export const customerRouter = createTRPCRouter({
         // 4. Create Initial Invoice (if enabled)
         let invoice = null;
         if (invoiceInput.enabled && invoiceInput.amount > 0) {
-          const count = await tx.invoice.count({ where: { userId } });
+          const count = await tx.invoice.count({ where: { companyId } });
           const year = new Date().getFullYear();
           const invoiceNumber = `INV-${year}-${(count + 1).toString().padStart(4, "0")}`;
 
-          // Snapshot company profile if exists
-          const companyProfile = await tx.companyProfile.findUnique({
-            where: { userId },
-          });
-
           invoice = await tx.invoice.create({
             data: {
+              companyId,
               userId,
               customerId: customer.id,
               invoiceNumber,
               issueDate: new Date(),
               dueDate: invoiceInput.dueDate,
               status: "PENDING",
-              currency: contractInput?.currency || "USD",
+              currency: contractInput?.currency || company.currency || "USD",
 
-              // Sender details
-              senderName: companyProfile?.companyName || "Billing Admin",
-              senderEmail: companyProfile?.email || "",
-              senderPhone: companyProfile?.phone || "",
-              senderAddress: companyProfile?.address || "",
-              senderCity: companyProfile?.city || "",
-              senderZipCode: companyProfile?.zipCode || "",
-              senderCountry: companyProfile?.country || "",
-              senderTaxId: companyProfile?.taxId || "",
+              // Sender details from active company
+              senderName: company.name || "Billing Admin",
+              senderEmail: company.email || "",
+              senderPhone: company.phone || "",
+              senderAddress: company.address || "",
+              senderCity: company.city || "",
+              senderZipCode: company.zipCode || "",
+              senderCountry: company.country || "",
+              senderTaxId: company.taxId || "",
 
               // Receiver details
               receiverName: customer.name,
@@ -259,6 +263,7 @@ export const customerRouter = createTRPCRouter({
         // 5. Write Immutable Audit Entry
         await tx.auditLog.create({
           data: {
+            companyId,
             userId,
             operatorId: ctx.session.user.email ?? userId,
             action: "CLIENT_ONBOARDED",

@@ -58,15 +58,20 @@ export const authConfig = {
             },
           });
 
-          // Pre-populate company profile for the user
-          await db.companyProfile.create({
+          // Pre-populate company workspace for the user
+          await db.company.create({
             data: {
-              userId: user.id,
-              companyName: `${name}'s Company`,
+              name: `${name}'s Workspace`,
               email,
               currency: "USD",
               paymentTerms: "Payment due upon receipt",
               notes: "Thank you for your business!",
+              members: {
+                create: {
+                  userId: user.id,
+                  role: "OWNER",
+                },
+              },
             },
           });
         }

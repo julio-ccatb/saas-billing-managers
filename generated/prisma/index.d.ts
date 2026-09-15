@@ -34,10 +34,15 @@ export type Session = $Result.DefaultSelection<Prisma.$SessionPayload>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
- * Model CompanyProfile
+ * Model Company
  * 
  */
-export type CompanyProfile = $Result.DefaultSelection<Prisma.$CompanyProfilePayload>
+export type Company = $Result.DefaultSelection<Prisma.$CompanyPayload>
+/**
+ * Model CompanyMember
+ * 
+ */
+export type CompanyMember = $Result.DefaultSelection<Prisma.$CompanyMemberPayload>
 /**
  * Model Customer
  * 
@@ -233,14 +238,24 @@ export class PrismaClient<
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.companyProfile`: Exposes CRUD operations for the **CompanyProfile** model.
+   * `prisma.company`: Exposes CRUD operations for the **Company** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more CompanyProfiles
-    * const companyProfiles = await prisma.companyProfile.findMany()
+    * // Fetch zero or more Companies
+    * const companies = await prisma.company.findMany()
     * ```
     */
-  get companyProfile(): Prisma.CompanyProfileDelegate<ExtArgs, ClientOptions>;
+  get company(): Prisma.CompanyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.companyMember`: Exposes CRUD operations for the **CompanyMember** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more CompanyMembers
+    * const companyMembers = await prisma.companyMember.findMany()
+    * ```
+    */
+  get companyMember(): Prisma.CompanyMemberDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.customer`: Exposes CRUD operations for the **Customer** model.
@@ -756,7 +771,8 @@ export namespace Prisma {
     Account: 'Account',
     Session: 'Session',
     User: 'User',
-    CompanyProfile: 'CompanyProfile',
+    Company: 'Company',
+    CompanyMember: 'CompanyMember',
     Customer: 'Customer',
     Invoice: 'Invoice',
     InvoiceItem: 'InvoiceItem',
@@ -782,7 +798,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "account" | "session" | "user" | "companyProfile" | "customer" | "invoice" | "invoiceItem" | "verificationToken" | "license" | "contract" | "auditLog"
+      modelProps: "post" | "account" | "session" | "user" | "company" | "companyMember" | "customer" | "invoice" | "invoiceItem" | "verificationToken" | "license" | "contract" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1082,77 +1098,151 @@ export namespace Prisma {
           }
         }
       }
-      CompanyProfile: {
-        payload: Prisma.$CompanyProfilePayload<ExtArgs>
-        fields: Prisma.CompanyProfileFieldRefs
+      Company: {
+        payload: Prisma.$CompanyPayload<ExtArgs>
+        fields: Prisma.CompanyFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.CompanyProfileFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload> | null
+            args: Prisma.CompanyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.CompanyProfileFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           findFirst: {
-            args: Prisma.CompanyProfileFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload> | null
+            args: Prisma.CompanyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.CompanyProfileFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           findMany: {
-            args: Prisma.CompanyProfileFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>[]
+            args: Prisma.CompanyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
           }
           create: {
-            args: Prisma.CompanyProfileCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           createMany: {
-            args: Prisma.CompanyProfileCreateManyArgs<ExtArgs>
+            args: Prisma.CompanyCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.CompanyProfileCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>[]
+            args: Prisma.CompanyCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
           }
           delete: {
-            args: Prisma.CompanyProfileDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           update: {
-            args: Prisma.CompanyProfileUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           deleteMany: {
-            args: Prisma.CompanyProfileDeleteManyArgs<ExtArgs>
+            args: Prisma.CompanyDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.CompanyProfileUpdateManyArgs<ExtArgs>
+            args: Prisma.CompanyUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.CompanyProfileUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>[]
+            args: Prisma.CompanyUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>[]
           }
           upsert: {
-            args: Prisma.CompanyProfileUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CompanyProfilePayload>
+            args: Prisma.CompanyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyPayload>
           }
           aggregate: {
-            args: Prisma.CompanyProfileAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCompanyProfile>
+            args: Prisma.CompanyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompany>
           }
           groupBy: {
-            args: Prisma.CompanyProfileGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CompanyProfileGroupByOutputType>[]
+            args: Prisma.CompanyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyGroupByOutputType>[]
           }
           count: {
-            args: Prisma.CompanyProfileCountArgs<ExtArgs>
-            result: $Utils.Optional<CompanyProfileCountAggregateOutputType> | number
+            args: Prisma.CompanyCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyCountAggregateOutputType> | number
+          }
+        }
+      }
+      CompanyMember: {
+        payload: Prisma.$CompanyMemberPayload<ExtArgs>
+        fields: Prisma.CompanyMemberFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.CompanyMemberFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.CompanyMemberFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          findFirst: {
+            args: Prisma.CompanyMemberFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.CompanyMemberFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          findMany: {
+            args: Prisma.CompanyMemberFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>[]
+          }
+          create: {
+            args: Prisma.CompanyMemberCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          createMany: {
+            args: Prisma.CompanyMemberCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.CompanyMemberCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>[]
+          }
+          delete: {
+            args: Prisma.CompanyMemberDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          update: {
+            args: Prisma.CompanyMemberUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          deleteMany: {
+            args: Prisma.CompanyMemberDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.CompanyMemberUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.CompanyMemberUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>[]
+          }
+          upsert: {
+            args: Prisma.CompanyMemberUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$CompanyMemberPayload>
+          }
+          aggregate: {
+            args: Prisma.CompanyMemberAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCompanyMember>
+          }
+          groupBy: {
+            args: Prisma.CompanyMemberGroupByArgs<ExtArgs>
+            result: $Utils.Optional<CompanyMemberGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.CompanyMemberCountArgs<ExtArgs>
+            result: $Utils.Optional<CompanyMemberCountAggregateOutputType> | number
           }
         }
       }
@@ -1774,7 +1864,8 @@ export namespace Prisma {
     account?: AccountOmit
     session?: SessionOmit
     user?: UserOmit
-    companyProfile?: CompanyProfileOmit
+    company?: CompanyOmit
+    companyMember?: CompanyMemberOmit
     customer?: CustomerOmit
     invoice?: InvoiceOmit
     invoiceItem?: InvoiceItemOmit
@@ -1865,6 +1956,7 @@ export namespace Prisma {
     accounts: number
     sessions: number
     posts: number
+    companyMembers: number
     customers: number
     invoices: number
     licenses: number
@@ -1876,6 +1968,7 @@ export namespace Prisma {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
+    companyMembers?: boolean | UserCountOutputTypeCountCompanyMembersArgs
     customers?: boolean | UserCountOutputTypeCountCustomersArgs
     invoices?: boolean | UserCountOutputTypeCountInvoicesArgs
     licenses?: boolean | UserCountOutputTypeCountLicensesArgs
@@ -1918,6 +2011,13 @@ export namespace Prisma {
   /**
    * UserCountOutputType without action
    */
+  export type UserCountOutputTypeCountCompanyMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyMemberWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
   export type UserCountOutputTypeCountCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CustomerWhereInput
   }
@@ -1947,6 +2047,82 @@ export namespace Prisma {
    * UserCountOutputType without action
    */
   export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+  }
+
+
+  /**
+   * Count Type CompanyCountOutputType
+   */
+
+  export type CompanyCountOutputType = {
+    members: number
+    customers: number
+    invoices: number
+    contracts: number
+    licenses: number
+    auditLogs: number
+  }
+
+  export type CompanyCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | CompanyCountOutputTypeCountMembersArgs
+    customers?: boolean | CompanyCountOutputTypeCountCustomersArgs
+    invoices?: boolean | CompanyCountOutputTypeCountInvoicesArgs
+    contracts?: boolean | CompanyCountOutputTypeCountContractsArgs
+    licenses?: boolean | CompanyCountOutputTypeCountLicensesArgs
+    auditLogs?: boolean | CompanyCountOutputTypeCountAuditLogsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyCountOutputType
+     */
+    select?: CompanyCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyMemberWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountCustomersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CustomerWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountInvoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvoiceWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountContractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ContractWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountLicensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: LicenseWhereInput
+  }
+
+  /**
+   * CompanyCountOutputType without action
+   */
+  export type CompanyCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditLogWhereInput
   }
 
@@ -5539,7 +5715,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
-    companyProfile?: boolean | User$companyProfileArgs<ExtArgs>
+    companyMembers?: boolean | User$companyMembersArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     licenses?: boolean | User$licensesArgs<ExtArgs>
@@ -5577,7 +5753,7 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
-    companyProfile?: boolean | User$companyProfileArgs<ExtArgs>
+    companyMembers?: boolean | User$companyMembersArgs<ExtArgs>
     customers?: boolean | User$customersArgs<ExtArgs>
     invoices?: boolean | User$invoicesArgs<ExtArgs>
     licenses?: boolean | User$licensesArgs<ExtArgs>
@@ -5594,7 +5770,7 @@ export namespace Prisma {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
-      companyProfile: Prisma.$CompanyProfilePayload<ExtArgs> | null
+      companyMembers: Prisma.$CompanyMemberPayload<ExtArgs>[]
       customers: Prisma.$CustomerPayload<ExtArgs>[]
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       licenses: Prisma.$LicensePayload<ExtArgs>[]
@@ -6004,7 +6180,7 @@ export namespace Prisma {
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    companyProfile<T extends User$companyProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$companyProfileArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    companyMembers<T extends User$companyMembersArgs<ExtArgs> = {}>(args?: Subset<T, User$companyMembersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     customers<T extends User$customersArgs<ExtArgs> = {}>(args?: Subset<T, User$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invoices<T extends User$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, User$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     licenses<T extends User$licensesArgs<ExtArgs> = {}>(args?: Subset<T, User$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6504,22 +6680,27 @@ export namespace Prisma {
   }
 
   /**
-   * User.companyProfile
+   * User.companyMembers
    */
-  export type User$companyProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type User$companyMembersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
-    where?: CompanyProfileWhereInput
+    include?: CompanyMemberInclude<ExtArgs> | null
+    where?: CompanyMemberWhereInput
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
+    cursor?: CompanyMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyMemberScalarFieldEnum | CompanyMemberScalarFieldEnum[]
   }
 
   /**
@@ -6662,19 +6843,18 @@ export namespace Prisma {
 
 
   /**
-   * Model CompanyProfile
+   * Model Company
    */
 
-  export type AggregateCompanyProfile = {
-    _count: CompanyProfileCountAggregateOutputType | null
-    _min: CompanyProfileMinAggregateOutputType | null
-    _max: CompanyProfileMaxAggregateOutputType | null
+  export type AggregateCompany = {
+    _count: CompanyCountAggregateOutputType | null
+    _min: CompanyMinAggregateOutputType | null
+    _max: CompanyMaxAggregateOutputType | null
   }
 
-  export type CompanyProfileMinAggregateOutputType = {
+  export type CompanyMinAggregateOutputType = {
     id: string | null
-    userId: string | null
-    companyName: string | null
+    name: string | null
     email: string | null
     phone: string | null
     address: string | null
@@ -6694,10 +6874,9 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type CompanyProfileMaxAggregateOutputType = {
+  export type CompanyMaxAggregateOutputType = {
     id: string | null
-    userId: string | null
-    companyName: string | null
+    name: string | null
     email: string | null
     phone: string | null
     address: string | null
@@ -6717,10 +6896,9 @@ export namespace Prisma {
     updatedAt: Date | null
   }
 
-  export type CompanyProfileCountAggregateOutputType = {
+  export type CompanyCountAggregateOutputType = {
     id: number
-    userId: number
-    companyName: number
+    name: number
     email: number
     phone: number
     address: number
@@ -6742,10 +6920,9 @@ export namespace Prisma {
   }
 
 
-  export type CompanyProfileMinAggregateInputType = {
+  export type CompanyMinAggregateInputType = {
     id?: true
-    userId?: true
-    companyName?: true
+    name?: true
     email?: true
     phone?: true
     address?: true
@@ -6765,10 +6942,9 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type CompanyProfileMaxAggregateInputType = {
+  export type CompanyMaxAggregateInputType = {
     id?: true
-    userId?: true
-    companyName?: true
+    name?: true
     email?: true
     phone?: true
     address?: true
@@ -6788,10 +6964,9 @@ export namespace Prisma {
     updatedAt?: true
   }
 
-  export type CompanyProfileCountAggregateInputType = {
+  export type CompanyCountAggregateInputType = {
     id?: true
-    userId?: true
-    companyName?: true
+    name?: true
     email?: true
     phone?: true
     address?: true
@@ -6812,82 +6987,81 @@ export namespace Prisma {
     _all?: true
   }
 
-  export type CompanyProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CompanyProfile to aggregate.
+     * Filter which Company to aggregate.
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyProfiles to fetch.
+     * Determine the order of Companies to fetch.
      */
-    orderBy?: CompanyProfileOrderByWithRelationInput | CompanyProfileOrderByWithRelationInput[]
+    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: CompanyProfileWhereUniqueInput
+    cursor?: CompanyWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyProfiles from the position of the cursor.
+     * Take `±n` Companies from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyProfiles.
+     * Skip the first `n` Companies.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned CompanyProfiles
+     * Count returned Companies
     **/
-    _count?: true | CompanyProfileCountAggregateInputType
+    _count?: true | CompanyCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: CompanyProfileMinAggregateInputType
+    _min?: CompanyMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: CompanyProfileMaxAggregateInputType
+    _max?: CompanyMaxAggregateInputType
   }
 
-  export type GetCompanyProfileAggregateType<T extends CompanyProfileAggregateArgs> = {
-        [P in keyof T & keyof AggregateCompanyProfile]: P extends '_count' | 'count'
+  export type GetCompanyAggregateType<T extends CompanyAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompany]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateCompanyProfile[P]>
-      : GetScalarType<T[P], AggregateCompanyProfile[P]>
+        : GetScalarType<T[P], AggregateCompany[P]>
+      : GetScalarType<T[P], AggregateCompany[P]>
   }
 
 
 
 
-  export type CompanyProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CompanyProfileWhereInput
-    orderBy?: CompanyProfileOrderByWithAggregationInput | CompanyProfileOrderByWithAggregationInput[]
-    by: CompanyProfileScalarFieldEnum[] | CompanyProfileScalarFieldEnum
-    having?: CompanyProfileScalarWhereWithAggregatesInput
+  export type CompanyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyWhereInput
+    orderBy?: CompanyOrderByWithAggregationInput | CompanyOrderByWithAggregationInput[]
+    by: CompanyScalarFieldEnum[] | CompanyScalarFieldEnum
+    having?: CompanyScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: CompanyProfileCountAggregateInputType | true
-    _min?: CompanyProfileMinAggregateInputType
-    _max?: CompanyProfileMaxAggregateInputType
+    _count?: CompanyCountAggregateInputType | true
+    _min?: CompanyMinAggregateInputType
+    _max?: CompanyMaxAggregateInputType
   }
 
-  export type CompanyProfileGroupByOutputType = {
+  export type CompanyGroupByOutputType = {
     id: string
-    userId: string
-    companyName: string
+    name: string
     email: string
     phone: string
     address: string
@@ -6905,29 +7079,28 @@ export namespace Prisma {
     notes: string
     createdAt: Date
     updatedAt: Date
-    _count: CompanyProfileCountAggregateOutputType | null
-    _min: CompanyProfileMinAggregateOutputType | null
-    _max: CompanyProfileMaxAggregateOutputType | null
+    _count: CompanyCountAggregateOutputType | null
+    _min: CompanyMinAggregateOutputType | null
+    _max: CompanyMaxAggregateOutputType | null
   }
 
-  type GetCompanyProfileGroupByPayload<T extends CompanyProfileGroupByArgs> = Prisma.PrismaPromise<
+  type GetCompanyGroupByPayload<T extends CompanyGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<CompanyProfileGroupByOutputType, T['by']> &
+      PickEnumerable<CompanyGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof CompanyProfileGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof CompanyGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], CompanyProfileGroupByOutputType[P]>
-            : GetScalarType<T[P], CompanyProfileGroupByOutputType[P]>
+              : GetScalarType<T[P], CompanyGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type CompanyProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CompanySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
-    companyName?: boolean
+    name?: boolean
     email?: boolean
     phone?: boolean
     address?: boolean
@@ -6945,13 +7118,18 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyProfile"]>
+    members?: boolean | Company$membersArgs<ExtArgs>
+    customers?: boolean | Company$customersArgs<ExtArgs>
+    invoices?: boolean | Company$invoicesArgs<ExtArgs>
+    contracts?: boolean | Company$contractsArgs<ExtArgs>
+    licenses?: boolean | Company$licensesArgs<ExtArgs>
+    auditLogs?: boolean | Company$auditLogsArgs<ExtArgs>
+    _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["company"]>
 
-  export type CompanyProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CompanySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
-    companyName?: boolean
+    name?: boolean
     email?: boolean
     phone?: boolean
     address?: boolean
@@ -6969,13 +7147,11 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyProfile"]>
+  }, ExtArgs["result"]["company"]>
 
-  export type CompanyProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type CompanySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
-    companyName?: boolean
+    name?: boolean
     email?: boolean
     phone?: boolean
     address?: boolean
@@ -6993,13 +7169,11 @@ export namespace Prisma {
     notes?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["companyProfile"]>
+  }, ExtArgs["result"]["company"]>
 
-  export type CompanyProfileSelectScalar = {
+  export type CompanySelectScalar = {
     id?: boolean
-    userId?: boolean
-    companyName?: boolean
+    name?: boolean
     email?: boolean
     phone?: boolean
     address?: boolean
@@ -7019,26 +7193,32 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CompanyProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "companyName" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "bankName" | "bankAccountName" | "bankAccountNumber" | "logoUrl" | "signatureData" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["companyProfile"]>
-  export type CompanyProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
+  export type CompanyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "bankName" | "bankAccountName" | "bankAccountNumber" | "logoUrl" | "signatureData" | "currency" | "paymentTerms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["company"]>
+  export type CompanyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    members?: boolean | Company$membersArgs<ExtArgs>
+    customers?: boolean | Company$customersArgs<ExtArgs>
+    invoices?: boolean | Company$invoicesArgs<ExtArgs>
+    contracts?: boolean | Company$contractsArgs<ExtArgs>
+    licenses?: boolean | Company$licensesArgs<ExtArgs>
+    auditLogs?: boolean | Company$auditLogsArgs<ExtArgs>
+    _count?: boolean | CompanyCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type CompanyProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
-  export type CompanyProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-  }
+  export type CompanyIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CompanyIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
-  export type $CompanyProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "CompanyProfile"
+  export type $CompanyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Company"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
+      members: Prisma.$CompanyMemberPayload<ExtArgs>[]
+      customers: Prisma.$CustomerPayload<ExtArgs>[]
+      invoices: Prisma.$InvoicePayload<ExtArgs>[]
+      contracts: Prisma.$ContractPayload<ExtArgs>[]
+      licenses: Prisma.$LicensePayload<ExtArgs>[]
+      auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      userId: string
-      companyName: string
+      name: string
       email: string
       phone: string
       address: string
@@ -7056,136 +7236,136 @@ export namespace Prisma {
       notes: string
       createdAt: Date
       updatedAt: Date
-    }, ExtArgs["result"]["companyProfile"]>
+    }, ExtArgs["result"]["company"]>
     composites: {}
   }
 
-  type CompanyProfileGetPayload<S extends boolean | null | undefined | CompanyProfileDefaultArgs> = $Result.GetResult<Prisma.$CompanyProfilePayload, S>
+  type CompanyGetPayload<S extends boolean | null | undefined | CompanyDefaultArgs> = $Result.GetResult<Prisma.$CompanyPayload, S>
 
-  type CompanyProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CompanyProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CompanyProfileCountAggregateInputType | true
+  type CompanyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyCountAggregateInputType | true
     }
 
-  export interface CompanyProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyProfile'], meta: { name: 'CompanyProfile' } }
+  export interface CompanyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Company'], meta: { name: 'Company' } }
     /**
-     * Find zero or one CompanyProfile that matches the filter.
-     * @param {CompanyProfileFindUniqueArgs} args - Arguments to find a CompanyProfile
+     * Find zero or one Company that matches the filter.
+     * @param {CompanyFindUniqueArgs} args - Arguments to find a Company
      * @example
-     * // Get one CompanyProfile
-     * const companyProfile = await prisma.companyProfile.findUnique({
+     * // Get one Company
+     * const company = await prisma.company.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends CompanyProfileFindUniqueArgs>(args: SelectSubset<T, CompanyProfileFindUniqueArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends CompanyFindUniqueArgs>(args: SelectSubset<T, CompanyFindUniqueArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one CompanyProfile that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Company that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {CompanyProfileFindUniqueOrThrowArgs} args - Arguments to find a CompanyProfile
+     * @param {CompanyFindUniqueOrThrowArgs} args - Arguments to find a Company
      * @example
-     * // Get one CompanyProfile
-     * const companyProfile = await prisma.companyProfile.findUniqueOrThrow({
+     * // Get one Company
+     * const company = await prisma.company.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends CompanyProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends CompanyFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CompanyProfile that matches the filter.
+     * Find the first Company that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileFindFirstArgs} args - Arguments to find a CompanyProfile
+     * @param {CompanyFindFirstArgs} args - Arguments to find a Company
      * @example
-     * // Get one CompanyProfile
-     * const companyProfile = await prisma.companyProfile.findFirst({
+     * // Get one Company
+     * const company = await prisma.company.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends CompanyProfileFindFirstArgs>(args?: SelectSubset<T, CompanyProfileFindFirstArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends CompanyFindFirstArgs>(args?: SelectSubset<T, CompanyFindFirstArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first CompanyProfile that matches the filter or
+     * Find the first Company that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileFindFirstOrThrowArgs} args - Arguments to find a CompanyProfile
+     * @param {CompanyFindFirstOrThrowArgs} args - Arguments to find a Company
      * @example
-     * // Get one CompanyProfile
-     * const companyProfile = await prisma.companyProfile.findFirstOrThrow({
+     * // Get one Company
+     * const company = await prisma.company.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends CompanyProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends CompanyFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more CompanyProfiles that matches the filter.
+     * Find zero or more Companies that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {CompanyFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all CompanyProfiles
-     * const companyProfiles = await prisma.companyProfile.findMany()
+     * // Get all Companies
+     * const companies = await prisma.company.findMany()
      * 
-     * // Get first 10 CompanyProfiles
-     * const companyProfiles = await prisma.companyProfile.findMany({ take: 10 })
+     * // Get first 10 Companies
+     * const companies = await prisma.company.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const companyProfileWithIdOnly = await prisma.companyProfile.findMany({ select: { id: true } })
+     * const companyWithIdOnly = await prisma.company.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends CompanyProfileFindManyArgs>(args?: SelectSubset<T, CompanyProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends CompanyFindManyArgs>(args?: SelectSubset<T, CompanyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a CompanyProfile.
-     * @param {CompanyProfileCreateArgs} args - Arguments to create a CompanyProfile.
+     * Create a Company.
+     * @param {CompanyCreateArgs} args - Arguments to create a Company.
      * @example
-     * // Create one CompanyProfile
-     * const CompanyProfile = await prisma.companyProfile.create({
+     * // Create one Company
+     * const Company = await prisma.company.create({
      *   data: {
-     *     // ... data to create a CompanyProfile
+     *     // ... data to create a Company
      *   }
      * })
      * 
      */
-    create<T extends CompanyProfileCreateArgs>(args: SelectSubset<T, CompanyProfileCreateArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends CompanyCreateArgs>(args: SelectSubset<T, CompanyCreateArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many CompanyProfiles.
-     * @param {CompanyProfileCreateManyArgs} args - Arguments to create many CompanyProfiles.
+     * Create many Companies.
+     * @param {CompanyCreateManyArgs} args - Arguments to create many Companies.
      * @example
-     * // Create many CompanyProfiles
-     * const companyProfile = await prisma.companyProfile.createMany({
+     * // Create many Companies
+     * const company = await prisma.company.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends CompanyProfileCreateManyArgs>(args?: SelectSubset<T, CompanyProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends CompanyCreateManyArgs>(args?: SelectSubset<T, CompanyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many CompanyProfiles and returns the data saved in the database.
-     * @param {CompanyProfileCreateManyAndReturnArgs} args - Arguments to create many CompanyProfiles.
+     * Create many Companies and returns the data saved in the database.
+     * @param {CompanyCreateManyAndReturnArgs} args - Arguments to create many Companies.
      * @example
-     * // Create many CompanyProfiles
-     * const companyProfile = await prisma.companyProfile.createManyAndReturn({
+     * // Create many Companies
+     * const company = await prisma.company.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many CompanyProfiles and only return the `id`
-     * const companyProfileWithIdOnly = await prisma.companyProfile.createManyAndReturn({
+     * // Create many Companies and only return the `id`
+     * const companyWithIdOnly = await prisma.company.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -7195,28 +7375,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends CompanyProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends CompanyCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a CompanyProfile.
-     * @param {CompanyProfileDeleteArgs} args - Arguments to delete one CompanyProfile.
+     * Delete a Company.
+     * @param {CompanyDeleteArgs} args - Arguments to delete one Company.
      * @example
-     * // Delete one CompanyProfile
-     * const CompanyProfile = await prisma.companyProfile.delete({
+     * // Delete one Company
+     * const Company = await prisma.company.delete({
      *   where: {
-     *     // ... filter to delete one CompanyProfile
+     *     // ... filter to delete one Company
      *   }
      * })
      * 
      */
-    delete<T extends CompanyProfileDeleteArgs>(args: SelectSubset<T, CompanyProfileDeleteArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends CompanyDeleteArgs>(args: SelectSubset<T, CompanyDeleteArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one CompanyProfile.
-     * @param {CompanyProfileUpdateArgs} args - Arguments to update one CompanyProfile.
+     * Update one Company.
+     * @param {CompanyUpdateArgs} args - Arguments to update one Company.
      * @example
-     * // Update one CompanyProfile
-     * const companyProfile = await prisma.companyProfile.update({
+     * // Update one Company
+     * const company = await prisma.company.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7226,30 +7406,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends CompanyProfileUpdateArgs>(args: SelectSubset<T, CompanyProfileUpdateArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends CompanyUpdateArgs>(args: SelectSubset<T, CompanyUpdateArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more CompanyProfiles.
-     * @param {CompanyProfileDeleteManyArgs} args - Arguments to filter CompanyProfiles to delete.
+     * Delete zero or more Companies.
+     * @param {CompanyDeleteManyArgs} args - Arguments to filter Companies to delete.
      * @example
-     * // Delete a few CompanyProfiles
-     * const { count } = await prisma.companyProfile.deleteMany({
+     * // Delete a few Companies
+     * const { count } = await prisma.company.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends CompanyProfileDeleteManyArgs>(args?: SelectSubset<T, CompanyProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends CompanyDeleteManyArgs>(args?: SelectSubset<T, CompanyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CompanyProfiles.
+     * Update zero or more Companies.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {CompanyUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many CompanyProfiles
-     * const companyProfile = await prisma.companyProfile.updateMany({
+     * // Update many Companies
+     * const company = await prisma.company.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7259,14 +7439,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends CompanyProfileUpdateManyArgs>(args: SelectSubset<T, CompanyProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends CompanyUpdateManyArgs>(args: SelectSubset<T, CompanyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more CompanyProfiles and returns the data updated in the database.
-     * @param {CompanyProfileUpdateManyAndReturnArgs} args - Arguments to update many CompanyProfiles.
+     * Update zero or more Companies and returns the data updated in the database.
+     * @param {CompanyUpdateManyAndReturnArgs} args - Arguments to update many Companies.
      * @example
-     * // Update many CompanyProfiles
-     * const companyProfile = await prisma.companyProfile.updateManyAndReturn({
+     * // Update many Companies
+     * const company = await prisma.company.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -7275,8 +7455,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more CompanyProfiles and only return the `id`
-     * const companyProfileWithIdOnly = await prisma.companyProfile.updateManyAndReturn({
+     * // Update zero or more Companies and only return the `id`
+     * const companyWithIdOnly = await prisma.company.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -7289,56 +7469,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends CompanyProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends CompanyUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one CompanyProfile.
-     * @param {CompanyProfileUpsertArgs} args - Arguments to update or create a CompanyProfile.
+     * Create or update one Company.
+     * @param {CompanyUpsertArgs} args - Arguments to update or create a Company.
      * @example
-     * // Update or create a CompanyProfile
-     * const companyProfile = await prisma.companyProfile.upsert({
+     * // Update or create a Company
+     * const company = await prisma.company.upsert({
      *   create: {
-     *     // ... data to create a CompanyProfile
+     *     // ... data to create a Company
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the CompanyProfile we want to update
+     *     // ... the filter for the Company we want to update
      *   }
      * })
      */
-    upsert<T extends CompanyProfileUpsertArgs>(args: SelectSubset<T, CompanyProfileUpsertArgs<ExtArgs>>): Prisma__CompanyProfileClient<$Result.GetResult<Prisma.$CompanyProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends CompanyUpsertArgs>(args: SelectSubset<T, CompanyUpsertArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of CompanyProfiles.
+     * Count the number of Companies.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileCountArgs} args - Arguments to filter CompanyProfiles to count.
+     * @param {CompanyCountArgs} args - Arguments to filter Companies to count.
      * @example
-     * // Count the number of CompanyProfiles
-     * const count = await prisma.companyProfile.count({
+     * // Count the number of Companies
+     * const count = await prisma.company.count({
      *   where: {
-     *     // ... the filter for the CompanyProfiles we want to count
+     *     // ... the filter for the Companies we want to count
      *   }
      * })
     **/
-    count<T extends CompanyProfileCountArgs>(
-      args?: Subset<T, CompanyProfileCountArgs>,
+    count<T extends CompanyCountArgs>(
+      args?: Subset<T, CompanyCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], CompanyProfileCountAggregateOutputType>
+          : GetScalarType<T['select'], CompanyCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a CompanyProfile.
+     * Allows you to perform aggregations operations on a Company.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {CompanyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -7358,13 +7538,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends CompanyProfileAggregateArgs>(args: Subset<T, CompanyProfileAggregateArgs>): Prisma.PrismaPromise<GetCompanyProfileAggregateType<T>>
+    aggregate<T extends CompanyAggregateArgs>(args: Subset<T, CompanyAggregateArgs>): Prisma.PrismaPromise<GetCompanyAggregateType<T>>
 
     /**
-     * Group by CompanyProfile.
+     * Group by Company.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {CompanyProfileGroupByArgs} args - Group by arguments.
+     * @param {CompanyGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -7379,14 +7559,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends CompanyProfileGroupByArgs,
+      T extends CompanyGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CompanyProfileGroupByArgs['orderBy'] }
-        : { orderBy?: CompanyProfileGroupByArgs['orderBy'] },
+        ? { orderBy: CompanyGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -7435,21 +7615,1242 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, CompanyProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, CompanyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the CompanyProfile model
+   * Fields of the Company model
    */
-  readonly fields: CompanyProfileFieldRefs;
+  readonly fields: CompanyFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for CompanyProfile.
+   * The delegate class that acts as a "Promise-like" for Company.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__CompanyProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__CompanyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    members<T extends Company$membersArgs<ExtArgs> = {}>(args?: Subset<T, Company$membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    customers<T extends Company$customersArgs<ExtArgs> = {}>(args?: Subset<T, Company$customersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invoices<T extends Company$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Company$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    contracts<T extends Company$contractsArgs<ExtArgs> = {}>(args?: Subset<T, Company$contractsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    licenses<T extends Company$licensesArgs<ExtArgs> = {}>(args?: Subset<T, Company$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    auditLogs<T extends Company$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Company$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Company model
+   */
+  interface CompanyFieldRefs {
+    readonly id: FieldRef<"Company", 'String'>
+    readonly name: FieldRef<"Company", 'String'>
+    readonly email: FieldRef<"Company", 'String'>
+    readonly phone: FieldRef<"Company", 'String'>
+    readonly address: FieldRef<"Company", 'String'>
+    readonly city: FieldRef<"Company", 'String'>
+    readonly zipCode: FieldRef<"Company", 'String'>
+    readonly country: FieldRef<"Company", 'String'>
+    readonly taxId: FieldRef<"Company", 'String'>
+    readonly bankName: FieldRef<"Company", 'String'>
+    readonly bankAccountName: FieldRef<"Company", 'String'>
+    readonly bankAccountNumber: FieldRef<"Company", 'String'>
+    readonly logoUrl: FieldRef<"Company", 'String'>
+    readonly signatureData: FieldRef<"Company", 'String'>
+    readonly currency: FieldRef<"Company", 'String'>
+    readonly paymentTerms: FieldRef<"Company", 'String'>
+    readonly notes: FieldRef<"Company", 'String'>
+    readonly createdAt: FieldRef<"Company", 'DateTime'>
+    readonly updatedAt: FieldRef<"Company", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Company findUnique
+   */
+  export type CompanyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter, which Company to fetch.
+     */
+    where: CompanyWhereUniqueInput
+  }
+
+  /**
+   * Company findUniqueOrThrow
+   */
+  export type CompanyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter, which Company to fetch.
+     */
+    where: CompanyWhereUniqueInput
+  }
+
+  /**
+   * Company findFirst
+   */
+  export type CompanyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter, which Company to fetch.
+     */
+    where?: CompanyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Companies to fetch.
+     */
+    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Companies.
+     */
+    cursor?: CompanyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Companies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Companies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Companies.
+     */
+    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
+  }
+
+  /**
+   * Company findFirstOrThrow
+   */
+  export type CompanyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter, which Company to fetch.
+     */
+    where?: CompanyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Companies to fetch.
+     */
+    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Companies.
+     */
+    cursor?: CompanyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Companies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Companies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Companies.
+     */
+    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
+  }
+
+  /**
+   * Company findMany
+   */
+  export type CompanyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter, which Companies to fetch.
+     */
+    where?: CompanyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Companies to fetch.
+     */
+    orderBy?: CompanyOrderByWithRelationInput | CompanyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Companies.
+     */
+    cursor?: CompanyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Companies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Companies.
+     */
+    skip?: number
+    distinct?: CompanyScalarFieldEnum | CompanyScalarFieldEnum[]
+  }
+
+  /**
+   * Company create
+   */
+  export type CompanyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Company.
+     */
+    data: XOR<CompanyCreateInput, CompanyUncheckedCreateInput>
+  }
+
+  /**
+   * Company createMany
+   */
+  export type CompanyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Companies.
+     */
+    data: CompanyCreateManyInput | CompanyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Company createManyAndReturn
+   */
+  export type CompanyCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * The data used to create many Companies.
+     */
+    data: CompanyCreateManyInput | CompanyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Company update
+   */
+  export type CompanyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Company.
+     */
+    data: XOR<CompanyUpdateInput, CompanyUncheckedUpdateInput>
+    /**
+     * Choose, which Company to update.
+     */
+    where: CompanyWhereUniqueInput
+  }
+
+  /**
+   * Company updateMany
+   */
+  export type CompanyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Companies.
+     */
+    data: XOR<CompanyUpdateManyMutationInput, CompanyUncheckedUpdateManyInput>
+    /**
+     * Filter which Companies to update
+     */
+    where?: CompanyWhereInput
+    /**
+     * Limit how many Companies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Company updateManyAndReturn
+   */
+  export type CompanyUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * The data used to update Companies.
+     */
+    data: XOR<CompanyUpdateManyMutationInput, CompanyUncheckedUpdateManyInput>
+    /**
+     * Filter which Companies to update
+     */
+    where?: CompanyWhereInput
+    /**
+     * Limit how many Companies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Company upsert
+   */
+  export type CompanyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Company to update in case it exists.
+     */
+    where: CompanyWhereUniqueInput
+    /**
+     * In case the Company found by the `where` argument doesn't exist, create a new Company with this data.
+     */
+    create: XOR<CompanyCreateInput, CompanyUncheckedCreateInput>
+    /**
+     * In case the Company was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<CompanyUpdateInput, CompanyUncheckedUpdateInput>
+  }
+
+  /**
+   * Company delete
+   */
+  export type CompanyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+    /**
+     * Filter which Company to delete.
+     */
+    where: CompanyWhereUniqueInput
+  }
+
+  /**
+   * Company deleteMany
+   */
+  export type CompanyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Companies to delete
+     */
+    where?: CompanyWhereInput
+    /**
+     * Limit how many Companies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Company.members
+   */
+  export type Company$membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the CompanyMember
+     */
+    select?: CompanyMemberSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the CompanyMember
+     */
+    omit?: CompanyMemberOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyMemberInclude<ExtArgs> | null
+    where?: CompanyMemberWhereInput
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
+    cursor?: CompanyMemberWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CompanyMemberScalarFieldEnum | CompanyMemberScalarFieldEnum[]
+  }
+
+  /**
+   * Company.customers
+   */
+  export type Company$customersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Customer
+     */
+    select?: CustomerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Customer
+     */
+    omit?: CustomerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CustomerInclude<ExtArgs> | null
+    where?: CustomerWhereInput
+    orderBy?: CustomerOrderByWithRelationInput | CustomerOrderByWithRelationInput[]
+    cursor?: CustomerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: CustomerScalarFieldEnum | CustomerScalarFieldEnum[]
+  }
+
+  /**
+   * Company.invoices
+   */
+  export type Company$invoicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    cursor?: InvoiceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * Company.contracts
+   */
+  export type Company$contractsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Contract
+     */
+    select?: ContractSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Contract
+     */
+    omit?: ContractOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
+    orderBy?: ContractOrderByWithRelationInput | ContractOrderByWithRelationInput[]
+    cursor?: ContractWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ContractScalarFieldEnum | ContractScalarFieldEnum[]
+  }
+
+  /**
+   * Company.licenses
+   */
+  export type Company$licensesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the License
+     */
+    select?: LicenseSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the License
+     */
+    omit?: LicenseOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: LicenseInclude<ExtArgs> | null
+    where?: LicenseWhereInput
+    orderBy?: LicenseOrderByWithRelationInput | LicenseOrderByWithRelationInput[]
+    cursor?: LicenseWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: LicenseScalarFieldEnum | LicenseScalarFieldEnum[]
+  }
+
+  /**
+   * Company.auditLogs
+   */
+  export type Company$auditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AuditLogInclude<ExtArgs> | null
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    cursor?: AuditLogWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * Company without action
+   */
+  export type CompanyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Company
+     */
+    select?: CompanySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Company
+     */
+    omit?: CompanyOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CompanyInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model CompanyMember
+   */
+
+  export type AggregateCompanyMember = {
+    _count: CompanyMemberCountAggregateOutputType | null
+    _min: CompanyMemberMinAggregateOutputType | null
+    _max: CompanyMemberMaxAggregateOutputType | null
+  }
+
+  export type CompanyMemberMinAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    userId: string | null
+    role: string | null
+    createdAt: Date | null
+  }
+
+  export type CompanyMemberMaxAggregateOutputType = {
+    id: string | null
+    companyId: string | null
+    userId: string | null
+    role: string | null
+    createdAt: Date | null
+  }
+
+  export type CompanyMemberCountAggregateOutputType = {
+    id: number
+    companyId: number
+    userId: number
+    role: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type CompanyMemberMinAggregateInputType = {
+    id?: true
+    companyId?: true
+    userId?: true
+    role?: true
+    createdAt?: true
+  }
+
+  export type CompanyMemberMaxAggregateInputType = {
+    id?: true
+    companyId?: true
+    userId?: true
+    role?: true
+    createdAt?: true
+  }
+
+  export type CompanyMemberCountAggregateInputType = {
+    id?: true
+    companyId?: true
+    userId?: true
+    role?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type CompanyMemberAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which CompanyMember to aggregate.
+     */
+    where?: CompanyMemberWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of CompanyMembers to fetch.
+     */
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: CompanyMemberWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` CompanyMembers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` CompanyMembers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned CompanyMembers
+    **/
+    _count?: true | CompanyMemberCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: CompanyMemberMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: CompanyMemberMaxAggregateInputType
+  }
+
+  export type GetCompanyMemberAggregateType<T extends CompanyMemberAggregateArgs> = {
+        [P in keyof T & keyof AggregateCompanyMember]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCompanyMember[P]>
+      : GetScalarType<T[P], AggregateCompanyMember[P]>
+  }
+
+
+
+
+  export type CompanyMemberGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: CompanyMemberWhereInput
+    orderBy?: CompanyMemberOrderByWithAggregationInput | CompanyMemberOrderByWithAggregationInput[]
+    by: CompanyMemberScalarFieldEnum[] | CompanyMemberScalarFieldEnum
+    having?: CompanyMemberScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: CompanyMemberCountAggregateInputType | true
+    _min?: CompanyMemberMinAggregateInputType
+    _max?: CompanyMemberMaxAggregateInputType
+  }
+
+  export type CompanyMemberGroupByOutputType = {
+    id: string
+    companyId: string
+    userId: string
+    role: string
+    createdAt: Date
+    _count: CompanyMemberCountAggregateOutputType | null
+    _min: CompanyMemberMinAggregateOutputType | null
+    _max: CompanyMemberMaxAggregateOutputType | null
+  }
+
+  type GetCompanyMemberGroupByPayload<T extends CompanyMemberGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<CompanyMemberGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof CompanyMemberGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], CompanyMemberGroupByOutputType[P]>
+            : GetScalarType<T[P], CompanyMemberGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type CompanyMemberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    userId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyMember"]>
+
+  export type CompanyMemberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    userId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyMember"]>
+
+  export type CompanyMemberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyId?: boolean
+    userId?: boolean
+    role?: boolean
+    createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["companyMember"]>
+
+  export type CompanyMemberSelectScalar = {
+    id?: boolean
+    companyId?: boolean
+    userId?: boolean
+    role?: boolean
+    createdAt?: boolean
+  }
+
+  export type CompanyMemberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "role" | "createdAt", ExtArgs["result"]["companyMember"]>
+  export type CompanyMemberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyMemberIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type CompanyMemberIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $CompanyMemberPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "CompanyMember"
+    objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyId: string
+      userId: string
+      role: string
+      createdAt: Date
+    }, ExtArgs["result"]["companyMember"]>
+    composites: {}
+  }
+
+  type CompanyMemberGetPayload<S extends boolean | null | undefined | CompanyMemberDefaultArgs> = $Result.GetResult<Prisma.$CompanyMemberPayload, S>
+
+  type CompanyMemberCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<CompanyMemberFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: CompanyMemberCountAggregateInputType | true
+    }
+
+  export interface CompanyMemberDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['CompanyMember'], meta: { name: 'CompanyMember' } }
+    /**
+     * Find zero or one CompanyMember that matches the filter.
+     * @param {CompanyMemberFindUniqueArgs} args - Arguments to find a CompanyMember
+     * @example
+     * // Get one CompanyMember
+     * const companyMember = await prisma.companyMember.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends CompanyMemberFindUniqueArgs>(args: SelectSubset<T, CompanyMemberFindUniqueArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one CompanyMember that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {CompanyMemberFindUniqueOrThrowArgs} args - Arguments to find a CompanyMember
+     * @example
+     * // Get one CompanyMember
+     * const companyMember = await prisma.companyMember.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends CompanyMemberFindUniqueOrThrowArgs>(args: SelectSubset<T, CompanyMemberFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyMember that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberFindFirstArgs} args - Arguments to find a CompanyMember
+     * @example
+     * // Get one CompanyMember
+     * const companyMember = await prisma.companyMember.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends CompanyMemberFindFirstArgs>(args?: SelectSubset<T, CompanyMemberFindFirstArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first CompanyMember that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberFindFirstOrThrowArgs} args - Arguments to find a CompanyMember
+     * @example
+     * // Get one CompanyMember
+     * const companyMember = await prisma.companyMember.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends CompanyMemberFindFirstOrThrowArgs>(args?: SelectSubset<T, CompanyMemberFindFirstOrThrowArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more CompanyMembers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all CompanyMembers
+     * const companyMembers = await prisma.companyMember.findMany()
+     * 
+     * // Get first 10 CompanyMembers
+     * const companyMembers = await prisma.companyMember.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const companyMemberWithIdOnly = await prisma.companyMember.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends CompanyMemberFindManyArgs>(args?: SelectSubset<T, CompanyMemberFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a CompanyMember.
+     * @param {CompanyMemberCreateArgs} args - Arguments to create a CompanyMember.
+     * @example
+     * // Create one CompanyMember
+     * const CompanyMember = await prisma.companyMember.create({
+     *   data: {
+     *     // ... data to create a CompanyMember
+     *   }
+     * })
+     * 
+     */
+    create<T extends CompanyMemberCreateArgs>(args: SelectSubset<T, CompanyMemberCreateArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many CompanyMembers.
+     * @param {CompanyMemberCreateManyArgs} args - Arguments to create many CompanyMembers.
+     * @example
+     * // Create many CompanyMembers
+     * const companyMember = await prisma.companyMember.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends CompanyMemberCreateManyArgs>(args?: SelectSubset<T, CompanyMemberCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many CompanyMembers and returns the data saved in the database.
+     * @param {CompanyMemberCreateManyAndReturnArgs} args - Arguments to create many CompanyMembers.
+     * @example
+     * // Create many CompanyMembers
+     * const companyMember = await prisma.companyMember.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many CompanyMembers and only return the `id`
+     * const companyMemberWithIdOnly = await prisma.companyMember.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends CompanyMemberCreateManyAndReturnArgs>(args?: SelectSubset<T, CompanyMemberCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a CompanyMember.
+     * @param {CompanyMemberDeleteArgs} args - Arguments to delete one CompanyMember.
+     * @example
+     * // Delete one CompanyMember
+     * const CompanyMember = await prisma.companyMember.delete({
+     *   where: {
+     *     // ... filter to delete one CompanyMember
+     *   }
+     * })
+     * 
+     */
+    delete<T extends CompanyMemberDeleteArgs>(args: SelectSubset<T, CompanyMemberDeleteArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one CompanyMember.
+     * @param {CompanyMemberUpdateArgs} args - Arguments to update one CompanyMember.
+     * @example
+     * // Update one CompanyMember
+     * const companyMember = await prisma.companyMember.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends CompanyMemberUpdateArgs>(args: SelectSubset<T, CompanyMemberUpdateArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more CompanyMembers.
+     * @param {CompanyMemberDeleteManyArgs} args - Arguments to filter CompanyMembers to delete.
+     * @example
+     * // Delete a few CompanyMembers
+     * const { count } = await prisma.companyMember.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends CompanyMemberDeleteManyArgs>(args?: SelectSubset<T, CompanyMemberDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many CompanyMembers
+     * const companyMember = await prisma.companyMember.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends CompanyMemberUpdateManyArgs>(args: SelectSubset<T, CompanyMemberUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more CompanyMembers and returns the data updated in the database.
+     * @param {CompanyMemberUpdateManyAndReturnArgs} args - Arguments to update many CompanyMembers.
+     * @example
+     * // Update many CompanyMembers
+     * const companyMember = await prisma.companyMember.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more CompanyMembers and only return the `id`
+     * const companyMemberWithIdOnly = await prisma.companyMember.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends CompanyMemberUpdateManyAndReturnArgs>(args: SelectSubset<T, CompanyMemberUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one CompanyMember.
+     * @param {CompanyMemberUpsertArgs} args - Arguments to update or create a CompanyMember.
+     * @example
+     * // Update or create a CompanyMember
+     * const companyMember = await prisma.companyMember.upsert({
+     *   create: {
+     *     // ... data to create a CompanyMember
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the CompanyMember we want to update
+     *   }
+     * })
+     */
+    upsert<T extends CompanyMemberUpsertArgs>(args: SelectSubset<T, CompanyMemberUpsertArgs<ExtArgs>>): Prisma__CompanyMemberClient<$Result.GetResult<Prisma.$CompanyMemberPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of CompanyMembers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberCountArgs} args - Arguments to filter CompanyMembers to count.
+     * @example
+     * // Count the number of CompanyMembers
+     * const count = await prisma.companyMember.count({
+     *   where: {
+     *     // ... the filter for the CompanyMembers we want to count
+     *   }
+     * })
+    **/
+    count<T extends CompanyMemberCountArgs>(
+      args?: Subset<T, CompanyMemberCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], CompanyMemberCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a CompanyMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends CompanyMemberAggregateArgs>(args: Subset<T, CompanyMemberAggregateArgs>): Prisma.PrismaPromise<GetCompanyMemberAggregateType<T>>
+
+    /**
+     * Group by CompanyMember.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {CompanyMemberGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends CompanyMemberGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: CompanyMemberGroupByArgs['orderBy'] }
+        : { orderBy?: CompanyMemberGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, CompanyMemberGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCompanyMemberGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the CompanyMember model
+   */
+  readonly fields: CompanyMemberFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for CompanyMember.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__CompanyMemberClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7477,440 +8878,425 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the CompanyProfile model
+   * Fields of the CompanyMember model
    */
-  interface CompanyProfileFieldRefs {
-    readonly id: FieldRef<"CompanyProfile", 'String'>
-    readonly userId: FieldRef<"CompanyProfile", 'String'>
-    readonly companyName: FieldRef<"CompanyProfile", 'String'>
-    readonly email: FieldRef<"CompanyProfile", 'String'>
-    readonly phone: FieldRef<"CompanyProfile", 'String'>
-    readonly address: FieldRef<"CompanyProfile", 'String'>
-    readonly city: FieldRef<"CompanyProfile", 'String'>
-    readonly zipCode: FieldRef<"CompanyProfile", 'String'>
-    readonly country: FieldRef<"CompanyProfile", 'String'>
-    readonly taxId: FieldRef<"CompanyProfile", 'String'>
-    readonly bankName: FieldRef<"CompanyProfile", 'String'>
-    readonly bankAccountName: FieldRef<"CompanyProfile", 'String'>
-    readonly bankAccountNumber: FieldRef<"CompanyProfile", 'String'>
-    readonly logoUrl: FieldRef<"CompanyProfile", 'String'>
-    readonly signatureData: FieldRef<"CompanyProfile", 'String'>
-    readonly currency: FieldRef<"CompanyProfile", 'String'>
-    readonly paymentTerms: FieldRef<"CompanyProfile", 'String'>
-    readonly notes: FieldRef<"CompanyProfile", 'String'>
-    readonly createdAt: FieldRef<"CompanyProfile", 'DateTime'>
-    readonly updatedAt: FieldRef<"CompanyProfile", 'DateTime'>
+  interface CompanyMemberFieldRefs {
+    readonly id: FieldRef<"CompanyMember", 'String'>
+    readonly companyId: FieldRef<"CompanyMember", 'String'>
+    readonly userId: FieldRef<"CompanyMember", 'String'>
+    readonly role: FieldRef<"CompanyMember", 'String'>
+    readonly createdAt: FieldRef<"CompanyMember", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * CompanyProfile findUnique
+   * CompanyMember findUnique
    */
-  export type CompanyProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyProfile to fetch.
+     * Filter, which CompanyMember to fetch.
      */
-    where: CompanyProfileWhereUniqueInput
+    where: CompanyMemberWhereUniqueInput
   }
 
   /**
-   * CompanyProfile findUniqueOrThrow
+   * CompanyMember findUniqueOrThrow
    */
-  export type CompanyProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyProfile to fetch.
+     * Filter, which CompanyMember to fetch.
      */
-    where: CompanyProfileWhereUniqueInput
+    where: CompanyMemberWhereUniqueInput
   }
 
   /**
-   * CompanyProfile findFirst
+   * CompanyMember findFirst
    */
-  export type CompanyProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyProfile to fetch.
+     * Filter, which CompanyMember to fetch.
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyProfiles to fetch.
+     * Determine the order of CompanyMembers to fetch.
      */
-    orderBy?: CompanyProfileOrderByWithRelationInput | CompanyProfileOrderByWithRelationInput[]
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CompanyProfiles.
+     * Sets the position for searching for CompanyMembers.
      */
-    cursor?: CompanyProfileWhereUniqueInput
+    cursor?: CompanyMemberWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyProfiles from the position of the cursor.
+     * Take `±n` CompanyMembers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyProfiles.
+     * Skip the first `n` CompanyMembers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CompanyProfiles.
+     * Filter by unique combinations of CompanyMembers.
      */
-    distinct?: CompanyProfileScalarFieldEnum | CompanyProfileScalarFieldEnum[]
+    distinct?: CompanyMemberScalarFieldEnum | CompanyMemberScalarFieldEnum[]
   }
 
   /**
-   * CompanyProfile findFirstOrThrow
+   * CompanyMember findFirstOrThrow
    */
-  export type CompanyProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyProfile to fetch.
+     * Filter, which CompanyMember to fetch.
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyProfiles to fetch.
+     * Determine the order of CompanyMembers to fetch.
      */
-    orderBy?: CompanyProfileOrderByWithRelationInput | CompanyProfileOrderByWithRelationInput[]
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for CompanyProfiles.
+     * Sets the position for searching for CompanyMembers.
      */
-    cursor?: CompanyProfileWhereUniqueInput
+    cursor?: CompanyMemberWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyProfiles from the position of the cursor.
+     * Take `±n` CompanyMembers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyProfiles.
+     * Skip the first `n` CompanyMembers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of CompanyProfiles.
+     * Filter by unique combinations of CompanyMembers.
      */
-    distinct?: CompanyProfileScalarFieldEnum | CompanyProfileScalarFieldEnum[]
+    distinct?: CompanyMemberScalarFieldEnum | CompanyMemberScalarFieldEnum[]
   }
 
   /**
-   * CompanyProfile findMany
+   * CompanyMember findMany
    */
-  export type CompanyProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter, which CompanyProfiles to fetch.
+     * Filter, which CompanyMembers to fetch.
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of CompanyProfiles to fetch.
+     * Determine the order of CompanyMembers to fetch.
      */
-    orderBy?: CompanyProfileOrderByWithRelationInput | CompanyProfileOrderByWithRelationInput[]
+    orderBy?: CompanyMemberOrderByWithRelationInput | CompanyMemberOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing CompanyProfiles.
+     * Sets the position for listing CompanyMembers.
      */
-    cursor?: CompanyProfileWhereUniqueInput
+    cursor?: CompanyMemberWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` CompanyProfiles from the position of the cursor.
+     * Take `±n` CompanyMembers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` CompanyProfiles.
+     * Skip the first `n` CompanyMembers.
      */
     skip?: number
-    distinct?: CompanyProfileScalarFieldEnum | CompanyProfileScalarFieldEnum[]
+    distinct?: CompanyMemberScalarFieldEnum | CompanyMemberScalarFieldEnum[]
   }
 
   /**
-   * CompanyProfile create
+   * CompanyMember create
    */
-  export type CompanyProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * The data needed to create a CompanyProfile.
+     * The data needed to create a CompanyMember.
      */
-    data: XOR<CompanyProfileCreateInput, CompanyProfileUncheckedCreateInput>
+    data: XOR<CompanyMemberCreateInput, CompanyMemberUncheckedCreateInput>
   }
 
   /**
-   * CompanyProfile createMany
+   * CompanyMember createMany
    */
-  export type CompanyProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many CompanyProfiles.
+     * The data used to create many CompanyMembers.
      */
-    data: CompanyProfileCreateManyInput | CompanyProfileCreateManyInput[]
+    data: CompanyMemberCreateManyInput | CompanyMemberCreateManyInput[]
     skipDuplicates?: boolean
   }
 
   /**
-   * CompanyProfile createManyAndReturn
+   * CompanyMember createManyAndReturn
    */
-  export type CompanyProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelectCreateManyAndReturn<ExtArgs> | null
+    select?: CompanyMemberSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
-     * The data used to create many CompanyProfiles.
+     * The data used to create many CompanyMembers.
      */
-    data: CompanyProfileCreateManyInput | CompanyProfileCreateManyInput[]
+    data: CompanyMemberCreateManyInput | CompanyMemberCreateManyInput[]
     skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileIncludeCreateManyAndReturn<ExtArgs> | null
+    include?: CompanyMemberIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CompanyProfile update
+   * CompanyMember update
    */
-  export type CompanyProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * The data needed to update a CompanyProfile.
+     * The data needed to update a CompanyMember.
      */
-    data: XOR<CompanyProfileUpdateInput, CompanyProfileUncheckedUpdateInput>
+    data: XOR<CompanyMemberUpdateInput, CompanyMemberUncheckedUpdateInput>
     /**
-     * Choose, which CompanyProfile to update.
+     * Choose, which CompanyMember to update.
      */
-    where: CompanyProfileWhereUniqueInput
+    where: CompanyMemberWhereUniqueInput
   }
 
   /**
-   * CompanyProfile updateMany
+   * CompanyMember updateMany
    */
-  export type CompanyProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update CompanyProfiles.
+     * The data used to update CompanyMembers.
      */
-    data: XOR<CompanyProfileUpdateManyMutationInput, CompanyProfileUncheckedUpdateManyInput>
+    data: XOR<CompanyMemberUpdateManyMutationInput, CompanyMemberUncheckedUpdateManyInput>
     /**
-     * Filter which CompanyProfiles to update
+     * Filter which CompanyMembers to update
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
-     * Limit how many CompanyProfiles to update.
+     * Limit how many CompanyMembers to update.
      */
     limit?: number
   }
 
   /**
-   * CompanyProfile updateManyAndReturn
+   * CompanyMember updateManyAndReturn
    */
-  export type CompanyProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: CompanyMemberSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
-     * The data used to update CompanyProfiles.
+     * The data used to update CompanyMembers.
      */
-    data: XOR<CompanyProfileUpdateManyMutationInput, CompanyProfileUncheckedUpdateManyInput>
+    data: XOR<CompanyMemberUpdateManyMutationInput, CompanyMemberUncheckedUpdateManyInput>
     /**
-     * Filter which CompanyProfiles to update
+     * Filter which CompanyMembers to update
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
-     * Limit how many CompanyProfiles to update.
+     * Limit how many CompanyMembers to update.
      */
     limit?: number
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+    include?: CompanyMemberIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
-   * CompanyProfile upsert
+   * CompanyMember upsert
    */
-  export type CompanyProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * The filter to search for the CompanyProfile to update in case it exists.
+     * The filter to search for the CompanyMember to update in case it exists.
      */
-    where: CompanyProfileWhereUniqueInput
+    where: CompanyMemberWhereUniqueInput
     /**
-     * In case the CompanyProfile found by the `where` argument doesn't exist, create a new CompanyProfile with this data.
+     * In case the CompanyMember found by the `where` argument doesn't exist, create a new CompanyMember with this data.
      */
-    create: XOR<CompanyProfileCreateInput, CompanyProfileUncheckedCreateInput>
+    create: XOR<CompanyMemberCreateInput, CompanyMemberUncheckedCreateInput>
     /**
-     * In case the CompanyProfile was found with the provided `where` argument, update it with this data.
+     * In case the CompanyMember was found with the provided `where` argument, update it with this data.
      */
-    update: XOR<CompanyProfileUpdateInput, CompanyProfileUncheckedUpdateInput>
+    update: XOR<CompanyMemberUpdateInput, CompanyMemberUncheckedUpdateInput>
   }
 
   /**
-   * CompanyProfile delete
+   * CompanyMember delete
    */
-  export type CompanyProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
     /**
-     * Filter which CompanyProfile to delete.
+     * Filter which CompanyMember to delete.
      */
-    where: CompanyProfileWhereUniqueInput
+    where: CompanyMemberWhereUniqueInput
   }
 
   /**
-   * CompanyProfile deleteMany
+   * CompanyMember deleteMany
    */
-  export type CompanyProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which CompanyProfiles to delete
+     * Filter which CompanyMembers to delete
      */
-    where?: CompanyProfileWhereInput
+    where?: CompanyMemberWhereInput
     /**
-     * Limit how many CompanyProfiles to delete.
+     * Limit how many CompanyMembers to delete.
      */
     limit?: number
   }
 
   /**
-   * CompanyProfile without action
+   * CompanyMember without action
    */
-  export type CompanyProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type CompanyMemberDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the CompanyProfile
+     * Select specific fields to fetch from the CompanyMember
      */
-    select?: CompanyProfileSelect<ExtArgs> | null
+    select?: CompanyMemberSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the CompanyProfile
+     * Omit specific fields from the CompanyMember
      */
-    omit?: CompanyProfileOmit<ExtArgs> | null
+    omit?: CompanyMemberOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: CompanyProfileInclude<ExtArgs> | null
+    include?: CompanyMemberInclude<ExtArgs> | null
   }
 
 
@@ -7926,6 +9312,7 @@ export namespace Prisma {
 
   export type CustomerMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     name: string | null
     email: string | null
@@ -7941,6 +9328,7 @@ export namespace Prisma {
 
   export type CustomerMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     name: string | null
     email: string | null
@@ -7956,6 +9344,7 @@ export namespace Prisma {
 
   export type CustomerCountAggregateOutputType = {
     id: number
+    companyId: number
     userId: number
     name: number
     email: number
@@ -7973,6 +9362,7 @@ export namespace Prisma {
 
   export type CustomerMinAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     name?: true
     email?: true
@@ -7988,6 +9378,7 @@ export namespace Prisma {
 
   export type CustomerMaxAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     name?: true
     email?: true
@@ -8003,6 +9394,7 @@ export namespace Prisma {
 
   export type CustomerCountAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     name?: true
     email?: true
@@ -8091,6 +9483,7 @@ export namespace Prisma {
 
   export type CustomerGroupByOutputType = {
     id: string
+    companyId: string
     userId: string
     name: string
     email: string
@@ -8123,6 +9516,7 @@ export namespace Prisma {
 
   export type CustomerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     name?: boolean
     email?: boolean
@@ -8134,6 +9528,7 @@ export namespace Prisma {
     taxId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
     licenses?: boolean | Customer$licensesArgs<ExtArgs>
@@ -8143,6 +9538,7 @@ export namespace Prisma {
 
   export type CustomerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     name?: boolean
     email?: boolean
@@ -8154,11 +9550,13 @@ export namespace Prisma {
     taxId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     name?: boolean
     email?: boolean
@@ -8170,11 +9568,13 @@ export namespace Prisma {
     taxId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["customer"]>
 
   export type CustomerSelectScalar = {
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     name?: boolean
     email?: boolean
@@ -8188,8 +9588,9 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
+  export type CustomerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "name" | "email" | "phone" | "address" | "city" | "zipCode" | "country" | "taxId" | "createdAt" | "updatedAt", ExtArgs["result"]["customer"]>
   export type CustomerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     invoices?: boolean | Customer$invoicesArgs<ExtArgs>
     licenses?: boolean | Customer$licensesArgs<ExtArgs>
@@ -8197,15 +9598,18 @@ export namespace Prisma {
     _count?: boolean | CustomerCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type CustomerIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $CustomerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Customer"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       invoices: Prisma.$InvoicePayload<ExtArgs>[]
       licenses: Prisma.$LicensePayload<ExtArgs>[]
@@ -8213,6 +9617,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       userId: string
       name: string
       email: string
@@ -8618,6 +10023,7 @@ export namespace Prisma {
    */
   export interface Prisma__CustomerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     invoices<T extends Customer$invoicesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     licenses<T extends Customer$licensesArgs<ExtArgs> = {}>(args?: Subset<T, Customer$licensesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LicensePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -8652,6 +10058,7 @@ export namespace Prisma {
    */
   interface CustomerFieldRefs {
     readonly id: FieldRef<"Customer", 'String'>
+    readonly companyId: FieldRef<"Customer", 'String'>
     readonly userId: FieldRef<"Customer", 'String'>
     readonly name: FieldRef<"Customer", 'String'>
     readonly email: FieldRef<"Customer", 'String'>
@@ -9183,6 +10590,7 @@ export namespace Prisma {
 
   export type InvoiceMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     invoiceNumber: string | null
@@ -9228,6 +10636,7 @@ export namespace Prisma {
 
   export type InvoiceMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     invoiceNumber: string | null
@@ -9273,6 +10682,7 @@ export namespace Prisma {
 
   export type InvoiceCountAggregateOutputType = {
     id: number
+    companyId: number
     userId: number
     customerId: number
     invoiceNumber: number
@@ -9340,6 +10750,7 @@ export namespace Prisma {
 
   export type InvoiceMinAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     invoiceNumber?: true
@@ -9385,6 +10796,7 @@ export namespace Prisma {
 
   export type InvoiceMaxAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     invoiceNumber?: true
@@ -9430,6 +10842,7 @@ export namespace Prisma {
 
   export type InvoiceCountAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     invoiceNumber?: true
@@ -9562,6 +10975,7 @@ export namespace Prisma {
 
   export type InvoiceGroupByOutputType = {
     id: string
+    companyId: string
     userId: string
     customerId: string | null
     invoiceNumber: string
@@ -9626,6 +11040,7 @@ export namespace Prisma {
 
   export type InvoiceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     invoiceNumber?: boolean
@@ -9667,6 +11082,7 @@ export namespace Prisma {
     signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
     items?: boolean | Invoice$itemsArgs<ExtArgs>
@@ -9675,6 +11091,7 @@ export namespace Prisma {
 
   export type InvoiceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     invoiceNumber?: boolean
@@ -9716,12 +11133,14 @@ export namespace Prisma {
     signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
   }, ExtArgs["result"]["invoice"]>
 
   export type InvoiceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     invoiceNumber?: boolean
@@ -9763,12 +11182,14 @@ export namespace Prisma {
     signatureData?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
   }, ExtArgs["result"]["invoice"]>
 
   export type InvoiceSelectScalar = {
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     invoiceNumber?: boolean
@@ -9812,18 +11233,21 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "bankName" | "bankAccountName" | "bankAccountNumber" | "templateId" | "themeColor" | "logoUrl" | "signatureData" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "customerId" | "invoiceNumber" | "issueDate" | "dueDate" | "status" | "currency" | "senderName" | "senderEmail" | "senderPhone" | "senderAddress" | "senderCity" | "senderZipCode" | "senderCountry" | "senderTaxId" | "receiverName" | "receiverEmail" | "receiverPhone" | "receiverAddress" | "receiverCity" | "receiverZipCode" | "receiverCountry" | "receiverTaxId" | "subTotal" | "taxRate" | "taxAmount" | "discountRate" | "discountAmount" | "shippingAmount" | "totalAmount" | "notes" | "paymentTerms" | "bankName" | "bankAccountName" | "bankAccountNumber" | "templateId" | "themeColor" | "logoUrl" | "signatureData" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
   export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
     items?: boolean | Invoice$itemsArgs<ExtArgs>
     _count?: boolean | InvoiceCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type InvoiceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
   }
   export type InvoiceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | Invoice$customerArgs<ExtArgs>
   }
@@ -9831,12 +11255,14 @@ export namespace Prisma {
   export type $InvoicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Invoice"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs> | null
       items: Prisma.$InvoiceItemPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       userId: string
       customerId: string | null
       invoiceNumber: string
@@ -10272,6 +11698,7 @@ export namespace Prisma {
    */
   export interface Prisma__InvoiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends Invoice$customerArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     items<T extends Invoice$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoiceItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -10305,6 +11732,7 @@ export namespace Prisma {
    */
   interface InvoiceFieldRefs {
     readonly id: FieldRef<"Invoice", 'String'>
+    readonly companyId: FieldRef<"Invoice", 'String'>
     readonly userId: FieldRef<"Invoice", 'String'>
     readonly customerId: FieldRef<"Invoice", 'String'>
     readonly invoiceNumber: FieldRef<"Invoice", 'String'>
@@ -12928,6 +14356,7 @@ export namespace Prisma {
 
   export type LicenseMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     name: string | null
@@ -12946,6 +14375,7 @@ export namespace Prisma {
 
   export type LicenseMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     name: string | null
@@ -12964,6 +14394,7 @@ export namespace Prisma {
 
   export type LicenseCountAggregateOutputType = {
     id: number
+    companyId: number
     userId: number
     customerId: number
     name: number
@@ -12996,6 +14427,7 @@ export namespace Prisma {
 
   export type LicenseMinAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     name?: true
@@ -13014,6 +14446,7 @@ export namespace Prisma {
 
   export type LicenseMaxAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     name?: true
@@ -13032,6 +14465,7 @@ export namespace Prisma {
 
   export type LicenseCountAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     name?: true
@@ -13137,6 +14571,7 @@ export namespace Prisma {
 
   export type LicenseGroupByOutputType = {
     id: string
+    companyId: string
     userId: string
     customerId: string | null
     name: string
@@ -13174,6 +14609,7 @@ export namespace Prisma {
 
   export type LicenseSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     name?: boolean
@@ -13188,12 +14624,14 @@ export namespace Prisma {
     checkCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }, ExtArgs["result"]["license"]>
 
   export type LicenseSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     name?: boolean
@@ -13208,12 +14646,14 @@ export namespace Prisma {
     checkCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }, ExtArgs["result"]["license"]>
 
   export type LicenseSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     name?: boolean
@@ -13228,12 +14668,14 @@ export namespace Prisma {
     checkCount?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }, ExtArgs["result"]["license"]>
 
   export type LicenseSelectScalar = {
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     name?: boolean
@@ -13250,16 +14692,19 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type LicenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "name" | "key" | "status" | "allowedDomain" | "suspensionNotice" | "leaseTtlMinutes" | "gracePeriodHours" | "lastCheckedAt" | "lastCheckedIp" | "checkCount" | "createdAt" | "updatedAt", ExtArgs["result"]["license"]>
+  export type LicenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "customerId" | "name" | "key" | "status" | "allowedDomain" | "suspensionNotice" | "leaseTtlMinutes" | "gracePeriodHours" | "lastCheckedAt" | "lastCheckedIp" | "checkCount" | "createdAt" | "updatedAt", ExtArgs["result"]["license"]>
   export type LicenseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }
   export type LicenseIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }
   export type LicenseIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | License$customerArgs<ExtArgs>
   }
@@ -13267,11 +14712,13 @@ export namespace Prisma {
   export type $LicensePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "License"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       userId: string
       customerId: string | null
       name: string
@@ -13680,6 +15127,7 @@ export namespace Prisma {
    */
   export interface Prisma__LicenseClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends License$customerArgs<ExtArgs> = {}>(args?: Subset<T, License$customerArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -13712,6 +15160,7 @@ export namespace Prisma {
    */
   interface LicenseFieldRefs {
     readonly id: FieldRef<"License", 'String'>
+    readonly companyId: FieldRef<"License", 'String'>
     readonly userId: FieldRef<"License", 'String'>
     readonly customerId: FieldRef<"License", 'String'>
     readonly name: FieldRef<"License", 'String'>
@@ -14183,6 +15632,7 @@ export namespace Prisma {
 
   export type ContractMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     contractNumber: string | null
@@ -14204,6 +15654,7 @@ export namespace Prisma {
 
   export type ContractMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     customerId: string | null
     contractNumber: string | null
@@ -14225,6 +15676,7 @@ export namespace Prisma {
 
   export type ContractCountAggregateOutputType = {
     id: number
+    companyId: number
     userId: number
     customerId: number
     contractNumber: number
@@ -14258,6 +15710,7 @@ export namespace Prisma {
 
   export type ContractMinAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     contractNumber?: true
@@ -14279,6 +15732,7 @@ export namespace Prisma {
 
   export type ContractMaxAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     contractNumber?: true
@@ -14300,6 +15754,7 @@ export namespace Prisma {
 
   export type ContractCountAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     customerId?: true
     contractNumber?: true
@@ -14408,6 +15863,7 @@ export namespace Prisma {
 
   export type ContractGroupByOutputType = {
     id: string
+    companyId: string
     userId: string
     customerId: string
     contractNumber: string
@@ -14448,6 +15904,7 @@ export namespace Prisma {
 
   export type ContractSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     contractNumber?: boolean
@@ -14465,12 +15922,14 @@ export namespace Prisma {
     signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
   export type ContractSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     contractNumber?: boolean
@@ -14488,12 +15947,14 @@ export namespace Prisma {
     signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
   export type ContractSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     contractNumber?: boolean
@@ -14511,12 +15972,14 @@ export namespace Prisma {
     signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
   export type ContractSelectScalar = {
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     customerId?: boolean
     contractNumber?: boolean
@@ -14536,16 +15999,19 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "contractNumber" | "title" | "status" | "value" | "currency" | "billingCycle" | "startDate" | "endDate" | "signedAt" | "terms" | "notes" | "submissionId" | "signedDocumentUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "customerId" | "contractNumber" | "title" | "status" | "value" | "currency" | "billingCycle" | "startDate" | "endDate" | "signedAt" | "terms" | "notes" | "submissionId" | "signedDocumentUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
   export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
   export type ContractIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
   }
@@ -14553,11 +16019,13 @@ export namespace Prisma {
   export type $ContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Contract"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
       customer: Prisma.$CustomerPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       userId: string
       customerId: string
       contractNumber: string
@@ -14969,6 +16437,7 @@ export namespace Prisma {
    */
   export interface Prisma__ContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     customer<T extends CustomerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CustomerDefaultArgs<ExtArgs>>): Prisma__CustomerClient<$Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -15001,6 +16470,7 @@ export namespace Prisma {
    */
   interface ContractFieldRefs {
     readonly id: FieldRef<"Contract", 'String'>
+    readonly companyId: FieldRef<"Contract", 'String'>
     readonly userId: FieldRef<"Contract", 'String'>
     readonly customerId: FieldRef<"Contract", 'String'>
     readonly contractNumber: FieldRef<"Contract", 'String'>
@@ -15444,6 +16914,7 @@ export namespace Prisma {
 
   export type AuditLogMinAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     operatorId: string | null
     action: string | null
@@ -15457,6 +16928,7 @@ export namespace Prisma {
 
   export type AuditLogMaxAggregateOutputType = {
     id: string | null
+    companyId: string | null
     userId: string | null
     operatorId: string | null
     action: string | null
@@ -15470,6 +16942,7 @@ export namespace Prisma {
 
   export type AuditLogCountAggregateOutputType = {
     id: number
+    companyId: number
     userId: number
     operatorId: number
     action: number
@@ -15485,6 +16958,7 @@ export namespace Prisma {
 
   export type AuditLogMinAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     operatorId?: true
     action?: true
@@ -15498,6 +16972,7 @@ export namespace Prisma {
 
   export type AuditLogMaxAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     operatorId?: true
     action?: true
@@ -15511,6 +16986,7 @@ export namespace Prisma {
 
   export type AuditLogCountAggregateInputType = {
     id?: true
+    companyId?: true
     userId?: true
     operatorId?: true
     action?: true
@@ -15597,6 +17073,7 @@ export namespace Prisma {
 
   export type AuditLogGroupByOutputType = {
     id: string
+    companyId: string
     userId: string
     operatorId: string
     action: string
@@ -15627,6 +17104,7 @@ export namespace Prisma {
 
   export type AuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     operatorId?: boolean
     action?: boolean
@@ -15636,11 +17114,13 @@ export namespace Prisma {
     metadata?: boolean
     ipAddress?: boolean
     createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     operatorId?: boolean
     action?: boolean
@@ -15650,11 +17130,13 @@ export namespace Prisma {
     metadata?: boolean
     ipAddress?: boolean
     createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     operatorId?: boolean
     action?: boolean
@@ -15664,11 +17146,13 @@ export namespace Prisma {
     metadata?: boolean
     ipAddress?: boolean
     createdAt?: boolean
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["auditLog"]>
 
   export type AuditLogSelectScalar = {
     id?: boolean
+    companyId?: boolean
     userId?: boolean
     operatorId?: boolean
     action?: boolean
@@ -15680,24 +17164,29 @@ export namespace Prisma {
     createdAt?: boolean
   }
 
-  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "operatorId" | "action" | "entityType" | "entityId" | "reason" | "metadata" | "ipAddress" | "createdAt", ExtArgs["result"]["auditLog"]>
+  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "operatorId" | "action" | "entityType" | "entityId" | "reason" | "metadata" | "ipAddress" | "createdAt", ExtArgs["result"]["auditLog"]>
   export type AuditLogInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type AuditLogIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type AuditLogIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AuditLog"
     objects: {
+      company: Prisma.$CompanyPayload<ExtArgs>
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      companyId: string
       userId: string
       operatorId: string
       action: string
@@ -16101,6 +17590,7 @@ export namespace Prisma {
    */
   export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    company<T extends CompanyDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CompanyDefaultArgs<ExtArgs>>): Prisma__CompanyClient<$Result.GetResult<Prisma.$CompanyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -16132,6 +17622,7 @@ export namespace Prisma {
    */
   interface AuditLogFieldRefs {
     readonly id: FieldRef<"AuditLog", 'String'>
+    readonly companyId: FieldRef<"AuditLog", 'String'>
     readonly userId: FieldRef<"AuditLog", 'String'>
     readonly operatorId: FieldRef<"AuditLog", 'String'>
     readonly action: FieldRef<"AuditLog", 'String'>
@@ -16620,10 +18111,9 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-  export const CompanyProfileScalarFieldEnum: {
+  export const CompanyScalarFieldEnum: {
     id: 'id',
-    userId: 'userId',
-    companyName: 'companyName',
+    name: 'name',
     email: 'email',
     phone: 'phone',
     address: 'address',
@@ -16643,11 +18133,23 @@ export namespace Prisma {
     updatedAt: 'updatedAt'
   };
 
-  export type CompanyProfileScalarFieldEnum = (typeof CompanyProfileScalarFieldEnum)[keyof typeof CompanyProfileScalarFieldEnum]
+  export type CompanyScalarFieldEnum = (typeof CompanyScalarFieldEnum)[keyof typeof CompanyScalarFieldEnum]
+
+
+  export const CompanyMemberScalarFieldEnum: {
+    id: 'id',
+    companyId: 'companyId',
+    userId: 'userId',
+    role: 'role',
+    createdAt: 'createdAt'
+  };
+
+  export type CompanyMemberScalarFieldEnum = (typeof CompanyMemberScalarFieldEnum)[keyof typeof CompanyMemberScalarFieldEnum]
 
 
   export const CustomerScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     userId: 'userId',
     name: 'name',
     email: 'email',
@@ -16666,6 +18168,7 @@ export namespace Prisma {
 
   export const InvoiceScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     userId: 'userId',
     customerId: 'customerId',
     invoiceNumber: 'invoiceNumber',
@@ -16736,6 +18239,7 @@ export namespace Prisma {
 
   export const LicenseScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     userId: 'userId',
     customerId: 'customerId',
     name: 'name',
@@ -16757,6 +18261,7 @@ export namespace Prisma {
 
   export const ContractScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     userId: 'userId',
     customerId: 'customerId',
     contractNumber: 'contractNumber',
@@ -16781,6 +18286,7 @@ export namespace Prisma {
 
   export const AuditLogScalarFieldEnum: {
     id: 'id',
+    companyId: 'companyId',
     userId: 'userId',
     operatorId: 'operatorId',
     action: 'action',
@@ -17100,7 +18606,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
-    companyProfile?: XOR<CompanyProfileNullableScalarRelationFilter, CompanyProfileWhereInput> | null
+    companyMembers?: CompanyMemberListRelationFilter
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
@@ -17117,7 +18623,7 @@ export namespace Prisma {
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
-    companyProfile?: CompanyProfileOrderByWithRelationInput
+    companyMembers?: CompanyMemberOrderByRelationAggregateInput
     customers?: CustomerOrderByRelationAggregateInput
     invoices?: InvoiceOrderByRelationAggregateInput
     licenses?: LicenseOrderByRelationAggregateInput
@@ -17137,7 +18643,7 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     posts?: PostListRelationFilter
-    companyProfile?: XOR<CompanyProfileNullableScalarRelationFilter, CompanyProfileWhereInput> | null
+    companyMembers?: CompanyMemberListRelationFilter
     customers?: CustomerListRelationFilter
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
@@ -17167,37 +18673,40 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
   }
 
-  export type CompanyProfileWhereInput = {
-    AND?: CompanyProfileWhereInput | CompanyProfileWhereInput[]
-    OR?: CompanyProfileWhereInput[]
-    NOT?: CompanyProfileWhereInput | CompanyProfileWhereInput[]
-    id?: StringFilter<"CompanyProfile"> | string
-    userId?: StringFilter<"CompanyProfile"> | string
-    companyName?: StringFilter<"CompanyProfile"> | string
-    email?: StringFilter<"CompanyProfile"> | string
-    phone?: StringFilter<"CompanyProfile"> | string
-    address?: StringFilter<"CompanyProfile"> | string
-    city?: StringFilter<"CompanyProfile"> | string
-    zipCode?: StringFilter<"CompanyProfile"> | string
-    country?: StringFilter<"CompanyProfile"> | string
-    taxId?: StringFilter<"CompanyProfile"> | string
-    bankName?: StringFilter<"CompanyProfile"> | string
-    bankAccountName?: StringFilter<"CompanyProfile"> | string
-    bankAccountNumber?: StringFilter<"CompanyProfile"> | string
-    logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
-    signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
-    currency?: StringFilter<"CompanyProfile"> | string
-    paymentTerms?: StringFilter<"CompanyProfile"> | string
-    notes?: StringFilter<"CompanyProfile"> | string
-    createdAt?: DateTimeFilter<"CompanyProfile"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyProfile"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  export type CompanyWhereInput = {
+    AND?: CompanyWhereInput | CompanyWhereInput[]
+    OR?: CompanyWhereInput[]
+    NOT?: CompanyWhereInput | CompanyWhereInput[]
+    id?: StringFilter<"Company"> | string
+    name?: StringFilter<"Company"> | string
+    email?: StringFilter<"Company"> | string
+    phone?: StringFilter<"Company"> | string
+    address?: StringFilter<"Company"> | string
+    city?: StringFilter<"Company"> | string
+    zipCode?: StringFilter<"Company"> | string
+    country?: StringFilter<"Company"> | string
+    taxId?: StringFilter<"Company"> | string
+    bankName?: StringFilter<"Company"> | string
+    bankAccountName?: StringFilter<"Company"> | string
+    bankAccountNumber?: StringFilter<"Company"> | string
+    logoUrl?: StringNullableFilter<"Company"> | string | null
+    signatureData?: StringNullableFilter<"Company"> | string | null
+    currency?: StringFilter<"Company"> | string
+    paymentTerms?: StringFilter<"Company"> | string
+    notes?: StringFilter<"Company"> | string
+    createdAt?: DateTimeFilter<"Company"> | Date | string
+    updatedAt?: DateTimeFilter<"Company"> | Date | string
+    members?: CompanyMemberListRelationFilter
+    customers?: CustomerListRelationFilter
+    invoices?: InvoiceListRelationFilter
+    contracts?: ContractListRelationFilter
+    licenses?: LicenseListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
   }
 
-  export type CompanyProfileOrderByWithRelationInput = {
+  export type CompanyOrderByWithRelationInput = {
     id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
+    name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     address?: SortOrder
@@ -17215,86 +18724,152 @@ export namespace Prisma {
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    members?: CompanyMemberOrderByRelationAggregateInput
+    customers?: CustomerOrderByRelationAggregateInput
+    invoices?: InvoiceOrderByRelationAggregateInput
+    contracts?: ContractOrderByRelationAggregateInput
+    licenses?: LicenseOrderByRelationAggregateInput
+    auditLogs?: AuditLogOrderByRelationAggregateInput
+  }
+
+  export type CompanyWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: CompanyWhereInput | CompanyWhereInput[]
+    OR?: CompanyWhereInput[]
+    NOT?: CompanyWhereInput | CompanyWhereInput[]
+    name?: StringFilter<"Company"> | string
+    email?: StringFilter<"Company"> | string
+    phone?: StringFilter<"Company"> | string
+    address?: StringFilter<"Company"> | string
+    city?: StringFilter<"Company"> | string
+    zipCode?: StringFilter<"Company"> | string
+    country?: StringFilter<"Company"> | string
+    taxId?: StringFilter<"Company"> | string
+    bankName?: StringFilter<"Company"> | string
+    bankAccountName?: StringFilter<"Company"> | string
+    bankAccountNumber?: StringFilter<"Company"> | string
+    logoUrl?: StringNullableFilter<"Company"> | string | null
+    signatureData?: StringNullableFilter<"Company"> | string | null
+    currency?: StringFilter<"Company"> | string
+    paymentTerms?: StringFilter<"Company"> | string
+    notes?: StringFilter<"Company"> | string
+    createdAt?: DateTimeFilter<"Company"> | Date | string
+    updatedAt?: DateTimeFilter<"Company"> | Date | string
+    members?: CompanyMemberListRelationFilter
+    customers?: CustomerListRelationFilter
+    invoices?: InvoiceListRelationFilter
+    contracts?: ContractListRelationFilter
+    licenses?: LicenseListRelationFilter
+    auditLogs?: AuditLogListRelationFilter
+  }, "id">
+
+  export type CompanyOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    email?: SortOrder
+    phone?: SortOrder
+    address?: SortOrder
+    city?: SortOrder
+    zipCode?: SortOrder
+    country?: SortOrder
+    taxId?: SortOrder
+    bankName?: SortOrder
+    bankAccountName?: SortOrder
+    bankAccountNumber?: SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    signatureData?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    paymentTerms?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: CompanyCountOrderByAggregateInput
+    _max?: CompanyMaxOrderByAggregateInput
+    _min?: CompanyMinOrderByAggregateInput
+  }
+
+  export type CompanyScalarWhereWithAggregatesInput = {
+    AND?: CompanyScalarWhereWithAggregatesInput | CompanyScalarWhereWithAggregatesInput[]
+    OR?: CompanyScalarWhereWithAggregatesInput[]
+    NOT?: CompanyScalarWhereWithAggregatesInput | CompanyScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Company"> | string
+    name?: StringWithAggregatesFilter<"Company"> | string
+    email?: StringWithAggregatesFilter<"Company"> | string
+    phone?: StringWithAggregatesFilter<"Company"> | string
+    address?: StringWithAggregatesFilter<"Company"> | string
+    city?: StringWithAggregatesFilter<"Company"> | string
+    zipCode?: StringWithAggregatesFilter<"Company"> | string
+    country?: StringWithAggregatesFilter<"Company"> | string
+    taxId?: StringWithAggregatesFilter<"Company"> | string
+    bankName?: StringWithAggregatesFilter<"Company"> | string
+    bankAccountName?: StringWithAggregatesFilter<"Company"> | string
+    bankAccountNumber?: StringWithAggregatesFilter<"Company"> | string
+    logoUrl?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    signatureData?: StringNullableWithAggregatesFilter<"Company"> | string | null
+    currency?: StringWithAggregatesFilter<"Company"> | string
+    paymentTerms?: StringWithAggregatesFilter<"Company"> | string
+    notes?: StringWithAggregatesFilter<"Company"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Company"> | Date | string
+  }
+
+  export type CompanyMemberWhereInput = {
+    AND?: CompanyMemberWhereInput | CompanyMemberWhereInput[]
+    OR?: CompanyMemberWhereInput[]
+    NOT?: CompanyMemberWhereInput | CompanyMemberWhereInput[]
+    id?: StringFilter<"CompanyMember"> | string
+    companyId?: StringFilter<"CompanyMember"> | string
+    userId?: StringFilter<"CompanyMember"> | string
+    role?: StringFilter<"CompanyMember"> | string
+    createdAt?: DateTimeFilter<"CompanyMember"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type CompanyMemberOrderByWithRelationInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    userId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
 
-  export type CompanyProfileWhereUniqueInput = Prisma.AtLeast<{
+  export type CompanyMemberWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    userId?: string
-    AND?: CompanyProfileWhereInput | CompanyProfileWhereInput[]
-    OR?: CompanyProfileWhereInput[]
-    NOT?: CompanyProfileWhereInput | CompanyProfileWhereInput[]
-    companyName?: StringFilter<"CompanyProfile"> | string
-    email?: StringFilter<"CompanyProfile"> | string
-    phone?: StringFilter<"CompanyProfile"> | string
-    address?: StringFilter<"CompanyProfile"> | string
-    city?: StringFilter<"CompanyProfile"> | string
-    zipCode?: StringFilter<"CompanyProfile"> | string
-    country?: StringFilter<"CompanyProfile"> | string
-    taxId?: StringFilter<"CompanyProfile"> | string
-    bankName?: StringFilter<"CompanyProfile"> | string
-    bankAccountName?: StringFilter<"CompanyProfile"> | string
-    bankAccountNumber?: StringFilter<"CompanyProfile"> | string
-    logoUrl?: StringNullableFilter<"CompanyProfile"> | string | null
-    signatureData?: StringNullableFilter<"CompanyProfile"> | string | null
-    currency?: StringFilter<"CompanyProfile"> | string
-    paymentTerms?: StringFilter<"CompanyProfile"> | string
-    notes?: StringFilter<"CompanyProfile"> | string
-    createdAt?: DateTimeFilter<"CompanyProfile"> | Date | string
-    updatedAt?: DateTimeFilter<"CompanyProfile"> | Date | string
+    companyId_userId?: CompanyMemberCompanyIdUserIdCompoundUniqueInput
+    AND?: CompanyMemberWhereInput | CompanyMemberWhereInput[]
+    OR?: CompanyMemberWhereInput[]
+    NOT?: CompanyMemberWhereInput | CompanyMemberWhereInput[]
+    companyId?: StringFilter<"CompanyMember"> | string
+    userId?: StringFilter<"CompanyMember"> | string
+    role?: StringFilter<"CompanyMember"> | string
+    createdAt?: DateTimeFilter<"CompanyMember"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "userId">
+  }, "id" | "companyId_userId">
 
-  export type CompanyProfileOrderByWithAggregationInput = {
+  export type CompanyMemberOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
-    companyName?: SortOrder
-    email?: SortOrder
-    phone?: SortOrder
-    address?: SortOrder
-    city?: SortOrder
-    zipCode?: SortOrder
-    country?: SortOrder
-    taxId?: SortOrder
-    bankName?: SortOrder
-    bankAccountName?: SortOrder
-    bankAccountNumber?: SortOrder
-    logoUrl?: SortOrderInput | SortOrder
-    signatureData?: SortOrderInput | SortOrder
-    currency?: SortOrder
-    paymentTerms?: SortOrder
-    notes?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
-    updatedAt?: SortOrder
-    _count?: CompanyProfileCountOrderByAggregateInput
-    _max?: CompanyProfileMaxOrderByAggregateInput
-    _min?: CompanyProfileMinOrderByAggregateInput
+    _count?: CompanyMemberCountOrderByAggregateInput
+    _max?: CompanyMemberMaxOrderByAggregateInput
+    _min?: CompanyMemberMinOrderByAggregateInput
   }
 
-  export type CompanyProfileScalarWhereWithAggregatesInput = {
-    AND?: CompanyProfileScalarWhereWithAggregatesInput | CompanyProfileScalarWhereWithAggregatesInput[]
-    OR?: CompanyProfileScalarWhereWithAggregatesInput[]
-    NOT?: CompanyProfileScalarWhereWithAggregatesInput | CompanyProfileScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    userId?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    companyName?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    email?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    phone?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    address?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    city?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    zipCode?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    country?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    taxId?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    bankName?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    bankAccountName?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    bankAccountNumber?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    logoUrl?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
-    signatureData?: StringNullableWithAggregatesFilter<"CompanyProfile"> | string | null
-    currency?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    paymentTerms?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    notes?: StringWithAggregatesFilter<"CompanyProfile"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"CompanyProfile"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"CompanyProfile"> | Date | string
+  export type CompanyMemberScalarWhereWithAggregatesInput = {
+    AND?: CompanyMemberScalarWhereWithAggregatesInput | CompanyMemberScalarWhereWithAggregatesInput[]
+    OR?: CompanyMemberScalarWhereWithAggregatesInput[]
+    NOT?: CompanyMemberScalarWhereWithAggregatesInput | CompanyMemberScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"CompanyMember"> | string
+    companyId?: StringWithAggregatesFilter<"CompanyMember"> | string
+    userId?: StringWithAggregatesFilter<"CompanyMember"> | string
+    role?: StringWithAggregatesFilter<"CompanyMember"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"CompanyMember"> | Date | string
   }
 
   export type CustomerWhereInput = {
@@ -17302,6 +18877,7 @@ export namespace Prisma {
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
     id?: StringFilter<"Customer"> | string
+    companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
@@ -17313,6 +18889,7 @@ export namespace Prisma {
     taxId?: StringFilter<"Customer"> | string
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
@@ -17321,6 +18898,7 @@ export namespace Prisma {
 
   export type CustomerOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
@@ -17332,6 +18910,7 @@ export namespace Prisma {
     taxId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     invoices?: InvoiceOrderByRelationAggregateInput
     licenses?: LicenseOrderByRelationAggregateInput
@@ -17343,6 +18922,7 @@ export namespace Prisma {
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
+    companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
@@ -17354,6 +18934,7 @@ export namespace Prisma {
     taxId?: StringFilter<"Customer"> | string
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     invoices?: InvoiceListRelationFilter
     licenses?: LicenseListRelationFilter
@@ -17362,6 +18943,7 @@ export namespace Prisma {
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
@@ -17383,6 +18965,7 @@ export namespace Prisma {
     OR?: CustomerScalarWhereWithAggregatesInput[]
     NOT?: CustomerScalarWhereWithAggregatesInput | CustomerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Customer"> | string
+    companyId?: StringWithAggregatesFilter<"Customer"> | string
     userId?: StringWithAggregatesFilter<"Customer"> | string
     name?: StringWithAggregatesFilter<"Customer"> | string
     email?: StringWithAggregatesFilter<"Customer"> | string
@@ -17401,6 +18984,7 @@ export namespace Prisma {
     OR?: InvoiceWhereInput[]
     NOT?: InvoiceWhereInput | InvoiceWhereInput[]
     id?: StringFilter<"Invoice"> | string
+    companyId?: StringFilter<"Invoice"> | string
     userId?: StringFilter<"Invoice"> | string
     customerId?: StringNullableFilter<"Invoice"> | string | null
     invoiceNumber?: StringFilter<"Invoice"> | string
@@ -17442,6 +19026,7 @@ export namespace Prisma {
     signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     items?: InvoiceItemListRelationFilter
@@ -17449,6 +19034,7 @@ export namespace Prisma {
 
   export type InvoiceOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     invoiceNumber?: SortOrder
@@ -17490,6 +19076,7 @@ export namespace Prisma {
     signatureData?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
     items?: InvoiceItemOrderByRelationAggregateInput
@@ -17500,6 +19087,7 @@ export namespace Prisma {
     AND?: InvoiceWhereInput | InvoiceWhereInput[]
     OR?: InvoiceWhereInput[]
     NOT?: InvoiceWhereInput | InvoiceWhereInput[]
+    companyId?: StringFilter<"Invoice"> | string
     userId?: StringFilter<"Invoice"> | string
     customerId?: StringNullableFilter<"Invoice"> | string | null
     invoiceNumber?: StringFilter<"Invoice"> | string
@@ -17541,6 +19129,7 @@ export namespace Prisma {
     signatureData?: StringNullableFilter<"Invoice"> | string | null
     createdAt?: DateTimeFilter<"Invoice"> | Date | string
     updatedAt?: DateTimeFilter<"Invoice"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
     items?: InvoiceItemListRelationFilter
@@ -17548,6 +19137,7 @@ export namespace Prisma {
 
   export type InvoiceOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     invoiceNumber?: SortOrder
@@ -17601,6 +19191,7 @@ export namespace Prisma {
     OR?: InvoiceScalarWhereWithAggregatesInput[]
     NOT?: InvoiceScalarWhereWithAggregatesInput | InvoiceScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Invoice"> | string
+    companyId?: StringWithAggregatesFilter<"Invoice"> | string
     userId?: StringWithAggregatesFilter<"Invoice"> | string
     customerId?: StringNullableWithAggregatesFilter<"Invoice"> | string | null
     invoiceNumber?: StringWithAggregatesFilter<"Invoice"> | string
@@ -17759,6 +19350,7 @@ export namespace Prisma {
     OR?: LicenseWhereInput[]
     NOT?: LicenseWhereInput | LicenseWhereInput[]
     id?: StringFilter<"License"> | string
+    companyId?: StringFilter<"License"> | string
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
@@ -17773,12 +19365,14 @@ export namespace Prisma {
     checkCount?: IntFilter<"License"> | number
     createdAt?: DateTimeFilter<"License"> | Date | string
     updatedAt?: DateTimeFilter<"License"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
   }
 
   export type LicenseOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     name?: SortOrder
@@ -17793,6 +19387,7 @@ export namespace Prisma {
     checkCount?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
   }
@@ -17803,6 +19398,7 @@ export namespace Prisma {
     AND?: LicenseWhereInput | LicenseWhereInput[]
     OR?: LicenseWhereInput[]
     NOT?: LicenseWhereInput | LicenseWhereInput[]
+    companyId?: StringFilter<"License"> | string
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
@@ -17816,12 +19412,14 @@ export namespace Prisma {
     checkCount?: IntFilter<"License"> | number
     createdAt?: DateTimeFilter<"License"> | Date | string
     updatedAt?: DateTimeFilter<"License"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
   }, "id" | "key">
 
   export type LicenseOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     name?: SortOrder
@@ -17848,6 +19446,7 @@ export namespace Prisma {
     OR?: LicenseScalarWhereWithAggregatesInput[]
     NOT?: LicenseScalarWhereWithAggregatesInput | LicenseScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"License"> | string
+    companyId?: StringWithAggregatesFilter<"License"> | string
     userId?: StringWithAggregatesFilter<"License"> | string
     customerId?: StringNullableWithAggregatesFilter<"License"> | string | null
     name?: StringWithAggregatesFilter<"License"> | string
@@ -17869,6 +19468,7 @@ export namespace Prisma {
     OR?: ContractWhereInput[]
     NOT?: ContractWhereInput | ContractWhereInput[]
     id?: StringFilter<"Contract"> | string
+    companyId?: StringFilter<"Contract"> | string
     userId?: StringFilter<"Contract"> | string
     customerId?: StringFilter<"Contract"> | string
     contractNumber?: StringFilter<"Contract"> | string
@@ -17886,12 +19486,14 @@ export namespace Prisma {
     signedDocumentUrl?: StringNullableFilter<"Contract"> | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
   }
 
   export type ContractOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     contractNumber?: SortOrder
@@ -17909,6 +19511,7 @@ export namespace Prisma {
     signedDocumentUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
     customer?: CustomerOrderByWithRelationInput
   }
@@ -17918,6 +19521,7 @@ export namespace Prisma {
     AND?: ContractWhereInput | ContractWhereInput[]
     OR?: ContractWhereInput[]
     NOT?: ContractWhereInput | ContractWhereInput[]
+    companyId?: StringFilter<"Contract"> | string
     userId?: StringFilter<"Contract"> | string
     customerId?: StringFilter<"Contract"> | string
     contractNumber?: StringFilter<"Contract"> | string
@@ -17935,12 +19539,14 @@ export namespace Prisma {
     signedDocumentUrl?: StringNullableFilter<"Contract"> | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
   }, "id">
 
   export type ContractOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     contractNumber?: SortOrder
@@ -17970,6 +19576,7 @@ export namespace Prisma {
     OR?: ContractScalarWhereWithAggregatesInput[]
     NOT?: ContractScalarWhereWithAggregatesInput | ContractScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Contract"> | string
+    companyId?: StringWithAggregatesFilter<"Contract"> | string
     userId?: StringWithAggregatesFilter<"Contract"> | string
     customerId?: StringWithAggregatesFilter<"Contract"> | string
     contractNumber?: StringWithAggregatesFilter<"Contract"> | string
@@ -17994,6 +19601,7 @@ export namespace Prisma {
     OR?: AuditLogWhereInput[]
     NOT?: AuditLogWhereInput | AuditLogWhereInput[]
     id?: StringFilter<"AuditLog"> | string
+    companyId?: StringFilter<"AuditLog"> | string
     userId?: StringFilter<"AuditLog"> | string
     operatorId?: StringFilter<"AuditLog"> | string
     action?: StringFilter<"AuditLog"> | string
@@ -18003,11 +19611,13 @@ export namespace Prisma {
     metadata?: StringNullableFilter<"AuditLog"> | string | null
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type AuditLogOrderByWithRelationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     operatorId?: SortOrder
     action?: SortOrder
@@ -18017,6 +19627,7 @@ export namespace Prisma {
     metadata?: SortOrderInput | SortOrder
     ipAddress?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    company?: CompanyOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
 
@@ -18025,6 +19636,7 @@ export namespace Prisma {
     AND?: AuditLogWhereInput | AuditLogWhereInput[]
     OR?: AuditLogWhereInput[]
     NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    companyId?: StringFilter<"AuditLog"> | string
     userId?: StringFilter<"AuditLog"> | string
     operatorId?: StringFilter<"AuditLog"> | string
     action?: StringFilter<"AuditLog"> | string
@@ -18034,11 +19646,13 @@ export namespace Prisma {
     metadata?: StringNullableFilter<"AuditLog"> | string | null
     ipAddress?: StringNullableFilter<"AuditLog"> | string | null
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
+    company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type AuditLogOrderByWithAggregationInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     operatorId?: SortOrder
     action?: SortOrder
@@ -18058,6 +19672,7 @@ export namespace Prisma {
     OR?: AuditLogScalarWhereWithAggregatesInput[]
     NOT?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"AuditLog"> | string
+    companyId?: StringWithAggregatesFilter<"AuditLog"> | string
     userId?: StringWithAggregatesFilter<"AuditLog"> | string
     operatorId?: StringWithAggregatesFilter<"AuditLog"> | string
     action?: StringWithAggregatesFilter<"AuditLog"> | string
@@ -18289,7 +19904,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -18306,7 +19921,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -18323,7 +19938,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -18340,7 +19955,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -18372,9 +19987,9 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type CompanyProfileCreateInput = {
+  export type CompanyCreateInput = {
     id?: string
-    companyName?: string
+    name: string
     email?: string
     phone?: string
     address?: string
@@ -18392,144 +20007,216 @@ export namespace Prisma {
     notes?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutCompanyProfileInput
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
   }
 
-  export type CompanyProfileUncheckedCreateInput = {
+  export type CompanyUncheckedCreateInput = {
     id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyCreateManyInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type CompanyUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyMemberCreateInput = {
+    id?: string
+    role?: string
+    createdAt?: Date | string
+    company: CompanyCreateNestedOneWithoutMembersInput
+    user: UserCreateNestedOneWithoutCompanyMembersInput
+  }
+
+  export type CompanyMemberUncheckedCreateInput = {
+    id?: string
+    companyId: string
     userId: string
-    companyName?: string
-    email?: string
-    phone?: string
-    address?: string
-    city?: string
-    zipCode?: string
-    country?: string
-    taxId?: string
-    bankName?: string
-    bankAccountName?: string
-    bankAccountNumber?: string
-    logoUrl?: string | null
-    signatureData?: string | null
-    currency?: string
-    paymentTerms?: string
-    notes?: string
+    role?: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
-  export type CompanyProfileUpdateInput = {
+  export type CompanyMemberUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutCompanyProfileNestedInput
+    company?: CompanyUpdateOneRequiredWithoutMembersNestedInput
+    user?: UserUpdateOneRequiredWithoutCompanyMembersNestedInput
   }
 
-  export type CompanyProfileUncheckedUpdateInput = {
+  export type CompanyMemberUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyProfileCreateManyInput = {
+  export type CompanyMemberCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
-    companyName?: string
-    email?: string
-    phone?: string
-    address?: string
-    city?: string
-    zipCode?: string
-    country?: string
-    taxId?: string
-    bankName?: string
-    bankAccountName?: string
-    bankAccountNumber?: string
-    logoUrl?: string | null
-    signatureData?: string | null
-    currency?: string
-    paymentTerms?: string
-    notes?: string
+    role?: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
-  export type CompanyProfileUpdateManyMutationInput = {
+  export type CompanyMemberUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CompanyProfileUncheckedUpdateManyInput = {
+  export type CompanyMemberUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CustomerCreateInput = {
@@ -18544,6 +20231,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
@@ -18552,6 +20240,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     email?: string
@@ -18580,6 +20269,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
@@ -18588,6 +20278,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -18606,6 +20297,7 @@ export namespace Prisma {
 
   export type CustomerCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     email?: string
@@ -18635,6 +20327,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -18689,6 +20382,7 @@ export namespace Prisma {
     signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInvoicesInput
     user: UserCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
@@ -18696,6 +20390,7 @@ export namespace Prisma {
 
   export type InvoiceUncheckedCreateInput = {
     id?: string
+    companyId: string
     userId: string
     customerId?: string | null
     invoiceNumber: string
@@ -18781,6 +20476,7 @@ export namespace Prisma {
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
@@ -18788,6 +20484,7 @@ export namespace Prisma {
 
   export type InvoiceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceNumber?: StringFieldUpdateOperationsInput | string
@@ -18834,6 +20531,7 @@ export namespace Prisma {
 
   export type InvoiceCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
     customerId?: string | null
     invoiceNumber: string
@@ -18922,6 +20620,7 @@ export namespace Prisma {
 
   export type InvoiceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceNumber?: StringFieldUpdateOperationsInput | string
@@ -19090,12 +20789,14 @@ export namespace Prisma {
     checkCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutLicensesInput
     user: UserCreateNestedOneWithoutLicensesInput
     customer?: CustomerCreateNestedOneWithoutLicensesInput
   }
 
   export type LicenseUncheckedCreateInput = {
     id?: string
+    companyId: string
     userId: string
     customerId?: string | null
     name: string
@@ -19126,12 +20827,14 @@ export namespace Prisma {
     checkCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutLicensesNestedInput
     user?: UserUpdateOneRequiredWithoutLicensesNestedInput
     customer?: CustomerUpdateOneWithoutLicensesNestedInput
   }
 
   export type LicenseUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
@@ -19150,6 +20853,7 @@ export namespace Prisma {
 
   export type LicenseCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
     customerId?: string | null
     name: string
@@ -19184,6 +20888,7 @@ export namespace Prisma {
 
   export type LicenseUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
@@ -19217,12 +20922,14 @@ export namespace Prisma {
     signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutContractsInput
     user: UserCreateNestedOneWithoutContractsInput
     customer: CustomerCreateNestedOneWithoutContractsInput
   }
 
   export type ContractUncheckedCreateInput = {
     id?: string
+    companyId: string
     userId: string
     customerId: string
     contractNumber: string
@@ -19259,12 +20966,14 @@ export namespace Prisma {
     signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutContractsNestedInput
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
     customer?: CustomerUpdateOneRequiredWithoutContractsNestedInput
   }
 
   export type ContractUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
@@ -19286,6 +20995,7 @@ export namespace Prisma {
 
   export type ContractCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
     customerId: string
     contractNumber: string
@@ -19326,6 +21036,7 @@ export namespace Prisma {
 
   export type ContractUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
@@ -19355,11 +21066,13 @@ export namespace Prisma {
     metadata?: string | null
     ipAddress?: string | null
     createdAt?: Date | string
+    company: CompanyCreateNestedOneWithoutAuditLogsInput
     user: UserCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateInput = {
     id?: string
+    companyId: string
     userId: string
     operatorId: string
     action: string
@@ -19381,11 +21094,13 @@ export namespace Prisma {
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutAuditLogsNestedInput
     user?: UserUpdateOneRequiredWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     operatorId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
@@ -19399,6 +21114,7 @@ export namespace Prisma {
 
   export type AuditLogCreateManyInput = {
     id?: string
+    companyId: string
     userId: string
     operatorId: string
     action: string
@@ -19424,6 +21140,7 @@ export namespace Prisma {
 
   export type AuditLogUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     operatorId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
@@ -19735,9 +21452,10 @@ export namespace Prisma {
     none?: PostWhereInput
   }
 
-  export type CompanyProfileNullableScalarRelationFilter = {
-    is?: CompanyProfileWhereInput | null
-    isNot?: CompanyProfileWhereInput | null
+  export type CompanyMemberListRelationFilter = {
+    every?: CompanyMemberWhereInput
+    some?: CompanyMemberWhereInput
+    none?: CompanyMemberWhereInput
   }
 
   export type CustomerListRelationFilter = {
@@ -19779,6 +21497,10 @@ export namespace Prisma {
   }
 
   export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type CompanyMemberOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -19840,10 +21562,9 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
-  export type CompanyProfileCountOrderByAggregateInput = {
+  export type CompanyCountOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
+    name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     address?: SortOrder
@@ -19863,10 +21584,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type CompanyProfileMaxOrderByAggregateInput = {
+  export type CompanyMaxOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
+    name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     address?: SortOrder
@@ -19886,10 +21606,9 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type CompanyProfileMinOrderByAggregateInput = {
+  export type CompanyMinOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
-    companyName?: SortOrder
+    name?: SortOrder
     email?: SortOrder
     phone?: SortOrder
     address?: SortOrder
@@ -19907,10 +21626,45 @@ export namespace Prisma {
     notes?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type CompanyScalarRelationFilter = {
+    is?: CompanyWhereInput
+    isNot?: CompanyWhereInput
+  }
+
+  export type CompanyMemberCompanyIdUserIdCompoundUniqueInput = {
+    companyId: string
+    userId: string
+  }
+
+  export type CompanyMemberCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    userId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CompanyMemberMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    userId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type CompanyMemberMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyId?: SortOrder
+    userId?: SortOrder
+    role?: SortOrder
+    createdAt?: SortOrder
   }
 
   export type CustomerCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
@@ -19926,6 +21680,7 @@ export namespace Prisma {
 
   export type CustomerMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
@@ -19941,6 +21696,7 @@ export namespace Prisma {
 
   export type CustomerMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
@@ -19982,6 +21738,7 @@ export namespace Prisma {
 
   export type InvoiceCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     invoiceNumber?: SortOrder
@@ -20037,6 +21794,7 @@ export namespace Prisma {
 
   export type InvoiceMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     invoiceNumber?: SortOrder
@@ -20082,6 +21840,7 @@ export namespace Prisma {
 
   export type InvoiceMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     invoiceNumber?: SortOrder
@@ -20225,6 +21984,7 @@ export namespace Prisma {
 
   export type LicenseCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
@@ -20249,6 +22009,7 @@ export namespace Prisma {
 
   export type LicenseMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
@@ -20267,6 +22028,7 @@ export namespace Prisma {
 
   export type LicenseMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
@@ -20296,6 +22058,7 @@ export namespace Prisma {
 
   export type ContractCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     contractNumber?: SortOrder
@@ -20322,6 +22085,7 @@ export namespace Prisma {
 
   export type ContractMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     contractNumber?: SortOrder
@@ -20343,6 +22107,7 @@ export namespace Prisma {
 
   export type ContractMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     customerId?: SortOrder
     contractNumber?: SortOrder
@@ -20369,6 +22134,7 @@ export namespace Prisma {
 
   export type AuditLogCountOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     operatorId?: SortOrder
     action?: SortOrder
@@ -20382,6 +22148,7 @@ export namespace Prisma {
 
   export type AuditLogMaxOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     operatorId?: SortOrder
     action?: SortOrder
@@ -20395,6 +22162,7 @@ export namespace Prisma {
 
   export type AuditLogMinOrderByAggregateInput = {
     id?: SortOrder
+    companyId?: SortOrder
     userId?: SortOrder
     operatorId?: SortOrder
     action?: SortOrder
@@ -20497,10 +22265,11 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
-  export type CompanyProfileCreateNestedOneWithoutUserInput = {
-    create?: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CompanyProfileCreateOrConnectWithoutUserInput
-    connect?: CompanyProfileWhereUniqueInput
+  export type CompanyMemberCreateNestedManyWithoutUserInput = {
+    create?: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput> | CompanyMemberCreateWithoutUserInput[] | CompanyMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutUserInput | CompanyMemberCreateOrConnectWithoutUserInput[]
+    createMany?: CompanyMemberCreateManyUserInputEnvelope
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
   }
 
   export type CustomerCreateNestedManyWithoutUserInput = {
@@ -20559,10 +22328,11 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
-  export type CompanyProfileUncheckedCreateNestedOneWithoutUserInput = {
-    create?: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CompanyProfileCreateOrConnectWithoutUserInput
-    connect?: CompanyProfileWhereUniqueInput
+  export type CompanyMemberUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput> | CompanyMemberCreateWithoutUserInput[] | CompanyMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutUserInput | CompanyMemberCreateOrConnectWithoutUserInput[]
+    createMany?: CompanyMemberCreateManyUserInputEnvelope
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
   }
 
   export type CustomerUncheckedCreateNestedManyWithoutUserInput = {
@@ -20646,14 +22416,18 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
-  export type CompanyProfileUpdateOneWithoutUserNestedInput = {
-    create?: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CompanyProfileCreateOrConnectWithoutUserInput
-    upsert?: CompanyProfileUpsertWithoutUserInput
-    disconnect?: CompanyProfileWhereInput | boolean
-    delete?: CompanyProfileWhereInput | boolean
-    connect?: CompanyProfileWhereUniqueInput
-    update?: XOR<XOR<CompanyProfileUpdateToOneWithWhereWithoutUserInput, CompanyProfileUpdateWithoutUserInput>, CompanyProfileUncheckedUpdateWithoutUserInput>
+  export type CompanyMemberUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput> | CompanyMemberCreateWithoutUserInput[] | CompanyMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutUserInput | CompanyMemberCreateOrConnectWithoutUserInput[]
+    upsert?: CompanyMemberUpsertWithWhereUniqueWithoutUserInput | CompanyMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CompanyMemberCreateManyUserInputEnvelope
+    set?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    disconnect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    delete?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    update?: CompanyMemberUpdateWithWhereUniqueWithoutUserInput | CompanyMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CompanyMemberUpdateManyWithWhereWithoutUserInput | CompanyMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
   }
 
   export type CustomerUpdateManyWithoutUserNestedInput = {
@@ -20768,14 +22542,18 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
-  export type CompanyProfileUncheckedUpdateOneWithoutUserNestedInput = {
-    create?: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
-    connectOrCreate?: CompanyProfileCreateOrConnectWithoutUserInput
-    upsert?: CompanyProfileUpsertWithoutUserInput
-    disconnect?: CompanyProfileWhereInput | boolean
-    delete?: CompanyProfileWhereInput | boolean
-    connect?: CompanyProfileWhereUniqueInput
-    update?: XOR<XOR<CompanyProfileUpdateToOneWithWhereWithoutUserInput, CompanyProfileUpdateWithoutUserInput>, CompanyProfileUncheckedUpdateWithoutUserInput>
+  export type CompanyMemberUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput> | CompanyMemberCreateWithoutUserInput[] | CompanyMemberUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutUserInput | CompanyMemberCreateOrConnectWithoutUserInput[]
+    upsert?: CompanyMemberUpsertWithWhereUniqueWithoutUserInput | CompanyMemberUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: CompanyMemberCreateManyUserInputEnvelope
+    set?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    disconnect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    delete?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    update?: CompanyMemberUpdateWithWhereUniqueWithoutUserInput | CompanyMemberUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: CompanyMemberUpdateManyWithWhereWithoutUserInput | CompanyMemberUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
   }
 
   export type CustomerUncheckedUpdateManyWithoutUserNestedInput = {
@@ -20848,18 +22626,290 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
-  export type UserCreateNestedOneWithoutCompanyProfileInput = {
-    create?: XOR<UserCreateWithoutCompanyProfileInput, UserUncheckedCreateWithoutCompanyProfileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCompanyProfileInput
+  export type CompanyMemberCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyMemberCreateManyCompanyInputEnvelope
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+  }
+
+  export type CustomerCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput> | CustomerCreateWithoutCompanyInput[] | CustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CustomerCreateOrConnectWithoutCompanyInput | CustomerCreateOrConnectWithoutCompanyInput[]
+    createMany?: CustomerCreateManyCompanyInputEnvelope
+    connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+  }
+
+  export type InvoiceCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput> | InvoiceCreateWithoutCompanyInput[] | InvoiceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCompanyInput | InvoiceCreateOrConnectWithoutCompanyInput[]
+    createMany?: InvoiceCreateManyCompanyInputEnvelope
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type ContractCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput> | ContractCreateWithoutCompanyInput[] | ContractUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutCompanyInput | ContractCreateOrConnectWithoutCompanyInput[]
+    createMany?: ContractCreateManyCompanyInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type LicenseCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput> | LicenseCreateWithoutCompanyInput[] | LicenseUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCompanyInput | LicenseCreateOrConnectWithoutCompanyInput[]
+    createMany?: LicenseCreateManyCompanyInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+  }
+
+  export type AuditLogCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput> | AuditLogCreateWithoutCompanyInput[] | AuditLogUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutCompanyInput | AuditLogCreateOrConnectWithoutCompanyInput[]
+    createMany?: AuditLogCreateManyCompanyInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
+    createMany?: CompanyMemberCreateManyCompanyInputEnvelope
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+  }
+
+  export type CustomerUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput> | CustomerCreateWithoutCompanyInput[] | CustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CustomerCreateOrConnectWithoutCompanyInput | CustomerCreateOrConnectWithoutCompanyInput[]
+    createMany?: CustomerCreateManyCompanyInputEnvelope
+    connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+  }
+
+  export type InvoiceUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput> | InvoiceCreateWithoutCompanyInput[] | InvoiceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCompanyInput | InvoiceCreateOrConnectWithoutCompanyInput[]
+    createMany?: InvoiceCreateManyCompanyInputEnvelope
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput> | ContractCreateWithoutCompanyInput[] | ContractUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutCompanyInput | ContractCreateOrConnectWithoutCompanyInput[]
+    createMany?: ContractCreateManyCompanyInputEnvelope
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type LicenseUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput> | LicenseCreateWithoutCompanyInput[] | LicenseUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCompanyInput | LicenseCreateOrConnectWithoutCompanyInput[]
+    createMany?: LicenseCreateManyCompanyInputEnvelope
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+  }
+
+  export type AuditLogUncheckedCreateNestedManyWithoutCompanyInput = {
+    create?: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput> | AuditLogCreateWithoutCompanyInput[] | AuditLogUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutCompanyInput | AuditLogCreateOrConnectWithoutCompanyInput[]
+    createMany?: AuditLogCreateManyCompanyInputEnvelope
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type CompanyMemberUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyMemberUpsertWithWhereUniqueWithoutCompanyInput | CompanyMemberUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyMemberCreateManyCompanyInputEnvelope
+    set?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    disconnect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    delete?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    update?: CompanyMemberUpdateWithWhereUniqueWithoutCompanyInput | CompanyMemberUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyMemberUpdateManyWithWhereWithoutCompanyInput | CompanyMemberUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
+  }
+
+  export type CustomerUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput> | CustomerCreateWithoutCompanyInput[] | CustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CustomerCreateOrConnectWithoutCompanyInput | CustomerCreateOrConnectWithoutCompanyInput[]
+    upsert?: CustomerUpsertWithWhereUniqueWithoutCompanyInput | CustomerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CustomerCreateManyCompanyInputEnvelope
+    set?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    disconnect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    delete?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    update?: CustomerUpdateWithWhereUniqueWithoutCompanyInput | CustomerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CustomerUpdateManyWithWhereWithoutCompanyInput | CustomerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
+  }
+
+  export type InvoiceUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput> | InvoiceCreateWithoutCompanyInput[] | InvoiceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCompanyInput | InvoiceCreateOrConnectWithoutCompanyInput[]
+    upsert?: InvoiceUpsertWithWhereUniqueWithoutCompanyInput | InvoiceUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InvoiceCreateManyCompanyInputEnvelope
+    set?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    disconnect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    delete?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    update?: InvoiceUpdateWithWhereUniqueWithoutCompanyInput | InvoiceUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InvoiceUpdateManyWithWhereWithoutCompanyInput | InvoiceUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type ContractUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput> | ContractCreateWithoutCompanyInput[] | ContractUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutCompanyInput | ContractCreateOrConnectWithoutCompanyInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutCompanyInput | ContractUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: ContractCreateManyCompanyInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutCompanyInput | ContractUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutCompanyInput | ContractUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type LicenseUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput> | LicenseCreateWithoutCompanyInput[] | LicenseUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCompanyInput | LicenseCreateOrConnectWithoutCompanyInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutCompanyInput | LicenseUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: LicenseCreateManyCompanyInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutCompanyInput | LicenseUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutCompanyInput | LicenseUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+  }
+
+  export type AuditLogUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput> | AuditLogCreateWithoutCompanyInput[] | AuditLogUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutCompanyInput | AuditLogCreateOrConnectWithoutCompanyInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutCompanyInput | AuditLogUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: AuditLogCreateManyCompanyInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutCompanyInput | AuditLogUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutCompanyInput | AuditLogUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput> | CompanyMemberCreateWithoutCompanyInput[] | CompanyMemberUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CompanyMemberCreateOrConnectWithoutCompanyInput | CompanyMemberCreateOrConnectWithoutCompanyInput[]
+    upsert?: CompanyMemberUpsertWithWhereUniqueWithoutCompanyInput | CompanyMemberUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CompanyMemberCreateManyCompanyInputEnvelope
+    set?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    disconnect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    delete?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    connect?: CompanyMemberWhereUniqueInput | CompanyMemberWhereUniqueInput[]
+    update?: CompanyMemberUpdateWithWhereUniqueWithoutCompanyInput | CompanyMemberUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CompanyMemberUpdateManyWithWhereWithoutCompanyInput | CompanyMemberUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
+  }
+
+  export type CustomerUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput> | CustomerCreateWithoutCompanyInput[] | CustomerUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: CustomerCreateOrConnectWithoutCompanyInput | CustomerCreateOrConnectWithoutCompanyInput[]
+    upsert?: CustomerUpsertWithWhereUniqueWithoutCompanyInput | CustomerUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: CustomerCreateManyCompanyInputEnvelope
+    set?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    disconnect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    delete?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    connect?: CustomerWhereUniqueInput | CustomerWhereUniqueInput[]
+    update?: CustomerUpdateWithWhereUniqueWithoutCompanyInput | CustomerUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: CustomerUpdateManyWithWhereWithoutCompanyInput | CustomerUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
+  }
+
+  export type InvoiceUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput> | InvoiceCreateWithoutCompanyInput[] | InvoiceUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: InvoiceCreateOrConnectWithoutCompanyInput | InvoiceCreateOrConnectWithoutCompanyInput[]
+    upsert?: InvoiceUpsertWithWhereUniqueWithoutCompanyInput | InvoiceUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: InvoiceCreateManyCompanyInputEnvelope
+    set?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    disconnect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    delete?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    connect?: InvoiceWhereUniqueInput | InvoiceWhereUniqueInput[]
+    update?: InvoiceUpdateWithWhereUniqueWithoutCompanyInput | InvoiceUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: InvoiceUpdateManyWithWhereWithoutCompanyInput | InvoiceUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput> | ContractCreateWithoutCompanyInput[] | ContractUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: ContractCreateOrConnectWithoutCompanyInput | ContractCreateOrConnectWithoutCompanyInput[]
+    upsert?: ContractUpsertWithWhereUniqueWithoutCompanyInput | ContractUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: ContractCreateManyCompanyInputEnvelope
+    set?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    disconnect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    delete?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+    update?: ContractUpdateWithWhereUniqueWithoutCompanyInput | ContractUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: ContractUpdateManyWithWhereWithoutCompanyInput | ContractUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
+  }
+
+  export type LicenseUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput> | LicenseCreateWithoutCompanyInput[] | LicenseUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: LicenseCreateOrConnectWithoutCompanyInput | LicenseCreateOrConnectWithoutCompanyInput[]
+    upsert?: LicenseUpsertWithWhereUniqueWithoutCompanyInput | LicenseUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: LicenseCreateManyCompanyInputEnvelope
+    set?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    disconnect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    delete?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    connect?: LicenseWhereUniqueInput | LicenseWhereUniqueInput[]
+    update?: LicenseUpdateWithWhereUniqueWithoutCompanyInput | LicenseUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: LicenseUpdateManyWithWhereWithoutCompanyInput | LicenseUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutCompanyNestedInput = {
+    create?: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput> | AuditLogCreateWithoutCompanyInput[] | AuditLogUncheckedCreateWithoutCompanyInput[]
+    connectOrCreate?: AuditLogCreateOrConnectWithoutCompanyInput | AuditLogCreateOrConnectWithoutCompanyInput[]
+    upsert?: AuditLogUpsertWithWhereUniqueWithoutCompanyInput | AuditLogUpsertWithWhereUniqueWithoutCompanyInput[]
+    createMany?: AuditLogCreateManyCompanyInputEnvelope
+    set?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    disconnect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    delete?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+    update?: AuditLogUpdateWithWhereUniqueWithoutCompanyInput | AuditLogUpdateWithWhereUniqueWithoutCompanyInput[]
+    updateMany?: AuditLogUpdateManyWithWhereWithoutCompanyInput | AuditLogUpdateManyWithWhereWithoutCompanyInput[]
+    deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type CompanyCreateNestedOneWithoutMembersInput = {
+    create?: XOR<CompanyCreateWithoutMembersInput, CompanyUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutMembersInput
+    connect?: CompanyWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutCompanyMembersInput = {
+    create?: XOR<UserCreateWithoutCompanyMembersInput, UserUncheckedCreateWithoutCompanyMembersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCompanyMembersInput
     connect?: UserWhereUniqueInput
   }
 
-  export type UserUpdateOneRequiredWithoutCompanyProfileNestedInput = {
-    create?: XOR<UserCreateWithoutCompanyProfileInput, UserUncheckedCreateWithoutCompanyProfileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutCompanyProfileInput
-    upsert?: UserUpsertWithoutCompanyProfileInput
+  export type CompanyUpdateOneRequiredWithoutMembersNestedInput = {
+    create?: XOR<CompanyCreateWithoutMembersInput, CompanyUncheckedCreateWithoutMembersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutMembersInput
+    upsert?: CompanyUpsertWithoutMembersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutMembersInput, CompanyUpdateWithoutMembersInput>, CompanyUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutCompanyMembersNestedInput = {
+    create?: XOR<UserCreateWithoutCompanyMembersInput, UserUncheckedCreateWithoutCompanyMembersInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCompanyMembersInput
+    upsert?: UserUpsertWithoutCompanyMembersInput
     connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCompanyProfileInput, UserUpdateWithoutCompanyProfileInput>, UserUncheckedUpdateWithoutCompanyProfileInput>
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCompanyMembersInput, UserUpdateWithoutCompanyMembersInput>, UserUncheckedUpdateWithoutCompanyMembersInput>
+  }
+
+  export type CompanyCreateNestedOneWithoutCustomersInput = {
+    create?: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutCustomersInput
+    connect?: CompanyWhereUniqueInput
   }
 
   export type UserCreateNestedOneWithoutCustomersInput = {
@@ -20908,6 +22958,14 @@ export namespace Prisma {
     connectOrCreate?: ContractCreateOrConnectWithoutCustomerInput | ContractCreateOrConnectWithoutCustomerInput[]
     createMany?: ContractCreateManyCustomerInputEnvelope
     connect?: ContractWhereUniqueInput | ContractWhereUniqueInput[]
+  }
+
+  export type CompanyUpdateOneRequiredWithoutCustomersNestedInput = {
+    create?: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutCustomersInput
+    upsert?: CompanyUpsertWithoutCustomersInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutCustomersInput, CompanyUpdateWithoutCustomersInput>, CompanyUncheckedUpdateWithoutCustomersInput>
   }
 
   export type UserUpdateOneRequiredWithoutCustomersNestedInput = {
@@ -21002,6 +23060,12 @@ export namespace Prisma {
     deleteMany?: ContractScalarWhereInput | ContractScalarWhereInput[]
   }
 
+  export type CompanyCreateNestedOneWithoutInvoicesInput = {
+    create?: XOR<CompanyCreateWithoutInvoicesInput, CompanyUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInvoicesInput
+    connect?: CompanyWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutInvoicesInput = {
     create?: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
     connectOrCreate?: UserCreateOrConnectWithoutInvoicesInput
@@ -21034,6 +23098,14 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type CompanyUpdateOneRequiredWithoutInvoicesNestedInput = {
+    create?: XOR<CompanyCreateWithoutInvoicesInput, CompanyUncheckedCreateWithoutInvoicesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutInvoicesInput
+    upsert?: CompanyUpsertWithoutInvoicesInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutInvoicesInput, CompanyUpdateWithoutInvoicesInput>, CompanyUncheckedUpdateWithoutInvoicesInput>
   }
 
   export type UserUpdateOneRequiredWithoutInvoicesNestedInput = {
@@ -21096,6 +23168,12 @@ export namespace Prisma {
     update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutItemsInput, InvoiceUpdateWithoutItemsInput>, InvoiceUncheckedUpdateWithoutItemsInput>
   }
 
+  export type CompanyCreateNestedOneWithoutLicensesInput = {
+    create?: XOR<CompanyCreateWithoutLicensesInput, CompanyUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutLicensesInput
+    connect?: CompanyWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutLicensesInput = {
     create?: XOR<UserCreateWithoutLicensesInput, UserUncheckedCreateWithoutLicensesInput>
     connectOrCreate?: UserCreateOrConnectWithoutLicensesInput
@@ -21106,6 +23184,14 @@ export namespace Prisma {
     create?: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutLicensesInput
     connect?: CustomerWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutLicensesNestedInput = {
+    create?: XOR<CompanyCreateWithoutLicensesInput, CompanyUncheckedCreateWithoutLicensesInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutLicensesInput
+    upsert?: CompanyUpsertWithoutLicensesInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutLicensesInput, CompanyUpdateWithoutLicensesInput>, CompanyUncheckedUpdateWithoutLicensesInput>
   }
 
   export type UserUpdateOneRequiredWithoutLicensesNestedInput = {
@@ -21126,6 +23212,12 @@ export namespace Prisma {
     update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutLicensesInput, CustomerUpdateWithoutLicensesInput>, CustomerUncheckedUpdateWithoutLicensesInput>
   }
 
+  export type CompanyCreateNestedOneWithoutContractsInput = {
+    create?: XOR<CompanyCreateWithoutContractsInput, CompanyUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutContractsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutContractsInput = {
     create?: XOR<UserCreateWithoutContractsInput, UserUncheckedCreateWithoutContractsInput>
     connectOrCreate?: UserCreateOrConnectWithoutContractsInput
@@ -21136,6 +23228,14 @@ export namespace Prisma {
     create?: XOR<CustomerCreateWithoutContractsInput, CustomerUncheckedCreateWithoutContractsInput>
     connectOrCreate?: CustomerCreateOrConnectWithoutContractsInput
     connect?: CustomerWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutContractsNestedInput = {
+    create?: XOR<CompanyCreateWithoutContractsInput, CompanyUncheckedCreateWithoutContractsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutContractsInput
+    upsert?: CompanyUpsertWithoutContractsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutContractsInput, CompanyUpdateWithoutContractsInput>, CompanyUncheckedUpdateWithoutContractsInput>
   }
 
   export type UserUpdateOneRequiredWithoutContractsNestedInput = {
@@ -21154,10 +23254,24 @@ export namespace Prisma {
     update?: XOR<XOR<CustomerUpdateToOneWithWhereWithoutContractsInput, CustomerUpdateWithoutContractsInput>, CustomerUncheckedUpdateWithoutContractsInput>
   }
 
+  export type CompanyCreateNestedOneWithoutAuditLogsInput = {
+    create?: XOR<CompanyCreateWithoutAuditLogsInput, CompanyUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutAuditLogsInput
+    connect?: CompanyWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutAuditLogsInput = {
     create?: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAuditLogsInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type CompanyUpdateOneRequiredWithoutAuditLogsNestedInput = {
+    create?: XOR<CompanyCreateWithoutAuditLogsInput, CompanyUncheckedCreateWithoutAuditLogsInput>
+    connectOrCreate?: CompanyCreateOrConnectWithoutAuditLogsInput
+    upsert?: CompanyUpsertWithoutAuditLogsInput
+    connect?: CompanyWhereUniqueInput
+    update?: XOR<XOR<CompanyUpdateToOneWithWhereWithoutAuditLogsInput, CompanyUpdateWithoutAuditLogsInput>, CompanyUncheckedUpdateWithoutAuditLogsInput>
   }
 
   export type UserUpdateOneRequiredWithoutAuditLogsNestedInput = {
@@ -21380,7 +23494,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -21396,7 +23510,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -21428,7 +23542,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -21444,7 +23558,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -21460,7 +23574,7 @@ export namespace Prisma {
     image?: string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -21476,7 +23590,7 @@ export namespace Prisma {
     image?: string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -21508,7 +23622,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -21524,7 +23638,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -21540,7 +23654,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -21556,7 +23670,7 @@ export namespace Prisma {
     image?: string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -21588,7 +23702,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -21604,7 +23718,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -21697,53 +23811,28 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type CompanyProfileCreateWithoutUserInput = {
+  export type CompanyMemberCreateWithoutUserInput = {
     id?: string
-    companyName?: string
-    email?: string
-    phone?: string
-    address?: string
-    city?: string
-    zipCode?: string
-    country?: string
-    taxId?: string
-    bankName?: string
-    bankAccountName?: string
-    bankAccountNumber?: string
-    logoUrl?: string | null
-    signatureData?: string | null
-    currency?: string
-    paymentTerms?: string
-    notes?: string
+    role?: string
     createdAt?: Date | string
-    updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutMembersInput
   }
 
-  export type CompanyProfileUncheckedCreateWithoutUserInput = {
+  export type CompanyMemberUncheckedCreateWithoutUserInput = {
     id?: string
-    companyName?: string
-    email?: string
-    phone?: string
-    address?: string
-    city?: string
-    zipCode?: string
-    country?: string
-    taxId?: string
-    bankName?: string
-    bankAccountName?: string
-    bankAccountNumber?: string
-    logoUrl?: string | null
-    signatureData?: string | null
-    currency?: string
-    paymentTerms?: string
-    notes?: string
+    companyId: string
+    role?: string
     createdAt?: Date | string
-    updatedAt?: Date | string
   }
 
-  export type CompanyProfileCreateOrConnectWithoutUserInput = {
-    where: CompanyProfileWhereUniqueInput
-    create: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
+  export type CompanyMemberCreateOrConnectWithoutUserInput = {
+    where: CompanyMemberWhereUniqueInput
+    create: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput>
+  }
+
+  export type CompanyMemberCreateManyUserInputEnvelope = {
+    data: CompanyMemberCreateManyUserInput | CompanyMemberCreateManyUserInput[]
+    skipDuplicates?: boolean
   }
 
   export type CustomerCreateWithoutUserInput = {
@@ -21758,6 +23847,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
@@ -21765,6 +23855,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutUserInput = {
     id?: string
+    companyId: string
     name: string
     email?: string
     phone?: string
@@ -21831,12 +23922,14 @@ export namespace Prisma {
     signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutUserInput = {
     id?: string
+    companyId: string
     customerId?: string | null
     invoiceNumber: string
     issueDate?: Date | string
@@ -21904,11 +23997,13 @@ export namespace Prisma {
     checkCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutLicensesInput
     customer?: CustomerCreateNestedOneWithoutLicensesInput
   }
 
   export type LicenseUncheckedCreateWithoutUserInput = {
     id?: string
+    companyId: string
     customerId?: string | null
     name: string
     key: string
@@ -21951,11 +24046,13 @@ export namespace Prisma {
     signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutContractsInput
     customer: CustomerCreateNestedOneWithoutContractsInput
   }
 
   export type ContractUncheckedCreateWithoutUserInput = {
     id?: string
+    companyId: string
     customerId: string
     contractNumber: string
     title: string
@@ -21994,10 +24091,12 @@ export namespace Prisma {
     metadata?: string | null
     ipAddress?: string | null
     createdAt?: Date | string
+    company: CompanyCreateNestedOneWithoutAuditLogsInput
   }
 
   export type AuditLogUncheckedCreateWithoutUserInput = {
     id?: string
+    companyId: string
     operatorId: string
     action: string
     entityType: string
@@ -22106,59 +24205,31 @@ export namespace Prisma {
     createdById?: StringFilter<"Post"> | string
   }
 
-  export type CompanyProfileUpsertWithoutUserInput = {
-    update: XOR<CompanyProfileUpdateWithoutUserInput, CompanyProfileUncheckedUpdateWithoutUserInput>
-    create: XOR<CompanyProfileCreateWithoutUserInput, CompanyProfileUncheckedCreateWithoutUserInput>
-    where?: CompanyProfileWhereInput
+  export type CompanyMemberUpsertWithWhereUniqueWithoutUserInput = {
+    where: CompanyMemberWhereUniqueInput
+    update: XOR<CompanyMemberUpdateWithoutUserInput, CompanyMemberUncheckedUpdateWithoutUserInput>
+    create: XOR<CompanyMemberCreateWithoutUserInput, CompanyMemberUncheckedCreateWithoutUserInput>
   }
 
-  export type CompanyProfileUpdateToOneWithWhereWithoutUserInput = {
-    where?: CompanyProfileWhereInput
-    data: XOR<CompanyProfileUpdateWithoutUserInput, CompanyProfileUncheckedUpdateWithoutUserInput>
+  export type CompanyMemberUpdateWithWhereUniqueWithoutUserInput = {
+    where: CompanyMemberWhereUniqueInput
+    data: XOR<CompanyMemberUpdateWithoutUserInput, CompanyMemberUncheckedUpdateWithoutUserInput>
   }
 
-  export type CompanyProfileUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type CompanyMemberUpdateManyWithWhereWithoutUserInput = {
+    where: CompanyMemberScalarWhereInput
+    data: XOR<CompanyMemberUpdateManyMutationInput, CompanyMemberUncheckedUpdateManyWithoutUserInput>
   }
 
-  export type CompanyProfileUncheckedUpdateWithoutUserInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    companyName?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    phone?: StringFieldUpdateOperationsInput | string
-    address?: StringFieldUpdateOperationsInput | string
-    city?: StringFieldUpdateOperationsInput | string
-    zipCode?: StringFieldUpdateOperationsInput | string
-    country?: StringFieldUpdateOperationsInput | string
-    taxId?: StringFieldUpdateOperationsInput | string
-    bankName?: StringFieldUpdateOperationsInput | string
-    bankAccountName?: StringFieldUpdateOperationsInput | string
-    bankAccountNumber?: StringFieldUpdateOperationsInput | string
-    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
-    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
-    currency?: StringFieldUpdateOperationsInput | string
-    paymentTerms?: StringFieldUpdateOperationsInput | string
-    notes?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type CompanyMemberScalarWhereInput = {
+    AND?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
+    OR?: CompanyMemberScalarWhereInput[]
+    NOT?: CompanyMemberScalarWhereInput | CompanyMemberScalarWhereInput[]
+    id?: StringFilter<"CompanyMember"> | string
+    companyId?: StringFilter<"CompanyMember"> | string
+    userId?: StringFilter<"CompanyMember"> | string
+    role?: StringFilter<"CompanyMember"> | string
+    createdAt?: DateTimeFilter<"CompanyMember"> | Date | string
   }
 
   export type CustomerUpsertWithWhereUniqueWithoutUserInput = {
@@ -22182,6 +24253,7 @@ export namespace Prisma {
     OR?: CustomerScalarWhereInput[]
     NOT?: CustomerScalarWhereInput | CustomerScalarWhereInput[]
     id?: StringFilter<"Customer"> | string
+    companyId?: StringFilter<"Customer"> | string
     userId?: StringFilter<"Customer"> | string
     name?: StringFilter<"Customer"> | string
     email?: StringFilter<"Customer"> | string
@@ -22216,6 +24288,7 @@ export namespace Prisma {
     OR?: InvoiceScalarWhereInput[]
     NOT?: InvoiceScalarWhereInput | InvoiceScalarWhereInput[]
     id?: StringFilter<"Invoice"> | string
+    companyId?: StringFilter<"Invoice"> | string
     userId?: StringFilter<"Invoice"> | string
     customerId?: StringNullableFilter<"Invoice"> | string | null
     invoiceNumber?: StringFilter<"Invoice"> | string
@@ -22280,6 +24353,7 @@ export namespace Prisma {
     OR?: LicenseScalarWhereInput[]
     NOT?: LicenseScalarWhereInput | LicenseScalarWhereInput[]
     id?: StringFilter<"License"> | string
+    companyId?: StringFilter<"License"> | string
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
@@ -22317,6 +24391,7 @@ export namespace Prisma {
     OR?: ContractScalarWhereInput[]
     NOT?: ContractScalarWhereInput | ContractScalarWhereInput[]
     id?: StringFilter<"Contract"> | string
+    companyId?: StringFilter<"Contract"> | string
     userId?: StringFilter<"Contract"> | string
     customerId?: StringFilter<"Contract"> | string
     contractNumber?: StringFilter<"Contract"> | string
@@ -22357,6 +24432,7 @@ export namespace Prisma {
     OR?: AuditLogScalarWhereInput[]
     NOT?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
     id?: StringFilter<"AuditLog"> | string
+    companyId?: StringFilter<"AuditLog"> | string
     userId?: StringFilter<"AuditLog"> | string
     operatorId?: StringFilter<"AuditLog"> | string
     action?: StringFilter<"AuditLog"> | string
@@ -22368,7 +24444,468 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
   }
 
-  export type UserCreateWithoutCompanyProfileInput = {
+  export type CompanyMemberCreateWithoutCompanyInput = {
+    id?: string
+    role?: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutCompanyMembersInput
+  }
+
+  export type CompanyMemberUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    role?: string
+    createdAt?: Date | string
+  }
+
+  export type CompanyMemberCreateOrConnectWithoutCompanyInput = {
+    where: CompanyMemberWhereUniqueInput
+    create: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyMemberCreateManyCompanyInputEnvelope = {
+    data: CompanyMemberCreateManyCompanyInput | CompanyMemberCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CustomerCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutCustomersInput
+    invoices?: InvoiceCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseCreateNestedManyWithoutCustomerInput
+    contracts?: ContractCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCustomerInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCustomerInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCustomerInput
+  }
+
+  export type CustomerCreateOrConnectWithoutCompanyInput = {
+    where: CustomerWhereUniqueInput
+    create: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CustomerCreateManyCompanyInputEnvelope = {
+    data: CustomerCreateManyCompanyInput | CustomerCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type InvoiceCreateWithoutCompanyInput = {
+    id?: string
+    invoiceNumber: string
+    issueDate?: Date | string
+    dueDate: Date | string
+    status?: string
+    currency?: string
+    senderName?: string
+    senderEmail?: string
+    senderPhone?: string
+    senderAddress?: string
+    senderCity?: string
+    senderZipCode?: string
+    senderCountry?: string
+    senderTaxId?: string
+    receiverName?: string
+    receiverEmail?: string
+    receiverPhone?: string
+    receiverAddress?: string
+    receiverCity?: string
+    receiverZipCode?: string
+    receiverCountry?: string
+    receiverTaxId?: string
+    subTotal?: number
+    taxRate?: number
+    taxAmount?: number
+    discountRate?: number
+    discountAmount?: number
+    shippingAmount?: number
+    totalAmount?: number
+    notes?: string
+    paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutInvoicesInput
+    customer?: CustomerCreateNestedOneWithoutInvoicesInput
+    items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    invoiceNumber: string
+    issueDate?: Date | string
+    dueDate: Date | string
+    status?: string
+    currency?: string
+    senderName?: string
+    senderEmail?: string
+    senderPhone?: string
+    senderAddress?: string
+    senderCity?: string
+    senderZipCode?: string
+    senderCountry?: string
+    senderTaxId?: string
+    receiverName?: string
+    receiverEmail?: string
+    receiverPhone?: string
+    receiverAddress?: string
+    receiverCity?: string
+    receiverZipCode?: string
+    receiverCountry?: string
+    receiverTaxId?: string
+    subTotal?: number
+    taxRate?: number
+    taxAmount?: number
+    discountRate?: number
+    discountAmount?: number
+    shippingAmount?: number
+    totalAmount?: number
+    notes?: string
+    paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    items?: InvoiceItemUncheckedCreateNestedManyWithoutInvoiceInput
+  }
+
+  export type InvoiceCreateOrConnectWithoutCompanyInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InvoiceCreateManyCompanyInputEnvelope = {
+    data: InvoiceCreateManyCompanyInput | InvoiceCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ContractCreateWithoutCompanyInput = {
+    id?: string
+    contractNumber: string
+    title: string
+    status?: string
+    value?: number
+    currency?: string
+    billingCycle?: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    signedAt?: Date | string | null
+    terms?: string
+    notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutContractsInput
+    customer: CustomerCreateNestedOneWithoutContractsInput
+  }
+
+  export type ContractUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    customerId: string
+    contractNumber: string
+    title: string
+    status?: string
+    value?: number
+    currency?: string
+    billingCycle?: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    signedAt?: Date | string | null
+    terms?: string
+    notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractCreateOrConnectWithoutCompanyInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type ContractCreateManyCompanyInputEnvelope = {
+    data: ContractCreateManyCompanyInput | ContractCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type LicenseCreateWithoutCompanyInput = {
+    id?: string
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutLicensesInput
+    customer?: CustomerCreateNestedOneWithoutLicensesInput
+  }
+
+  export type LicenseUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateOrConnectWithoutCompanyInput = {
+    where: LicenseWhereUniqueInput
+    create: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type LicenseCreateManyCompanyInputEnvelope = {
+    data: LicenseCreateManyCompanyInput | LicenseCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AuditLogCreateWithoutCompanyInput = {
+    id?: string
+    operatorId: string
+    action: string
+    entityType: string
+    entityId: string
+    reason?: string
+    metadata?: string | null
+    ipAddress?: string | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutAuditLogsInput
+  }
+
+  export type AuditLogUncheckedCreateWithoutCompanyInput = {
+    id?: string
+    userId: string
+    operatorId: string
+    action: string
+    entityType: string
+    entityId: string
+    reason?: string
+    metadata?: string | null
+    ipAddress?: string | null
+    createdAt?: Date | string
+  }
+
+  export type AuditLogCreateOrConnectWithoutCompanyInput = {
+    where: AuditLogWhereUniqueInput
+    create: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type AuditLogCreateManyCompanyInputEnvelope = {
+    data: AuditLogCreateManyCompanyInput | AuditLogCreateManyCompanyInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type CompanyMemberUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyMemberWhereUniqueInput
+    update: XOR<CompanyMemberUpdateWithoutCompanyInput, CompanyMemberUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CompanyMemberCreateWithoutCompanyInput, CompanyMemberUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CompanyMemberUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CompanyMemberWhereUniqueInput
+    data: XOR<CompanyMemberUpdateWithoutCompanyInput, CompanyMemberUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CompanyMemberUpdateManyWithWhereWithoutCompanyInput = {
+    where: CompanyMemberScalarWhereInput
+    data: XOR<CompanyMemberUpdateManyMutationInput, CompanyMemberUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CustomerUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: CustomerWhereUniqueInput
+    update: XOR<CustomerUpdateWithoutCompanyInput, CustomerUncheckedUpdateWithoutCompanyInput>
+    create: XOR<CustomerCreateWithoutCompanyInput, CustomerUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type CustomerUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: CustomerWhereUniqueInput
+    data: XOR<CustomerUpdateWithoutCompanyInput, CustomerUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type CustomerUpdateManyWithWhereWithoutCompanyInput = {
+    where: CustomerScalarWhereInput
+    data: XOR<CustomerUpdateManyMutationInput, CustomerUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type InvoiceUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: InvoiceWhereUniqueInput
+    update: XOR<InvoiceUpdateWithoutCompanyInput, InvoiceUncheckedUpdateWithoutCompanyInput>
+    create: XOR<InvoiceCreateWithoutCompanyInput, InvoiceUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type InvoiceUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: InvoiceWhereUniqueInput
+    data: XOR<InvoiceUpdateWithoutCompanyInput, InvoiceUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type InvoiceUpdateManyWithWhereWithoutCompanyInput = {
+    where: InvoiceScalarWhereInput
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type ContractUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: ContractWhereUniqueInput
+    update: XOR<ContractUpdateWithoutCompanyInput, ContractUncheckedUpdateWithoutCompanyInput>
+    create: XOR<ContractCreateWithoutCompanyInput, ContractUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type ContractUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: ContractWhereUniqueInput
+    data: XOR<ContractUpdateWithoutCompanyInput, ContractUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type ContractUpdateManyWithWhereWithoutCompanyInput = {
+    where: ContractScalarWhereInput
+    data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type LicenseUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: LicenseWhereUniqueInput
+    update: XOR<LicenseUpdateWithoutCompanyInput, LicenseUncheckedUpdateWithoutCompanyInput>
+    create: XOR<LicenseCreateWithoutCompanyInput, LicenseUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type LicenseUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: LicenseWhereUniqueInput
+    data: XOR<LicenseUpdateWithoutCompanyInput, LicenseUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type LicenseUpdateManyWithWhereWithoutCompanyInput = {
+    where: LicenseScalarWhereInput
+    data: XOR<LicenseUpdateManyMutationInput, LicenseUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type AuditLogUpsertWithWhereUniqueWithoutCompanyInput = {
+    where: AuditLogWhereUniqueInput
+    update: XOR<AuditLogUpdateWithoutCompanyInput, AuditLogUncheckedUpdateWithoutCompanyInput>
+    create: XOR<AuditLogCreateWithoutCompanyInput, AuditLogUncheckedCreateWithoutCompanyInput>
+  }
+
+  export type AuditLogUpdateWithWhereUniqueWithoutCompanyInput = {
+    where: AuditLogWhereUniqueInput
+    data: XOR<AuditLogUpdateWithoutCompanyInput, AuditLogUncheckedUpdateWithoutCompanyInput>
+  }
+
+  export type AuditLogUpdateManyWithWhereWithoutCompanyInput = {
+    where: AuditLogScalarWhereInput
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutCompanyInput>
+  }
+
+  export type CompanyCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutMembersInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutMembersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutMembersInput, CompanyUncheckedCreateWithoutMembersInput>
+  }
+
+  export type UserCreateWithoutCompanyMembersInput = {
     id?: string
     name?: string | null
     email?: string | null
@@ -22384,7 +24921,7 @@ export namespace Prisma {
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
   }
 
-  export type UserUncheckedCreateWithoutCompanyProfileInput = {
+  export type UserUncheckedCreateWithoutCompanyMembersInput = {
     id?: string
     name?: string | null
     email?: string | null
@@ -22400,23 +24937,88 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
   }
 
-  export type UserCreateOrConnectWithoutCompanyProfileInput = {
+  export type UserCreateOrConnectWithoutCompanyMembersInput = {
     where: UserWhereUniqueInput
-    create: XOR<UserCreateWithoutCompanyProfileInput, UserUncheckedCreateWithoutCompanyProfileInput>
+    create: XOR<UserCreateWithoutCompanyMembersInput, UserUncheckedCreateWithoutCompanyMembersInput>
   }
 
-  export type UserUpsertWithoutCompanyProfileInput = {
-    update: XOR<UserUpdateWithoutCompanyProfileInput, UserUncheckedUpdateWithoutCompanyProfileInput>
-    create: XOR<UserCreateWithoutCompanyProfileInput, UserUncheckedCreateWithoutCompanyProfileInput>
+  export type CompanyUpsertWithoutMembersInput = {
+    update: XOR<CompanyUpdateWithoutMembersInput, CompanyUncheckedUpdateWithoutMembersInput>
+    create: XOR<CompanyCreateWithoutMembersInput, CompanyUncheckedCreateWithoutMembersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutMembersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutMembersInput, CompanyUncheckedUpdateWithoutMembersInput>
+  }
+
+  export type CompanyUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutMembersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type UserUpsertWithoutCompanyMembersInput = {
+    update: XOR<UserUpdateWithoutCompanyMembersInput, UserUncheckedUpdateWithoutCompanyMembersInput>
+    create: XOR<UserCreateWithoutCompanyMembersInput, UserUncheckedCreateWithoutCompanyMembersInput>
     where?: UserWhereInput
   }
 
-  export type UserUpdateToOneWithWhereWithoutCompanyProfileInput = {
+  export type UserUpdateToOneWithWhereWithoutCompanyMembersInput = {
     where?: UserWhereInput
-    data: XOR<UserUpdateWithoutCompanyProfileInput, UserUncheckedUpdateWithoutCompanyProfileInput>
+    data: XOR<UserUpdateWithoutCompanyMembersInput, UserUncheckedUpdateWithoutCompanyMembersInput>
   }
 
-  export type UserUpdateWithoutCompanyProfileInput = {
+  export type UserUpdateWithoutCompanyMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22432,7 +25034,7 @@ export namespace Prisma {
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
   }
 
-  export type UserUncheckedUpdateWithoutCompanyProfileInput = {
+  export type UserUncheckedUpdateWithoutCompanyMembersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22448,6 +25050,65 @@ export namespace Prisma {
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type CompanyCreateWithoutCustomersInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutCustomersInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutCustomersInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
+  }
+
   export type UserCreateWithoutCustomersInput = {
     id?: string
     name?: string | null
@@ -22457,7 +25118,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
@@ -22473,7 +25134,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
@@ -22526,12 +25187,14 @@ export namespace Prisma {
     signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInvoicesInput
     user: UserCreateNestedOneWithoutInvoicesInput
     items?: InvoiceItemCreateNestedManyWithoutInvoiceInput
   }
 
   export type InvoiceUncheckedCreateWithoutCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     invoiceNumber: string
     issueDate?: Date | string
@@ -22599,11 +25262,13 @@ export namespace Prisma {
     checkCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutLicensesInput
     user: UserCreateNestedOneWithoutLicensesInput
   }
 
   export type LicenseUncheckedCreateWithoutCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     key: string
@@ -22646,11 +25311,13 @@ export namespace Prisma {
     signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutContractsInput
     user: UserCreateNestedOneWithoutContractsInput
   }
 
   export type ContractUncheckedCreateWithoutCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     contractNumber: string
     title: string
@@ -22679,6 +25346,71 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CompanyUpsertWithoutCustomersInput = {
+    update: XOR<CompanyUpdateWithoutCustomersInput, CompanyUncheckedUpdateWithoutCustomersInput>
+    create: XOR<CompanyCreateWithoutCustomersInput, CompanyUncheckedCreateWithoutCustomersInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutCustomersInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutCustomersInput, CompanyUncheckedUpdateWithoutCustomersInput>
+  }
+
+  export type CompanyUpdateWithoutCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutCustomersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
   export type UserUpsertWithoutCustomersInput = {
     update: XOR<UserUpdateWithoutCustomersInput, UserUncheckedUpdateWithoutCustomersInput>
     create: XOR<UserCreateWithoutCustomersInput, UserUncheckedCreateWithoutCustomersInput>
@@ -22699,7 +25431,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
@@ -22715,7 +25447,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
@@ -22770,6 +25502,65 @@ export namespace Prisma {
     data: XOR<ContractUpdateManyMutationInput, ContractUncheckedUpdateManyWithoutCustomerInput>
   }
 
+  export type CompanyCreateWithoutInvoicesInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutInvoicesInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutInvoicesInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutInvoicesInput, CompanyUncheckedCreateWithoutInvoicesInput>
+  }
+
   export type UserCreateWithoutInvoicesInput = {
     id?: string
     name?: string | null
@@ -22779,7 +25570,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
@@ -22795,7 +25586,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
@@ -22819,6 +25610,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
@@ -22826,6 +25618,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutInvoicesInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     email?: string
@@ -22874,6 +25667,71 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type CompanyUpsertWithoutInvoicesInput = {
+    update: XOR<CompanyUpdateWithoutInvoicesInput, CompanyUncheckedUpdateWithoutInvoicesInput>
+    create: XOR<CompanyCreateWithoutInvoicesInput, CompanyUncheckedCreateWithoutInvoicesInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutInvoicesInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutInvoicesInput, CompanyUncheckedUpdateWithoutInvoicesInput>
+  }
+
+  export type CompanyUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutInvoicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
+  }
+
   export type UserUpsertWithoutInvoicesInput = {
     update: XOR<UserUpdateWithoutInvoicesInput, UserUncheckedUpdateWithoutInvoicesInput>
     create: XOR<UserCreateWithoutInvoicesInput, UserUncheckedCreateWithoutInvoicesInput>
@@ -22894,7 +25752,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
@@ -22910,7 +25768,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
@@ -22940,6 +25798,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
@@ -22947,6 +25806,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutInvoicesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -23032,12 +25892,14 @@ export namespace Prisma {
     signatureData?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutInvoicesInput
     user: UserCreateNestedOneWithoutInvoicesInput
     customer?: CustomerCreateNestedOneWithoutInvoicesInput
   }
 
   export type InvoiceUncheckedCreateWithoutItemsInput = {
     id?: string
+    companyId: string
     userId: string
     customerId?: string | null
     invoiceNumber: string
@@ -23138,12 +26000,14 @@ export namespace Prisma {
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutItemsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceNumber?: StringFieldUpdateOperationsInput | string
@@ -23187,6 +26051,65 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CompanyCreateWithoutLicensesInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutLicensesInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutLicensesInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutLicensesInput, CompanyUncheckedCreateWithoutLicensesInput>
+  }
+
   export type UserCreateWithoutLicensesInput = {
     id?: string
     name?: string | null
@@ -23196,7 +26119,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     contracts?: ContractCreateNestedManyWithoutUserInput
@@ -23212,7 +26135,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     contracts?: ContractUncheckedCreateNestedManyWithoutUserInput
@@ -23236,6 +26159,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     contracts?: ContractCreateNestedManyWithoutCustomerInput
@@ -23243,6 +26167,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutLicensesInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     email?: string
@@ -23261,6 +26186,71 @@ export namespace Prisma {
   export type CustomerCreateOrConnectWithoutLicensesInput = {
     where: CustomerWhereUniqueInput
     create: XOR<CustomerCreateWithoutLicensesInput, CustomerUncheckedCreateWithoutLicensesInput>
+  }
+
+  export type CompanyUpsertWithoutLicensesInput = {
+    update: XOR<CompanyUpdateWithoutLicensesInput, CompanyUncheckedUpdateWithoutLicensesInput>
+    create: XOR<CompanyCreateWithoutLicensesInput, CompanyUncheckedCreateWithoutLicensesInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutLicensesInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutLicensesInput, CompanyUncheckedUpdateWithoutLicensesInput>
+  }
+
+  export type CompanyUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutLicensesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutLicensesInput = {
@@ -23283,7 +26273,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     contracts?: ContractUpdateManyWithoutUserNestedInput
@@ -23299,7 +26289,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     contracts?: ContractUncheckedUpdateManyWithoutUserNestedInput
@@ -23329,6 +26319,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
@@ -23336,6 +26327,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutLicensesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -23351,6 +26343,65 @@ export namespace Prisma {
     contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
+  export type CompanyCreateWithoutContractsInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutContractsInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutContractsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutContractsInput, CompanyUncheckedCreateWithoutContractsInput>
+  }
+
   export type UserCreateWithoutContractsInput = {
     id?: string
     name?: string | null
@@ -23360,7 +26411,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -23376,7 +26427,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -23400,6 +26451,7 @@ export namespace Prisma {
     taxId?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    company: CompanyCreateNestedOneWithoutCustomersInput
     user: UserCreateNestedOneWithoutCustomersInput
     invoices?: InvoiceCreateNestedManyWithoutCustomerInput
     licenses?: LicenseCreateNestedManyWithoutCustomerInput
@@ -23407,6 +26459,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedCreateWithoutContractsInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     email?: string
@@ -23425,6 +26478,71 @@ export namespace Prisma {
   export type CustomerCreateOrConnectWithoutContractsInput = {
     where: CustomerWhereUniqueInput
     create: XOR<CustomerCreateWithoutContractsInput, CustomerUncheckedCreateWithoutContractsInput>
+  }
+
+  export type CompanyUpsertWithoutContractsInput = {
+    update: XOR<CompanyUpdateWithoutContractsInput, CompanyUncheckedUpdateWithoutContractsInput>
+    create: XOR<CompanyCreateWithoutContractsInput, CompanyUncheckedCreateWithoutContractsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutContractsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutContractsInput, CompanyUncheckedUpdateWithoutContractsInput>
+  }
+
+  export type CompanyUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutContractsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutContractsInput = {
@@ -23447,7 +26565,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -23463,7 +26581,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -23493,6 +26611,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     user?: UserUpdateOneRequiredWithoutCustomersNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
@@ -23500,6 +26619,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutContractsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
@@ -23515,6 +26635,65 @@ export namespace Prisma {
     licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
   }
 
+  export type CompanyCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberCreateNestedManyWithoutCompanyInput
+    customers?: CustomerCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceCreateNestedManyWithoutCompanyInput
+    contracts?: ContractCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyUncheckedCreateWithoutAuditLogsInput = {
+    id?: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    currency?: string
+    paymentTerms?: string
+    notes?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    members?: CompanyMemberUncheckedCreateNestedManyWithoutCompanyInput
+    customers?: CustomerUncheckedCreateNestedManyWithoutCompanyInput
+    invoices?: InvoiceUncheckedCreateNestedManyWithoutCompanyInput
+    contracts?: ContractUncheckedCreateNestedManyWithoutCompanyInput
+    licenses?: LicenseUncheckedCreateNestedManyWithoutCompanyInput
+  }
+
+  export type CompanyCreateOrConnectWithoutAuditLogsInput = {
+    where: CompanyWhereUniqueInput
+    create: XOR<CompanyCreateWithoutAuditLogsInput, CompanyUncheckedCreateWithoutAuditLogsInput>
+  }
+
   export type UserCreateWithoutAuditLogsInput = {
     id?: string
     name?: string | null
@@ -23524,7 +26703,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberCreateNestedManyWithoutUserInput
     customers?: CustomerCreateNestedManyWithoutUserInput
     invoices?: InvoiceCreateNestedManyWithoutUserInput
     licenses?: LicenseCreateNestedManyWithoutUserInput
@@ -23540,7 +26719,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
-    companyProfile?: CompanyProfileUncheckedCreateNestedOneWithoutUserInput
+    companyMembers?: CompanyMemberUncheckedCreateNestedManyWithoutUserInput
     customers?: CustomerUncheckedCreateNestedManyWithoutUserInput
     invoices?: InvoiceUncheckedCreateNestedManyWithoutUserInput
     licenses?: LicenseUncheckedCreateNestedManyWithoutUserInput
@@ -23550,6 +26729,71 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutAuditLogsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutAuditLogsInput, UserUncheckedCreateWithoutAuditLogsInput>
+  }
+
+  export type CompanyUpsertWithoutAuditLogsInput = {
+    update: XOR<CompanyUpdateWithoutAuditLogsInput, CompanyUncheckedUpdateWithoutAuditLogsInput>
+    create: XOR<CompanyCreateWithoutAuditLogsInput, CompanyUncheckedCreateWithoutAuditLogsInput>
+    where?: CompanyWhereInput
+  }
+
+  export type CompanyUpdateToOneWithWhereWithoutAuditLogsInput = {
+    where?: CompanyWhereInput
+    data: XOR<CompanyUpdateWithoutAuditLogsInput, CompanyUncheckedUpdateWithoutAuditLogsInput>
+  }
+
+  export type CompanyUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUpdateManyWithoutCompanyNestedInput
+  }
+
+  export type CompanyUncheckedUpdateWithoutAuditLogsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    members?: CompanyMemberUncheckedUpdateManyWithoutCompanyNestedInput
+    customers?: CustomerUncheckedUpdateManyWithoutCompanyNestedInput
+    invoices?: InvoiceUncheckedUpdateManyWithoutCompanyNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCompanyNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCompanyNestedInput
   }
 
   export type UserUpsertWithoutAuditLogsInput = {
@@ -23572,7 +26816,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUpdateManyWithoutUserNestedInput
     customers?: CustomerUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUpdateManyWithoutUserNestedInput
     licenses?: LicenseUpdateManyWithoutUserNestedInput
@@ -23588,7 +26832,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
-    companyProfile?: CompanyProfileUncheckedUpdateOneWithoutUserNestedInput
+    companyMembers?: CompanyMemberUncheckedUpdateManyWithoutUserNestedInput
     customers?: CustomerUncheckedUpdateManyWithoutUserNestedInput
     invoices?: InvoiceUncheckedUpdateManyWithoutUserNestedInput
     licenses?: LicenseUncheckedUpdateManyWithoutUserNestedInput
@@ -23623,8 +26867,16 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type CompanyMemberCreateManyUserInput = {
+    id?: string
+    companyId: string
+    role?: string
+    createdAt?: Date | string
+  }
+
   export type CustomerCreateManyUserInput = {
     id?: string
+    companyId: string
     name: string
     email?: string
     phone?: string
@@ -23639,6 +26891,7 @@ export namespace Prisma {
 
   export type InvoiceCreateManyUserInput = {
     id?: string
+    companyId: string
     customerId?: string | null
     invoiceNumber: string
     issueDate?: Date | string
@@ -23683,6 +26936,7 @@ export namespace Prisma {
 
   export type LicenseCreateManyUserInput = {
     id?: string
+    companyId: string
     customerId?: string | null
     name: string
     key: string
@@ -23700,6 +26954,7 @@ export namespace Prisma {
 
   export type ContractCreateManyUserInput = {
     id?: string
+    companyId: string
     customerId: string
     contractNumber: string
     title: string
@@ -23720,6 +26975,7 @@ export namespace Prisma {
 
   export type AuditLogCreateManyUserInput = {
     id?: string
+    companyId: string
     operatorId: string
     action: string
     entityType: string
@@ -23813,6 +27069,27 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type CompanyMemberUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutMembersNestedInput
+  }
+
+  export type CompanyMemberUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyMemberUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CustomerUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
@@ -23825,6 +27102,7 @@ export namespace Prisma {
     taxId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutCustomersNestedInput
     invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
     licenses?: LicenseUpdateManyWithoutCustomerNestedInput
     contracts?: ContractUpdateManyWithoutCustomerNestedInput
@@ -23832,6 +27110,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -23849,6 +27128,7 @@ export namespace Prisma {
 
   export type CustomerUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     phone?: StringFieldUpdateOperationsInput | string
@@ -23902,12 +27182,14 @@ export namespace Prisma {
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     customer?: CustomerUpdateOneWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -23953,6 +27235,7 @@ export namespace Prisma {
 
   export type InvoiceUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24009,11 +27292,13 @@ export namespace Prisma {
     checkCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutLicensesNestedInput
     customer?: CustomerUpdateOneWithoutLicensesNestedInput
   }
 
   export type LicenseUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
@@ -24031,6 +27316,7 @@ export namespace Prisma {
 
   export type LicenseUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
@@ -24063,11 +27349,13 @@ export namespace Prisma {
     signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutContractsNestedInput
     customer?: CustomerUpdateOneRequiredWithoutContractsNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -24088,6 +27376,7 @@ export namespace Prisma {
 
   export type ContractUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     customerId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -24116,10 +27405,12 @@ export namespace Prisma {
     metadata?: NullableStringFieldUpdateOperationsInput | string | null
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutAuditLogsNestedInput
   }
 
   export type AuditLogUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     operatorId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     entityType?: StringFieldUpdateOperationsInput | string
@@ -24132,6 +27423,491 @@ export namespace Prisma {
 
   export type AuditLogUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
+    operatorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyMemberCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    role?: string
+    createdAt?: Date | string
+  }
+
+  export type CustomerCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    name: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
+    taxId?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InvoiceCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    invoiceNumber: string
+    issueDate?: Date | string
+    dueDate: Date | string
+    status?: string
+    currency?: string
+    senderName?: string
+    senderEmail?: string
+    senderPhone?: string
+    senderAddress?: string
+    senderCity?: string
+    senderZipCode?: string
+    senderCountry?: string
+    senderTaxId?: string
+    receiverName?: string
+    receiverEmail?: string
+    receiverPhone?: string
+    receiverAddress?: string
+    receiverCity?: string
+    receiverZipCode?: string
+    receiverCountry?: string
+    receiverTaxId?: string
+    subTotal?: number
+    taxRate?: number
+    taxAmount?: number
+    discountRate?: number
+    discountAmount?: number
+    shippingAmount?: number
+    totalAmount?: number
+    notes?: string
+    paymentTerms?: string
+    bankName?: string
+    bankAccountName?: string
+    bankAccountNumber?: string
+    templateId?: string
+    themeColor?: string
+    logoUrl?: string | null
+    signatureData?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ContractCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    customerId: string
+    contractNumber: string
+    title: string
+    status?: string
+    value?: number
+    currency?: string
+    billingCycle?: string
+    startDate?: Date | string
+    endDate?: Date | string | null
+    signedAt?: Date | string | null
+    terms?: string
+    notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type LicenseCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    customerId?: string | null
+    name: string
+    key: string
+    status?: string
+    allowedDomain?: string | null
+    suspensionNotice?: string | null
+    leaseTtlMinutes?: number
+    gracePeriodHours?: number
+    lastCheckedAt?: Date | string | null
+    lastCheckedIp?: string | null
+    checkCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AuditLogCreateManyCompanyInput = {
+    id?: string
+    userId: string
+    operatorId: string
+    action: string
+    entityType: string
+    entityId: string
+    reason?: string
+    metadata?: string | null
+    ipAddress?: string | null
+    createdAt?: Date | string
+  }
+
+  export type CompanyMemberUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCompanyMembersNestedInput
+  }
+
+  export type CompanyMemberUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CompanyMemberUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type CustomerUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutCustomersNestedInput
+    invoices?: InvoiceUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    invoices?: InvoiceUncheckedUpdateManyWithoutCustomerNestedInput
+    licenses?: LicenseUncheckedUpdateManyWithoutCustomerNestedInput
+    contracts?: ContractUncheckedUpdateManyWithoutCustomerNestedInput
+  }
+
+  export type CustomerUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phone?: StringFieldUpdateOperationsInput | string
+    address?: StringFieldUpdateOperationsInput | string
+    city?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    country?: StringFieldUpdateOperationsInput | string
+    taxId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    senderPhone?: StringFieldUpdateOperationsInput | string
+    senderAddress?: StringFieldUpdateOperationsInput | string
+    senderCity?: StringFieldUpdateOperationsInput | string
+    senderZipCode?: StringFieldUpdateOperationsInput | string
+    senderCountry?: StringFieldUpdateOperationsInput | string
+    senderTaxId?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    receiverEmail?: StringFieldUpdateOperationsInput | string
+    receiverPhone?: StringFieldUpdateOperationsInput | string
+    receiverAddress?: StringFieldUpdateOperationsInput | string
+    receiverCity?: StringFieldUpdateOperationsInput | string
+    receiverZipCode?: StringFieldUpdateOperationsInput | string
+    receiverCountry?: StringFieldUpdateOperationsInput | string
+    receiverTaxId?: StringFieldUpdateOperationsInput | string
+    subTotal?: FloatFieldUpdateOperationsInput | number
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    discountRate?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    shippingAmount?: FloatFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    notes?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
+    customer?: CustomerUpdateOneWithoutInvoicesNestedInput
+    items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    senderPhone?: StringFieldUpdateOperationsInput | string
+    senderAddress?: StringFieldUpdateOperationsInput | string
+    senderCity?: StringFieldUpdateOperationsInput | string
+    senderZipCode?: StringFieldUpdateOperationsInput | string
+    senderCountry?: StringFieldUpdateOperationsInput | string
+    senderTaxId?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    receiverEmail?: StringFieldUpdateOperationsInput | string
+    receiverPhone?: StringFieldUpdateOperationsInput | string
+    receiverAddress?: StringFieldUpdateOperationsInput | string
+    receiverCity?: StringFieldUpdateOperationsInput | string
+    receiverZipCode?: StringFieldUpdateOperationsInput | string
+    receiverCountry?: StringFieldUpdateOperationsInput | string
+    receiverTaxId?: StringFieldUpdateOperationsInput | string
+    subTotal?: FloatFieldUpdateOperationsInput | number
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    discountRate?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    shippingAmount?: FloatFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    notes?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: InvoiceItemUncheckedUpdateManyWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    invoiceNumber?: StringFieldUpdateOperationsInput | string
+    issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    dueDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    status?: StringFieldUpdateOperationsInput | string
+    currency?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderEmail?: StringFieldUpdateOperationsInput | string
+    senderPhone?: StringFieldUpdateOperationsInput | string
+    senderAddress?: StringFieldUpdateOperationsInput | string
+    senderCity?: StringFieldUpdateOperationsInput | string
+    senderZipCode?: StringFieldUpdateOperationsInput | string
+    senderCountry?: StringFieldUpdateOperationsInput | string
+    senderTaxId?: StringFieldUpdateOperationsInput | string
+    receiverName?: StringFieldUpdateOperationsInput | string
+    receiverEmail?: StringFieldUpdateOperationsInput | string
+    receiverPhone?: StringFieldUpdateOperationsInput | string
+    receiverAddress?: StringFieldUpdateOperationsInput | string
+    receiverCity?: StringFieldUpdateOperationsInput | string
+    receiverZipCode?: StringFieldUpdateOperationsInput | string
+    receiverCountry?: StringFieldUpdateOperationsInput | string
+    receiverTaxId?: StringFieldUpdateOperationsInput | string
+    subTotal?: FloatFieldUpdateOperationsInput | number
+    taxRate?: FloatFieldUpdateOperationsInput | number
+    taxAmount?: FloatFieldUpdateOperationsInput | number
+    discountRate?: FloatFieldUpdateOperationsInput | number
+    discountAmount?: FloatFieldUpdateOperationsInput | number
+    shippingAmount?: FloatFieldUpdateOperationsInput | number
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    notes?: StringFieldUpdateOperationsInput | string
+    paymentTerms?: StringFieldUpdateOperationsInput | string
+    bankName?: StringFieldUpdateOperationsInput | string
+    bankAccountName?: StringFieldUpdateOperationsInput | string
+    bankAccountNumber?: StringFieldUpdateOperationsInput | string
+    templateId?: StringFieldUpdateOperationsInput | string
+    themeColor?: StringFieldUpdateOperationsInput | string
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureData?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    billingCycle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutContractsNestedInput
+    customer?: CustomerUpdateOneRequiredWithoutContractsNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    billingCycle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ContractUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: StringFieldUpdateOperationsInput | string
+    contractNumber?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    value?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    billingCycle?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    terms?: StringFieldUpdateOperationsInput | string
+    notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutLicensesNestedInput
+    customer?: CustomerUpdateOneWithoutLicensesNestedInput
+  }
+
+  export type LicenseUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type LicenseUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    customerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    key?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
+    leaseTtlMinutes?: IntFieldUpdateOperationsInput | number
+    gracePeriodHours?: IntFieldUpdateOperationsInput | number
+    lastCheckedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastCheckedIp?: NullableStringFieldUpdateOperationsInput | string | null
+    checkCount?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    operatorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutAuditLogsNestedInput
+  }
+
+  export type AuditLogUncheckedUpdateWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    operatorId?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    entityType?: StringFieldUpdateOperationsInput | string
+    entityId?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    metadata?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogUncheckedUpdateManyWithoutCompanyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     operatorId?: StringFieldUpdateOperationsInput | string
     action?: StringFieldUpdateOperationsInput | string
     entityType?: StringFieldUpdateOperationsInput | string
@@ -24144,6 +27920,7 @@ export namespace Prisma {
 
   export type InvoiceCreateManyCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     invoiceNumber: string
     issueDate?: Date | string
@@ -24188,6 +27965,7 @@ export namespace Prisma {
 
   export type LicenseCreateManyCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     name: string
     key: string
@@ -24205,6 +27983,7 @@ export namespace Prisma {
 
   export type ContractCreateManyCustomerInput = {
     id?: string
+    companyId: string
     userId: string
     contractNumber: string
     title: string
@@ -24264,12 +28043,14 @@ export namespace Prisma {
     signatureData?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutInvoicesNestedInput
     user?: UserUpdateOneRequiredWithoutInvoicesNestedInput
     items?: InvoiceItemUpdateManyWithoutInvoiceNestedInput
   }
 
   export type InvoiceUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24315,6 +28096,7 @@ export namespace Prisma {
 
   export type InvoiceUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     invoiceNumber?: StringFieldUpdateOperationsInput | string
     issueDate?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -24371,11 +28153,13 @@ export namespace Prisma {
     checkCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutLicensesNestedInput
     user?: UserUpdateOneRequiredWithoutLicensesNestedInput
   }
 
   export type LicenseUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
@@ -24393,6 +28177,7 @@ export namespace Prisma {
 
   export type LicenseUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     key?: StringFieldUpdateOperationsInput | string
@@ -24425,11 +28210,13 @@ export namespace Prisma {
     signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    company?: CompanyUpdateOneRequiredWithoutContractsNestedInput
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -24450,6 +28237,7 @@ export namespace Prisma {
 
   export type ContractUncheckedUpdateManyWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
+    companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     contractNumber?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string

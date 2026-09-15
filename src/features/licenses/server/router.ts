@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { generateLicenseKey } from "./keygen";
 import { recordAuditLog } from "~/features/audit/server/auditService";
 
 export const licenseRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: companyProcedure
     .input(
       z
         .object({
@@ -15,11 +15,11 @@ export const licenseRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const search = input?.search?.trim();
       const statusFilter = input?.status && input.status !== "ALL" ? input.status : undefined;
 
-      const where: any = { userId };
+      const where: any = { companyId };
       if (statusFilter) {
         where.status = statusFilter;
       }
@@ -47,11 +47,11 @@ export const licenseRouter = createTRPCRouter({
       });
     }),
 
-  getMetrics: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id;
+  getMetrics: companyProcedure.query(async ({ ctx }) => {
+    const companyId = ctx.companyId;
 
     const licenses = await ctx.db.license.findMany({
-      where: { userId },
+      where: { companyId },
       select: {
         status: true,
         checkCount: true,
@@ -81,7 +81,7 @@ export const licenseRouter = createTRPCRouter({
     };
   }),
 
-  getById: protectedProcedure
+  getById: companyProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const license = await ctx.db.license.findUnique({
@@ -91,7 +91,7 @@ export const licenseRouter = createTRPCRouter({
         },
       });
 
-      if (!license || license.userId !== ctx.session.user.id) {
+      if (!license || license.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "License not found",
@@ -101,7 +101,7 @@ export const licenseRouter = createTRPCRouter({
       return license;
     }),
 
-  create: protectedProcedure
+  create: companyProcedure
     .input(
       z.object({
         name: z.string().min(1, "Service name is required"),
@@ -113,11 +113,13 @@ export const licenseRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const key = generateLicenseKey();
 
       return ctx.db.license.create({
         data: {
+          companyId,
           userId,
           name: input.name,
           key,
@@ -131,7 +133,7 @@ export const licenseRouter = createTRPCRouter({
       });
     }),
 
-  toggleStatus: protectedProcedure
+  toggleStatus: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -145,7 +147,7 @@ export const licenseRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!license || license.userId !== ctx.session.user.id) {
+      if (!license || license.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "License not found",
@@ -169,7 +171,7 @@ export const licenseRouter = createTRPCRouter({
       if (license.customerId) {
         const overdueInvoices = await ctx.db.invoice.findMany({
           where: {
-            userId: ctx.session.user.id,
+            companyId: ctx.companyId,
             customerId: license.customerId,
             status: "OVERDUE",
           },
@@ -198,6 +200,7 @@ export const licenseRouter = createTRPCRouter({
           : "SERVICE_DELETED";
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: actionType,
@@ -221,7 +224,7 @@ export const licenseRouter = createTRPCRouter({
       return updated;
     }),
 
-  update: protectedProcedure
+  update: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -238,7 +241,7 @@ export const licenseRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!license || license.userId !== ctx.session.user.id) {
+      if (!license || license.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "License not found",
@@ -258,7 +261,7 @@ export const licenseRouter = createTRPCRouter({
       });
     }),
 
-  regenerateKey: protectedProcedure
+  regenerateKey: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -270,7 +273,7 @@ export const licenseRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!license || license.userId !== ctx.session.user.id) {
+      if (!license || license.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "License not found",
@@ -287,6 +290,7 @@ export const licenseRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: "KEY_REGENERATED",
@@ -303,7 +307,7 @@ export const licenseRouter = createTRPCRouter({
       return updated;
     }),
 
-  delete: protectedProcedure
+  delete: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -315,7 +319,7 @@ export const licenseRouter = createTRPCRouter({
         where: { id: input.id },
       });
 
-      if (!license || license.userId !== ctx.session.user.id) {
+      if (!license || license.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "License not found",
@@ -327,6 +331,7 @@ export const licenseRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
         userId: ctx.session.user.id,
         operatorId: ctx.session.user.email ?? ctx.session.user.id,
         action: "SERVICE_DELETED",

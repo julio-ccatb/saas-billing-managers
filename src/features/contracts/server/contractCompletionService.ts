@@ -36,7 +36,7 @@ export async function processContractCompletion(
   } = params;
 
   return db.$transaction(async (tx) => {
-    // 1. Fetch contract with customer relation
+    // 1. Fetch contract with customer and company relation
     const contract = await tx.contract.findFirst({
       where: {
         OR: [
@@ -46,6 +46,7 @@ export async function processContractCompletion(
       },
       include: {
         customer: true,
+        company: true,
       },
     });
 
@@ -95,6 +96,7 @@ export async function processContractCompletion(
     // 3. Write immutable audit log for CONTRACT_SIGNED
     await tx.auditLog.create({
       data: {
+        companyId: contract.companyId,
         userId: contract.userId,
         operatorId,
         action: "CONTRACT_SIGNED",
@@ -119,20 +121,17 @@ export async function processContractCompletion(
       // Check if an invoice for this contract has already been generated (look for contract reference in notes or description)
       const existingInvoice = await tx.invoice.findFirst({
         where: {
-          userId: contract.userId,
+          companyId: contract.companyId,
           customerId: contract.customerId,
           notes: { contains: contract.contractNumber },
         },
       });
 
       if (!existingInvoice) {
-        // Fetch sender details from companyProfile if available
-        const profile = await tx.companyProfile.findUnique({
-          where: { userId: contract.userId },
-        });
+        const company = contract.company;
 
         const invoiceCount = await tx.invoice.count({
-          where: { userId: contract.userId },
+          where: { companyId: contract.companyId },
         });
         const year = new Date().getFullYear();
         const invoiceNumber = `INV-${year}-${(invoiceCount + 1).toString().padStart(4, "0")}`;
@@ -147,6 +146,7 @@ export async function processContractCompletion(
 
         const invoice = await tx.invoice.create({
           data: {
+            companyId: contract.companyId,
             userId: contract.userId,
             customerId: contract.customerId,
             invoiceNumber,
@@ -154,15 +154,15 @@ export async function processContractCompletion(
             dueDate,
             status: "PENDING",
             currency: contract.currency,
-            // Sender snapshot
-            senderName: profile?.companyName || "Service Provider",
-            senderEmail: profile?.email || "",
-            senderPhone: profile?.phone || "",
-            senderAddress: profile?.address || "",
-            senderCity: profile?.city || "",
-            senderZipCode: profile?.zipCode || "",
-            senderCountry: profile?.country || "",
-            senderTaxId: profile?.taxId || "",
+            // Sender snapshot from company
+            senderName: company.name || "Service Provider",
+            senderEmail: company.email || "",
+            senderPhone: company.phone || "",
+            senderAddress: company.address || "",
+            senderCity: company.city || "",
+            senderZipCode: company.zipCode || "",
+            senderCountry: company.country || "",
+            senderTaxId: company.taxId || "",
             // Receiver snapshot
             receiverName: contract.customer.name,
             receiverEmail: contract.customer.email,
@@ -181,10 +181,10 @@ export async function processContractCompletion(
             shippingAmount: 0,
             totalAmount: contract.value,
             notes: `Auto-generated initial billing invoice for Contract ${contract.contractNumber} (${contract.title}).`,
-            paymentTerms: profile?.paymentTerms || "Net 30 Days",
-            bankName: profile?.bankName || "",
-            bankAccountName: profile?.bankAccountName || "",
-            bankAccountNumber: profile?.bankAccountNumber || "",
+            paymentTerms: company.paymentTerms || "Net 30 Days",
+            bankName: company.bankName || "",
+            bankAccountName: company.bankAccountName || "",
+            bankAccountNumber: company.bankAccountNumber || "",
             items: {
               create: [
                 {
@@ -204,6 +204,7 @@ export async function processContractCompletion(
         // Log invoice creation in audit log
         await tx.auditLog.create({
           data: {
+            companyId: contract.companyId,
             userId: contract.userId,
             operatorId,
             action: "INVOICE_GENERATED_FROM_CONTRACT",

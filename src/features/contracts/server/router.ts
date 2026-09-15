@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { recordAuditLog } from "~/features/audit/server/auditService";
 
 export const contractRouter = createTRPCRouter({
-  getAll: protectedProcedure
+  getAll: companyProcedure
     .input(
       z
         .object({
@@ -15,12 +15,12 @@ export const contractRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
       const search = input?.search?.trim();
       const status = input?.status && input.status !== "ALL" ? input.status : undefined;
       const customerId = input?.customerId;
 
-      const where: any = { userId };
+      const where: any = { companyId };
       if (status) where.status = status;
       if (customerId) where.customerId = customerId;
       if (search) {
@@ -46,7 +46,7 @@ export const contractRouter = createTRPCRouter({
       });
     }),
 
-  getById: protectedProcedure
+  getById: companyProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const contract = await ctx.db.contract.findUnique({
@@ -56,7 +56,7 @@ export const contractRouter = createTRPCRouter({
         },
       });
 
-      if (!contract || contract.userId !== ctx.session.user.id) {
+      if (!contract || contract.companyId !== ctx.companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Contract not found",
@@ -66,11 +66,11 @@ export const contractRouter = createTRPCRouter({
       return contract;
     }),
 
-  getMetrics: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id;
+  getMetrics: companyProcedure.query(async ({ ctx }) => {
+    const companyId = ctx.companyId;
 
     const contracts = await ctx.db.contract.findMany({
-      where: { userId },
+      where: { companyId },
       select: {
         status: true,
         value: true,
@@ -113,7 +113,7 @@ export const contractRouter = createTRPCRouter({
     };
   }),
 
-  create: protectedProcedure
+  create: companyProcedure
     .input(
       z.object({
         customerId: z.string(),
@@ -130,12 +130,13 @@ export const contractRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
 
       const customer = await ctx.db.customer.findUnique({
         where: { id: input.customerId },
       });
-      if (!customer || customer.userId !== userId) {
+      if (!customer || customer.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Customer not found",
@@ -148,6 +149,7 @@ export const contractRouter = createTRPCRouter({
 
       const contract = await ctx.db.contract.create({
         data: {
+          companyId,
           userId,
           customerId: input.customerId,
           contractNumber,
@@ -165,6 +167,7 @@ export const contractRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId,
         userId,
         operatorId: ctx.session.user.email ?? userId,
         action: "CONTRACT_CREATED",
@@ -182,7 +185,7 @@ export const contractRouter = createTRPCRouter({
       return contract;
     }),
 
-  update: protectedProcedure
+  update: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -197,12 +200,13 @@ export const contractRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const contract = await ctx.db.contract.findUnique({
         where: { id: input.id },
       });
 
-      if (!contract || contract.userId !== userId) {
+      if (!contract || contract.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Contract not found",
@@ -230,6 +234,7 @@ export const contractRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId,
         userId,
         operatorId: ctx.session.user.email ?? userId,
         action: "CONTRACT_UPDATED",
@@ -246,7 +251,7 @@ export const contractRouter = createTRPCRouter({
       return updated;
     }),
 
-  terminate: protectedProcedure
+  terminate: companyProcedure
     .input(
       z.object({
         id: z.string(),
@@ -254,12 +259,13 @@ export const contractRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const contract = await ctx.db.contract.findUnique({
         where: { id: input.id },
       });
 
-      if (!contract || contract.userId !== userId) {
+      if (!contract || contract.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Contract not found",
@@ -275,6 +281,7 @@ export const contractRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId,
         userId,
         operatorId: ctx.session.user.email ?? userId,
         action: "CONTRACT_TERMINATED",
@@ -291,7 +298,7 @@ export const contractRouter = createTRPCRouter({
       return terminated;
     }),
 
-  sendForSignature: protectedProcedure
+  sendForSignature: companyProcedure
     .input(
       z.object({
         contractId: z.string(),
@@ -299,13 +306,15 @@ export const contractRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
+      const company = ctx.company;
       const contract = await ctx.db.contract.findUnique({
         where: { id: input.contractId },
         include: { customer: true },
       });
 
-      if (!contract || contract.userId !== userId) {
+      if (!contract || contract.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Contract not found",
@@ -319,24 +328,20 @@ export const contractRouter = createTRPCRouter({
         });
       }
 
-      const profile = await ctx.db.companyProfile.findUnique({
-        where: { userId },
-      });
-
       const vendorAddressParts = [
-        profile?.address,
-        profile?.city,
-        profile?.zipCode,
-        profile?.country,
+        company.address,
+        company.city,
+        company.zipCode,
+        company.country,
       ].filter(Boolean);
 
       const resolvedCompanyProfile = {
-        companyName: profile?.companyName || ctx.session.user.name || "Service Provider",
-        email: profile?.email || ctx.session.user.email || "billing@saas.com",
-        phone: profile?.phone || "",
+        companyName: company.name || ctx.session.user.name || "Service Provider",
+        email: company.email || ctx.session.user.email || "billing@saas.com",
+        phone: company.phone || "",
         address: vendorAddressParts.length > 0 ? vendorAddressParts.join(", ") : "",
-        taxId: profile?.taxId || "",
-        signatureData: profile?.signatureData || null,
+        taxId: company.taxId || "",
+        signatureData: company.signatureData || null,
       };
 
       const { createDynamicDocuSealSubmission } = await import("./docusealService");
@@ -373,6 +378,7 @@ export const contractRouter = createTRPCRouter({
       });
 
       await recordAuditLog(ctx.db, {
+        companyId,
         userId,
         operatorId: ctx.session.user.email ?? userId,
         action: "CONTRACT_DISPATCHED_FOR_SIGNATURE",
@@ -396,19 +402,20 @@ export const contractRouter = createTRPCRouter({
       };
     }),
 
-  syncDocuSealStatus: protectedProcedure
+  syncDocuSealStatus: companyProcedure
     .input(
       z.object({
         contractId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
       const userId = ctx.session.user.id;
       const contract = await ctx.db.contract.findUnique({
         where: { id: input.contractId },
       });
 
-      if (!contract || contract.userId !== userId) {
+      if (!contract || contract.companyId !== companyId) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Contract not found",

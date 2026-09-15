@@ -1,52 +1,60 @@
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { companyProfileSchema } from "~/lib/schemas/invoice";
 
 export const profileRouter = createTRPCRouter({
-  get: protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.session.user.id;
-    const profile = await ctx.db.companyProfile.findUnique({
-      where: { userId },
-    });
+  get: companyProcedure.query(async ({ ctx }) => {
+    const company = ctx.company;
 
-    if (profile) return profile;
-
-    // Return sensible defaults pre-populated from User if available
     return {
-      id: "",
-      userId,
-      companyName: ctx.session.user.name ?? "",
-      email: ctx.session.user.email ?? "",
-      phone: "",
-      address: "",
-      city: "",
-      zipCode: "",
-      country: "",
-      taxId: "",
-      bankName: "",
-      bankAccountName: "",
-      bankAccountNumber: "",
-      logoUrl: null,
-      signatureData: null,
-      currency: "USD",
-      paymentTerms: "Payment due upon receipt",
-      notes: "Thank you for your business!",
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      id: company.id,
+      userId: ctx.session.user.id,
+      companyName: company.name,
+      email: company.email,
+      phone: company.phone,
+      address: company.address,
+      city: company.city,
+      zipCode: company.zipCode,
+      country: company.country,
+      taxId: company.taxId,
+      bankName: company.bankName,
+      bankAccountName: company.bankAccountName,
+      bankAccountNumber: company.bankAccountNumber,
+      logoUrl: company.logoUrl,
+      signatureData: company.signatureData,
+      currency: company.currency,
+      paymentTerms: company.paymentTerms,
+      notes: company.notes,
+      createdAt: company.createdAt,
+      updatedAt: company.updatedAt,
     };
   }),
 
-  upsert: protectedProcedure
+  upsert: companyProcedure
     .input(companyProfileSchema)
     .mutation(async ({ ctx, input }) => {
-      const userId = ctx.session.user.id;
+      const companyId = ctx.companyId;
 
-      return ctx.db.companyProfile.upsert({
-        where: { userId },
-        create: {
-          ...input,
-          userId,
+      return ctx.db.company.update({
+        where: { id: companyId },
+        data: {
+          name: input.companyName?.trim() || ctx.company.name,
+          email: input.email?.trim() ?? "",
+          phone: input.phone?.trim() ?? "",
+          address: input.address?.trim() ?? "",
+          city: input.city?.trim() ?? "",
+          zipCode: input.zipCode?.trim() ?? "",
+          country: input.country?.trim() ?? "",
+          taxId: input.taxId?.trim() ?? "",
+          bankName: input.bankName?.trim() ?? "",
+          bankAccountName: input.bankAccountName?.trim() ?? "",
+          bankAccountNumber: input.bankAccountNumber?.trim() ?? "",
+          logoUrl: input.logoUrl ?? null,
+          signatureData: input.signatureData ?? null,
+          currency: input.currency || "USD",
+          paymentTerms: input.paymentTerms || "Payment due upon receipt",
+          notes: input.notes || "Thank you for your business!",
         },
-        update: input,
       });
     }),
 });
+
