@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { customerSchema } from "~/lib/schemas/invoice";
 import { clientOnboardingSchema } from "../schemas/onboarding.schema";
-import { generateLicenseKey } from "~/features/licenses/server/keygen";
+import { generateLicenseKey, hashLicenseKey, generateKeyPrefix } from "~/features/licenses/server/keygen";
 import { recordAuditLog } from "~/features/audit/server/auditService";
 import bcrypt from "bcryptjs";
 
@@ -205,15 +205,19 @@ export const customerRouter = createTRPCRouter({
 
         // 3. Provision Software License (if enabled)
         let license = null;
+        let rawLicenseKey = null;
         if (licenseInput.enabled) {
-          const key = generateLicenseKey();
+          rawLicenseKey = generateLicenseKey();
+          const keyHash = hashLicenseKey(rawLicenseKey);
+          const keyPrefix = generateKeyPrefix(rawLicenseKey);
           license = await tx.license.create({
             data: {
               companyId,
               userId,
               customerId: customer.id,
               name: licenseInput.name.trim() || "Production API License",
-              key,
+              keyHash,
+              keyPrefix,
               allowedDomain: licenseInput.allowedDomain?.trim() || null,
               leaseTtlMinutes: licenseInput.leaseTtlMinutes,
               gracePeriodHours: licenseInput.gracePeriodHours,
@@ -294,7 +298,7 @@ export const customerRouter = createTRPCRouter({
               customerName: customer.name,
               contractNumber: contract?.contractNumber ?? null,
               contractValue: contract?.value ?? null,
-              licenseKey: license?.key ?? null,
+              licenseKeyPrefix: license?.keyPrefix ?? null,
               invoiceNumber: invoice?.invoiceNumber ?? null,
               invoiceAmount: invoice?.totalAmount ?? null,
             }),
@@ -306,6 +310,7 @@ export const customerRouter = createTRPCRouter({
           customer,
           contract,
           license,
+          rawLicenseKey,
           invoice,
         };
       });

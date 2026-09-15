@@ -10,9 +10,16 @@ export function generateLicenseKey(): string {
 }
 
 /**
- * Formats a license key for display (e.g. lic_live_...9f2a)
+ * Generates a SHA-256 hash of the raw license key for secure storage.
  */
-export function maskLicenseKey(key: string): string {
+export function hashLicenseKey(rawKey: string): string {
+  return crypto.createHash("sha256").update(rawKey).digest("hex");
+}
+
+/**
+ * Generates a masked prefix (e.g. lic_live_...9f2a) for DB storage and UI display.
+ */
+export function generateKeyPrefix(key: string): string {
   if (!key || key.length < 16) return key;
   return `${key.slice(0, 12)}...${key.slice(-6)}`;
 }

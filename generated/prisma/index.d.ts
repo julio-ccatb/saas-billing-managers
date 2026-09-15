@@ -14664,7 +14664,8 @@ export namespace Prisma {
     userId: string | null
     customerId: string | null
     name: string | null
-    key: string | null
+    keyHash: string | null
+    keyPrefix: string | null
     status: string | null
     allowedDomain: string | null
     suspensionNotice: string | null
@@ -14683,7 +14684,8 @@ export namespace Prisma {
     userId: string | null
     customerId: string | null
     name: string | null
-    key: string | null
+    keyHash: string | null
+    keyPrefix: string | null
     status: string | null
     allowedDomain: string | null
     suspensionNotice: string | null
@@ -14702,7 +14704,8 @@ export namespace Prisma {
     userId: number
     customerId: number
     name: number
-    key: number
+    keyHash: number
+    keyPrefix: number
     status: number
     allowedDomain: number
     suspensionNotice: number
@@ -14735,7 +14738,8 @@ export namespace Prisma {
     userId?: true
     customerId?: true
     name?: true
-    key?: true
+    keyHash?: true
+    keyPrefix?: true
     status?: true
     allowedDomain?: true
     suspensionNotice?: true
@@ -14754,7 +14758,8 @@ export namespace Prisma {
     userId?: true
     customerId?: true
     name?: true
-    key?: true
+    keyHash?: true
+    keyPrefix?: true
     status?: true
     allowedDomain?: true
     suspensionNotice?: true
@@ -14773,7 +14778,8 @@ export namespace Prisma {
     userId?: true
     customerId?: true
     name?: true
-    key?: true
+    keyHash?: true
+    keyPrefix?: true
     status?: true
     allowedDomain?: true
     suspensionNotice?: true
@@ -14879,7 +14885,8 @@ export namespace Prisma {
     userId: string
     customerId: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status: string
     allowedDomain: string | null
     suspensionNotice: string | null
@@ -14917,7 +14924,8 @@ export namespace Prisma {
     userId?: boolean
     customerId?: boolean
     name?: boolean
-    key?: boolean
+    keyHash?: boolean
+    keyPrefix?: boolean
     status?: boolean
     allowedDomain?: boolean
     suspensionNotice?: boolean
@@ -14939,7 +14947,8 @@ export namespace Prisma {
     userId?: boolean
     customerId?: boolean
     name?: boolean
-    key?: boolean
+    keyHash?: boolean
+    keyPrefix?: boolean
     status?: boolean
     allowedDomain?: boolean
     suspensionNotice?: boolean
@@ -14961,7 +14970,8 @@ export namespace Prisma {
     userId?: boolean
     customerId?: boolean
     name?: boolean
-    key?: boolean
+    keyHash?: boolean
+    keyPrefix?: boolean
     status?: boolean
     allowedDomain?: boolean
     suspensionNotice?: boolean
@@ -14983,7 +14993,8 @@ export namespace Prisma {
     userId?: boolean
     customerId?: boolean
     name?: boolean
-    key?: boolean
+    keyHash?: boolean
+    keyPrefix?: boolean
     status?: boolean
     allowedDomain?: boolean
     suspensionNotice?: boolean
@@ -14996,7 +15007,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type LicenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "customerId" | "name" | "key" | "status" | "allowedDomain" | "suspensionNotice" | "leaseTtlMinutes" | "gracePeriodHours" | "lastCheckedAt" | "lastCheckedIp" | "checkCount" | "createdAt" | "updatedAt", ExtArgs["result"]["license"]>
+  export type LicenseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyId" | "userId" | "customerId" | "name" | "keyHash" | "keyPrefix" | "status" | "allowedDomain" | "suspensionNotice" | "leaseTtlMinutes" | "gracePeriodHours" | "lastCheckedAt" | "lastCheckedIp" | "checkCount" | "createdAt" | "updatedAt", ExtArgs["result"]["license"]>
   export type LicenseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     company?: boolean | CompanyDefaultArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -15026,7 +15037,8 @@ export namespace Prisma {
       userId: string
       customerId: string | null
       name: string
-      key: string
+      keyHash: string
+      keyPrefix: string
       status: string
       allowedDomain: string | null
       suspensionNotice: string | null
@@ -15468,7 +15480,8 @@ export namespace Prisma {
     readonly userId: FieldRef<"License", 'String'>
     readonly customerId: FieldRef<"License", 'String'>
     readonly name: FieldRef<"License", 'String'>
-    readonly key: FieldRef<"License", 'String'>
+    readonly keyHash: FieldRef<"License", 'String'>
+    readonly keyPrefix: FieldRef<"License", 'String'>
     readonly status: FieldRef<"License", 'String'>
     readonly allowedDomain: FieldRef<"License", 'String'>
     readonly suspensionNotice: FieldRef<"License", 'String'>
@@ -19789,7 +19802,8 @@ export namespace Prisma {
     userId: 'userId',
     customerId: 'customerId',
     name: 'name',
-    key: 'key',
+    keyHash: 'keyHash',
+    keyPrefix: 'keyPrefix',
     status: 'status',
     allowedDomain: 'allowedDomain',
     suspensionNotice: 'suspensionNotice',
@@ -20963,7 +20977,8 @@ export namespace Prisma {
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
-    key?: StringFilter<"License"> | string
+    keyHash?: StringFilter<"License"> | string
+    keyPrefix?: StringFilter<"License"> | string
     status?: StringFilter<"License"> | string
     allowedDomain?: StringNullableFilter<"License"> | string | null
     suspensionNotice?: StringNullableFilter<"License"> | string | null
@@ -20985,7 +21000,8 @@ export namespace Prisma {
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     name?: SortOrder
-    key?: SortOrder
+    keyHash?: SortOrder
+    keyPrefix?: SortOrder
     status?: SortOrder
     allowedDomain?: SortOrderInput | SortOrder
     suspensionNotice?: SortOrderInput | SortOrder
@@ -21003,7 +21019,7 @@ export namespace Prisma {
 
   export type LicenseWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    key?: string
+    keyHash?: string
     AND?: LicenseWhereInput | LicenseWhereInput[]
     OR?: LicenseWhereInput[]
     NOT?: LicenseWhereInput | LicenseWhereInput[]
@@ -21011,6 +21027,7 @@ export namespace Prisma {
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
+    keyPrefix?: StringFilter<"License"> | string
     status?: StringFilter<"License"> | string
     allowedDomain?: StringNullableFilter<"License"> | string | null
     suspensionNotice?: StringNullableFilter<"License"> | string | null
@@ -21024,7 +21041,7 @@ export namespace Prisma {
     company?: XOR<CompanyScalarRelationFilter, CompanyWhereInput>
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     customer?: XOR<CustomerNullableScalarRelationFilter, CustomerWhereInput> | null
-  }, "id" | "key">
+  }, "id" | "keyHash">
 
   export type LicenseOrderByWithAggregationInput = {
     id?: SortOrder
@@ -21032,7 +21049,8 @@ export namespace Prisma {
     userId?: SortOrder
     customerId?: SortOrderInput | SortOrder
     name?: SortOrder
-    key?: SortOrder
+    keyHash?: SortOrder
+    keyPrefix?: SortOrder
     status?: SortOrder
     allowedDomain?: SortOrderInput | SortOrder
     suspensionNotice?: SortOrderInput | SortOrder
@@ -21059,7 +21077,8 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"License"> | string
     customerId?: StringNullableWithAggregatesFilter<"License"> | string | null
     name?: StringWithAggregatesFilter<"License"> | string
-    key?: StringWithAggregatesFilter<"License"> | string
+    keyHash?: StringWithAggregatesFilter<"License"> | string
+    keyPrefix?: StringWithAggregatesFilter<"License"> | string
     status?: StringWithAggregatesFilter<"License"> | string
     allowedDomain?: StringNullableWithAggregatesFilter<"License"> | string | null
     suspensionNotice?: StringNullableWithAggregatesFilter<"License"> | string | null
@@ -22543,7 +22562,8 @@ export namespace Prisma {
   export type LicenseCreateInput = {
     id?: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -22565,7 +22585,8 @@ export namespace Prisma {
     userId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -22581,7 +22602,8 @@ export namespace Prisma {
   export type LicenseUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22603,7 +22625,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22622,7 +22645,8 @@ export namespace Prisma {
     userId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -22638,7 +22662,8 @@ export namespace Prisma {
   export type LicenseUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22657,7 +22682,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23916,7 +23942,8 @@ export namespace Prisma {
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
-    key?: SortOrder
+    keyHash?: SortOrder
+    keyPrefix?: SortOrder
     status?: SortOrder
     allowedDomain?: SortOrder
     suspensionNotice?: SortOrder
@@ -23941,7 +23968,8 @@ export namespace Prisma {
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
-    key?: SortOrder
+    keyHash?: SortOrder
+    keyPrefix?: SortOrder
     status?: SortOrder
     allowedDomain?: SortOrder
     suspensionNotice?: SortOrder
@@ -23960,7 +23988,8 @@ export namespace Prisma {
     userId?: SortOrder
     customerId?: SortOrder
     name?: SortOrder
-    key?: SortOrder
+    keyHash?: SortOrder
+    keyPrefix?: SortOrder
     status?: SortOrder
     allowedDomain?: SortOrder
     suspensionNotice?: SortOrder
@@ -26312,7 +26341,8 @@ export namespace Prisma {
   export type LicenseCreateWithoutUserInput = {
     id?: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -26332,7 +26362,8 @@ export namespace Prisma {
     companyId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -26782,7 +26813,8 @@ export namespace Prisma {
     userId?: StringFilter<"License"> | string
     customerId?: StringNullableFilter<"License"> | string | null
     name?: StringFilter<"License"> | string
-    key?: StringFilter<"License"> | string
+    keyHash?: StringFilter<"License"> | string
+    keyPrefix?: StringFilter<"License"> | string
     status?: StringFilter<"License"> | string
     allowedDomain?: StringNullableFilter<"License"> | string | null
     suspensionNotice?: StringNullableFilter<"License"> | string | null
@@ -27141,7 +27173,8 @@ export namespace Prisma {
   export type LicenseCreateWithoutCompanyInput = {
     id?: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -27161,7 +27194,8 @@ export namespace Prisma {
     userId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -27792,7 +27826,8 @@ export namespace Prisma {
   export type LicenseCreateWithoutCustomerInput = {
     id?: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -27812,7 +27847,8 @@ export namespace Prisma {
     companyId: string
     userId: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -30165,7 +30201,8 @@ export namespace Prisma {
     companyId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -30534,7 +30571,8 @@ export namespace Prisma {
   export type LicenseUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30554,7 +30592,8 @@ export namespace Prisma {
     companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30572,7 +30611,8 @@ export namespace Prisma {
     companyId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30833,7 +30873,8 @@ export namespace Prisma {
     userId: string
     customerId?: string | null
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -31144,7 +31185,8 @@ export namespace Prisma {
   export type LicenseUpdateWithoutCompanyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31164,7 +31206,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31182,7 +31225,8 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     customerId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31284,7 +31328,8 @@ export namespace Prisma {
     companyId: string
     userId: string
     name: string
-    key: string
+    keyHash: string
+    keyPrefix: string
     status?: string
     allowedDomain?: string | null
     suspensionNotice?: string | null
@@ -31477,7 +31522,8 @@ export namespace Prisma {
   export type LicenseUpdateWithoutCustomerInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31497,7 +31543,8 @@ export namespace Prisma {
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31515,7 +31562,8 @@ export namespace Prisma {
     companyId?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    key?: StringFieldUpdateOperationsInput | string
+    keyHash?: StringFieldUpdateOperationsInput | string
+    keyPrefix?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     allowedDomain?: NullableStringFieldUpdateOperationsInput | string | null
     suspensionNotice?: NullableStringFieldUpdateOperationsInput | string | null

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "~/server/db";
 
@@ -81,9 +82,12 @@ async function handleVerification(req: NextRequest) {
       );
     }
 
+    // Hash the incoming key
+    const incomingKeyHash = crypto.createHash("sha256").update(key).digest("hex");
+
     // Find license in database
     const license = await db.license.findUnique({
-      where: { key },
+      where: { keyHash: incomingKeyHash },
       include: {
         customer: {
           select: {

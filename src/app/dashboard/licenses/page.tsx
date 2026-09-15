@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatDate } from "~/lib/utils/format";
-import { maskLicenseKey } from "~/lib/license/keygen";
+
 
 export default function LicensesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -386,18 +386,7 @@ export default function LicensesPage() {
                         {/* API Key */}
                         <td className="py-4 px-5">
                           <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-md font-mono text-xs text-gray-700">
-                            <span>{maskLicenseKey(lic.key)}</span>
-                            <button
-                              onClick={() => handleCopyKey(lic.key, lic.id)}
-                              className="p-1 text-gray-400 hover:text-gray-900 transition-colors cursor-pointer"
-                              title="Copy full key"
-                            >
-                              {copiedKeyId === lic.id ? (
-                                <Check className="w-3.5 h-3.5 text-emerald-600" />
-                              ) : (
-                                <Copy className="w-3.5 h-3.5" />
-                              )}
-                            </button>
+                            <span>{lic.keyPrefix}</span>
                           </div>
                         </td>
 

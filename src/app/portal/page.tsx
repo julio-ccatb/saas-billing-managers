@@ -267,19 +267,8 @@ export default function PortalOverviewPage() {
 
                   <div className="flex items-center justify-between p-2 rounded-lg bg-muted/60 border border-border">
                     <span className="font-mono text-[11px] text-foreground truncate select-all">
-                      {lic.key}
+                      {lic.keyPrefix}
                     </span>
-                    <button
-                      onClick={() => handleCopy(lic.key)}
-                      className="text-muted-foreground hover:text-foreground cursor-pointer ml-2"
-                      title="Copy Key"
-                    >
-                      {copiedKey === lic.key ? (
-                        <Check className="w-3.5 h-3.5 text-success" />
-                      ) : (
-                        <Copy className="w-3.5 h-3.5" />
-                      )}
-                    </button>
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-muted-foreground">

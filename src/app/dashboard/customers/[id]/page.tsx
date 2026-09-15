@@ -588,18 +588,7 @@ export default function CustomerOperationsHubPage() {
                       </td>
                       <td className="py-3.5 px-5">
                         <div className="inline-flex items-center gap-1.5 bg-muted/60 px-2 py-1 rounded font-mono text-xs text-foreground">
-                          <span>{lic.key}</span>
-                          <button
-                            onClick={() => handleCopyKey(lic.key)}
-                            className="text-muted-foreground hover:text-foreground cursor-pointer"
-                            title="Copy Key"
-                          >
-                            {copiedKey === lic.key ? (
-                              <Check className="w-3.5 h-3.5 text-success" />
-                            ) : (
-                              <Copy className="w-3.5 h-3.5" />
-                            )}
-                          </button>
+                          <span>{lic.keyPrefix}</span>
                         </div>
                       </td>
                       <td className="py-3.5 px-5 font-mono text-xs text-muted-foreground">
