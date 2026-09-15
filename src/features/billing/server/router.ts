@@ -4,6 +4,8 @@ import { createTRPCRouter, companyProcedure } from "~/server/api/trpc";
 import { invoiceSchema } from "~/lib/schemas/invoice";
 import { calculateInvoiceTotals } from "~/lib/utils/format";
 import { recordAuditLog } from "~/features/audit/server/auditService";
+import { generatePdfFromInvoice } from "~/server/services/pdfService";
+import { sendInvoiceEmail } from "~/server/services/emailService";
 
 export const invoiceRouter = createTRPCRouter({
   getAll: companyProcedure
@@ -425,6 +427,76 @@ export const invoiceRouter = createTRPCRouter({
         success: true,
         receipt: updatedReceipt,
         invoice: updatedInvoice,
+      };
+    }),
+
+  sendEmail: companyProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        recipientEmail: z.string().email(),
+        customMessage: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const companyId = ctx.companyId;
+
+      const invoice = await ctx.db.invoice.findUnique({
+        where: { id: input.id },
+        include: {
+          items: {
+            orderBy: { orderIndex: "asc" },
+          },
+          company: true,
+        },
+      });
+
+      if (!invoice || invoice.companyId !== companyId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Invoice not found or does not belong to this organization.",
+        });
+      }
+
+      // Generate invoice PDF buffer
+      const pdfBuffer = await generatePdfFromInvoice({
+        ...invoice,
+        issueDate: invoice.issueDate,
+        dueDate: invoice.dueDate,
+        items: invoice.items,
+        status: invoice.status as any,
+      } as any);
+
+      // Send via Resend
+      const result = await sendInvoiceEmail({
+        invoice,
+        recipientEmail: input.recipientEmail,
+        pdfBuffer,
+        customMessage: input.customMessage,
+        companyName: invoice.company?.name || invoice.senderName,
+      });
+
+      // Write immutable audit log
+      await recordAuditLog(ctx.db, {
+        companyId,
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "INVOICE_SENT",
+        entityType: "INVOICE",
+        entityId: invoice.id,
+        reason: `Invoice ${invoice.invoiceNumber} sent to ${input.recipientEmail} via Resend.`,
+        metadata: {
+          recipientEmail: input.recipientEmail,
+          customMessage: input.customMessage ?? null,
+          messageId: result.messageId ?? null,
+          invoiceNumber: invoice.invoiceNumber,
+          totalAmount: invoice.totalAmount,
+        },
+      });
+
+      return {
+        success: true,
+        messageId: result.messageId,
       };
     }),
 });

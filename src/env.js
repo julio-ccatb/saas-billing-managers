@@ -18,6 +18,8 @@ export const env = createEnv({
     DOCUSEAL_API_URL: z.string().optional(),
     DOCUSEAL_API_KEY: z.string().optional(),
     DOCUSEAL_TEMPLATE_ID: z.string().optional(),
+    RESEND_API_KEY: z.string().optional(),
+    EMAIL_FROM: z.string().default("Acme Operations <onboarding@resend.dev>"),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -45,6 +47,8 @@ export const env = createEnv({
     DOCUSEAL_API_URL: process.env.DOCUSEAL_API_URL,
     DOCUSEAL_API_KEY: process.env.DOCUSEAL_API_KEY,
     DOCUSEAL_TEMPLATE_ID: process.env.DOCUSEAL_TEMPLATE_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
     NODE_ENV: process.env.NODE_ENV,
   },
   /**

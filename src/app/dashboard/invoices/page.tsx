@@ -9,7 +9,8 @@ import {
   Trash2, 
   Eye, 
   FileText,
-  Download
+  Download,
+  Mail
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
@@ -19,6 +20,7 @@ import { Badge } from "~/components/ui/badge";
 import { Card, CardContent } from "~/components/ui/card";
 import { AppRoutes } from "~/config/routes";
 import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
+import { SendInvoiceModal } from "~/components/invoice/SendInvoiceModal";
 
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<
@@ -28,6 +30,7 @@ export default function InvoicesPage() {
   const [page, setPage] = useState(1);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [reviewingReceipt, setReviewingReceipt] = useState<any>(null);
+  const [sendingInvoice, setSendingInvoice] = useState<any>(null);
 
   const utils = api.useUtils();
 
@@ -36,6 +39,16 @@ export default function InvoicesPage() {
     search: searchTerm,
     page,
     pageSize: 15,
+  });
+
+  const sendEmailMutation = api.invoice.sendEmail.useMutation({
+    onSuccess: () => {
+      alert("Invoice successfully emailed to client via Resend!");
+      setSendingInvoice(null);
+    },
+    onError: (err) => {
+      alert(`Failed to send email: ${err.message}`);
+    },
   });
 
   const updateStatusMutation = api.invoice.updateStatus.useMutation({
@@ -253,6 +266,15 @@ export default function InvoicesPage() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            onClick={() => setSendingInvoice(inv)}
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/10"
+                            title="Send via Email"
+                          >
+                            <Mail className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             disabled={downloadingId === inv.id}
                             onClick={() => handleDownloadPdf(inv)}
                             className="text-muted-foreground hover:text-primary hover:bg-primary/10"
@@ -349,6 +371,15 @@ export default function InvoicesPage() {
                     >
                       <Download className="w-3.5 h-3.5" />
                     </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-9 px-3 text-xs text-primary hover:bg-primary/10"
+                      onClick={() => setSendingInvoice(inv)}
+                      title="Send via Email"
+                    >
+                      <Mail className="w-3.5 h-3.5" />
+                    </Button>
                     {inv.status !== "PAID" && (
                       <Button
                         variant="outline"
@@ -430,6 +461,22 @@ export default function InvoicesPage() {
             });
           }}
           isProcessing={verifyReceiptMutation.isPending}
+        />
+
+        {/* Send Invoice Modal */}
+        <SendInvoiceModal
+          invoice={sendingInvoice}
+          isOpen={!!sendingInvoice}
+          onClose={() => setSendingInvoice(null)}
+          onSend={({ recipientEmail, customMessage }) => {
+            if (!sendingInvoice) return;
+            sendEmailMutation.mutate({
+              id: sendingInvoice.id,
+              recipientEmail,
+              customMessage,
+            });
+          }}
+          isSending={sendEmailMutation.isPending}
         />
       </div>
   );
