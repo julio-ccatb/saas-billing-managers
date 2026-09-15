@@ -9,6 +9,7 @@ interface DocuSealSubmitter {
   slug: string;
   email: string;
   status: string;
+  external_id?: string;
   completed_at?: string;
 }
 
@@ -63,7 +64,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Malformed JSON payload" }, { status: 400 });
   }
 
-  const externalId = payload.data?.external_id?.trim();
+  const externalId = (
+    payload.data?.external_id ||
+    payload.data?.submitters?.find((s: any) => s.external_id)?.external_id ||
+    payload.data?.submitters?.[0]?.external_id
+  )?.trim();
+
   if (!externalId) {
     return NextResponse.json({ error: "Missing external_id in payload" }, { status: 400 });
   }
