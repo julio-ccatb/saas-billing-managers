@@ -14173,10 +14173,12 @@ export namespace Prisma {
 
   export type ContractAvgAggregateOutputType = {
     value: number | null
+    submissionId: number | null
   }
 
   export type ContractSumAggregateOutputType = {
     value: number | null
+    submissionId: number | null
   }
 
   export type ContractMinAggregateOutputType = {
@@ -14194,6 +14196,8 @@ export namespace Prisma {
     signedAt: Date | null
     terms: string | null
     notes: string | null
+    submissionId: number | null
+    signedDocumentUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14213,6 +14217,8 @@ export namespace Prisma {
     signedAt: Date | null
     terms: string | null
     notes: string | null
+    submissionId: number | null
+    signedDocumentUrl: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -14232,6 +14238,8 @@ export namespace Prisma {
     signedAt: number
     terms: number
     notes: number
+    submissionId: number
+    signedDocumentUrl: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -14240,10 +14248,12 @@ export namespace Prisma {
 
   export type ContractAvgAggregateInputType = {
     value?: true
+    submissionId?: true
   }
 
   export type ContractSumAggregateInputType = {
     value?: true
+    submissionId?: true
   }
 
   export type ContractMinAggregateInputType = {
@@ -14261,6 +14271,8 @@ export namespace Prisma {
     signedAt?: true
     terms?: true
     notes?: true
+    submissionId?: true
+    signedDocumentUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14280,6 +14292,8 @@ export namespace Prisma {
     signedAt?: true
     terms?: true
     notes?: true
+    submissionId?: true
+    signedDocumentUrl?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -14299,6 +14313,8 @@ export namespace Prisma {
     signedAt?: true
     terms?: true
     notes?: true
+    submissionId?: true
+    signedDocumentUrl?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -14405,6 +14421,8 @@ export namespace Prisma {
     signedAt: Date | null
     terms: string
     notes: string
+    submissionId: number | null
+    signedDocumentUrl: string | null
     createdAt: Date
     updatedAt: Date
     _count: ContractCountAggregateOutputType | null
@@ -14443,6 +14461,8 @@ export namespace Prisma {
     signedAt?: boolean
     terms?: boolean
     notes?: boolean
+    submissionId?: boolean
+    signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14464,6 +14484,8 @@ export namespace Prisma {
     signedAt?: boolean
     terms?: boolean
     notes?: boolean
+    submissionId?: boolean
+    signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14485,6 +14507,8 @@ export namespace Prisma {
     signedAt?: boolean
     terms?: boolean
     notes?: boolean
+    submissionId?: boolean
+    signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -14506,11 +14530,13 @@ export namespace Prisma {
     signedAt?: boolean
     terms?: boolean
     notes?: boolean
+    submissionId?: boolean
+    signedDocumentUrl?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "contractNumber" | "title" | "status" | "value" | "currency" | "billingCycle" | "startDate" | "endDate" | "signedAt" | "terms" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
+  export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "customerId" | "contractNumber" | "title" | "status" | "value" | "currency" | "billingCycle" | "startDate" | "endDate" | "signedAt" | "terms" | "notes" | "submissionId" | "signedDocumentUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     customer?: boolean | CustomerDefaultArgs<ExtArgs>
@@ -14545,6 +14571,8 @@ export namespace Prisma {
       signedAt: Date | null
       terms: string
       notes: string
+      submissionId: number | null
+      signedDocumentUrl: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["contract"]>
@@ -14986,6 +15014,8 @@ export namespace Prisma {
     readonly signedAt: FieldRef<"Contract", 'DateTime'>
     readonly terms: FieldRef<"Contract", 'String'>
     readonly notes: FieldRef<"Contract", 'String'>
+    readonly submissionId: FieldRef<"Contract", 'Int'>
+    readonly signedDocumentUrl: FieldRef<"Contract", 'String'>
     readonly createdAt: FieldRef<"Contract", 'DateTime'>
     readonly updatedAt: FieldRef<"Contract", 'DateTime'>
   }
@@ -16740,6 +16770,8 @@ export namespace Prisma {
     signedAt: 'signedAt',
     terms: 'terms',
     notes: 'notes',
+    submissionId: 'submissionId',
+    signedDocumentUrl: 'signedDocumentUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -17850,6 +17882,8 @@ export namespace Prisma {
     signedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     terms?: StringFilter<"Contract"> | string
     notes?: StringFilter<"Contract"> | string
+    submissionId?: IntNullableFilter<"Contract"> | number | null
+    signedDocumentUrl?: StringNullableFilter<"Contract"> | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -17871,6 +17905,8 @@ export namespace Prisma {
     signedAt?: SortOrderInput | SortOrder
     terms?: SortOrder
     notes?: SortOrder
+    submissionId?: SortOrderInput | SortOrder
+    signedDocumentUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -17895,6 +17931,8 @@ export namespace Prisma {
     signedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     terms?: StringFilter<"Contract"> | string
     notes?: StringFilter<"Contract"> | string
+    submissionId?: IntNullableFilter<"Contract"> | number | null
+    signedDocumentUrl?: StringNullableFilter<"Contract"> | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -17916,6 +17954,8 @@ export namespace Prisma {
     signedAt?: SortOrderInput | SortOrder
     terms?: SortOrder
     notes?: SortOrder
+    submissionId?: SortOrderInput | SortOrder
+    signedDocumentUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ContractCountOrderByAggregateInput
@@ -17943,6 +17983,8 @@ export namespace Prisma {
     signedAt?: DateTimeNullableWithAggregatesFilter<"Contract"> | Date | string | null
     terms?: StringWithAggregatesFilter<"Contract"> | string
     notes?: StringWithAggregatesFilter<"Contract"> | string
+    submissionId?: IntNullableWithAggregatesFilter<"Contract"> | number | null
+    signedDocumentUrl?: StringNullableWithAggregatesFilter<"Contract"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Contract"> | Date | string
   }
@@ -19171,6 +19213,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutContractsInput
@@ -19192,6 +19236,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19209,6 +19255,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
@@ -19230,6 +19278,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19249,6 +19299,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19266,6 +19318,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19285,6 +19339,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20253,12 +20309,15 @@ export namespace Prisma {
     signedAt?: SortOrder
     terms?: SortOrder
     notes?: SortOrder
+    submissionId?: SortOrder
+    signedDocumentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ContractAvgOrderByAggregateInput = {
     value?: SortOrder
+    submissionId?: SortOrder
   }
 
   export type ContractMaxOrderByAggregateInput = {
@@ -20276,6 +20335,8 @@ export namespace Prisma {
     signedAt?: SortOrder
     terms?: SortOrder
     notes?: SortOrder
+    submissionId?: SortOrder
+    signedDocumentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -20295,12 +20356,15 @@ export namespace Prisma {
     signedAt?: SortOrder
     terms?: SortOrder
     notes?: SortOrder
+    submissionId?: SortOrder
+    signedDocumentUrl?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ContractSumOrderByAggregateInput = {
     value?: SortOrder
+    submissionId?: SortOrder
   }
 
   export type AuditLogCountOrderByAggregateInput = {
@@ -21883,6 +21947,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutContractsInput
@@ -21902,6 +21968,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22262,6 +22330,8 @@ export namespace Prisma {
     signedAt?: DateTimeNullableFilter<"Contract"> | Date | string | null
     terms?: StringFilter<"Contract"> | string
     notes?: StringFilter<"Contract"> | string
+    submissionId?: IntNullableFilter<"Contract"> | number | null
+    signedDocumentUrl?: StringNullableFilter<"Contract"> | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
   }
@@ -22572,6 +22642,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutContractsInput
@@ -22591,6 +22663,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23638,6 +23712,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23983,6 +24059,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutContractsNestedInput
@@ -24002,6 +24080,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24020,6 +24100,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24135,6 +24217,8 @@ export namespace Prisma {
     signedAt?: Date | string | null
     terms?: string
     notes?: string
+    submissionId?: number | null
+    signedDocumentUrl?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -24337,6 +24421,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutContractsNestedInput
@@ -24356,6 +24442,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -24374,6 +24462,8 @@ export namespace Prisma {
     signedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     terms?: StringFieldUpdateOperationsInput | string
     notes?: StringFieldUpdateOperationsInput | string
+    submissionId?: NullableIntFieldUpdateOperationsInput | number | null
+    signedDocumentUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

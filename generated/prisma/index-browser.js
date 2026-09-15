@@ -292,6 +292,8 @@ exports.Prisma.ContractScalarFieldEnum = {
   signedAt: 'signedAt',
   terms: 'terms',
   notes: 'notes',
+  submissionId: 'submissionId',
+  signedDocumentUrl: 'signedDocumentUrl',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

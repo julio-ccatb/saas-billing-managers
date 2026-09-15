@@ -63,71 +63,72 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Malformed JSON payload" }, { status: 400 });
   }
 
-  if (payload.event_type !== "submission.completed") {
-    return NextResponse.json(
-      { message: `Ignored unsupported event type: ${payload.event_type}` },
-      { status: 200 }
-    );
-  }
-
   const externalId = payload.data?.external_id?.trim();
   if (!externalId) {
     return NextResponse.json({ error: "Missing external_id in payload" }, { status: 400 });
   }
 
   try {
-    const result = await db.$transaction(async (tx) => {
-      // 1. Fetch current contract state by ID or Contract Number
-      const contract = await tx.contract.findFirst({
+    if (payload.event_type === "submission.completed") {
+      const { processContractCompletion } = await import(
+        "~/features/contracts/server/contractCompletionService"
+      );
+
+      const result = await processContractCompletion(db, {
+        contractIdentifier: externalId,
+        submissionId: payload.data.id,
+        completedAt: new Date(payload.timestamp || Date.now()),
+        documents: payload.data.documents ?? [],
+        submitters: payload.data.submitters ?? [],
+        operatorId: "SYSTEM_DOCUSEAL_WEBHOOK",
+        createInitialInvoice: true,
+      });
+
+      return NextResponse.json(
+        {
+          success: true,
+          contractId: result.contract.id,
+          idempotent: result.idempotentSkip,
+          generatedInvoiceId: result.generatedInvoiceId,
+          signedDocumentUrl: result.signedDocumentUrl,
+        },
+        { status: 200 }
+      );
+    }
+
+    if (payload.event_type === "submission.declined") {
+      const contract = await db.contract.findFirst({
         where: {
           OR: [{ id: externalId }, { contractNumber: externalId }],
         },
       });
 
-      if (!contract) {
-        throw new Error(`Contract not found: ${externalId}`);
+      if (contract) {
+        await db.auditLog.create({
+          data: {
+            userId: contract.userId,
+            operatorId: "SYSTEM_DOCUSEAL_WEBHOOK",
+            action: "CONTRACT_DECLINED",
+            entityType: "CONTRACT",
+            entityId: contract.id,
+            reason: `DocuSeal submission #${payload.data.id} was declined by signer`,
+            metadata: JSON.stringify({
+              submissionId: payload.data.id,
+              submitters: payload.data.submitters ?? [],
+              declinedAt: new Date(payload.timestamp || Date.now()).toISOString(),
+            }),
+          },
+        });
       }
 
-      // Idempotency: skip mutation if already marked signed and active
-      if (contract.signedAt !== null && contract.status === "ACTIVE") {
-        return { contract, idempotentSkip: true };
-      }
-
-      const completedAt = new Date(payload.timestamp || Date.now());
-
-      // 2. Update Contract record
-      const updatedContract = await tx.contract.update({
-        where: { id: contract.id },
-        data: {
-          status: "ACTIVE",
-          signedAt: completedAt,
-          updatedAt: new Date(),
-        },
-      });
-
-      // 3. Write immutable audit log
-      await tx.auditLog.create({
-        data: {
-          userId: contract.userId,
-          operatorId: "SYSTEM_DOCUSEAL_WEBHOOK",
-          action: "CONTRACT_SIGNED",
-          entityType: "CONTRACT",
-          entityId: contract.id,
-          reason: `Document e-signed via DocuSeal submission #${payload.data.id}`,
-          metadata: JSON.stringify({
-            submissionId: payload.data.id,
-            submitters: payload.data.submitters ?? [],
-            documents: payload.data.documents ?? [],
-            signedAt: completedAt.toISOString(),
-          }),
-        },
-      });
-
-      return { contract: updatedContract, idempotentSkip: false };
-    });
+      return NextResponse.json(
+        { success: true, message: "Declined event recorded in audit history" },
+        { status: 200 }
+      );
+    }
 
     return NextResponse.json(
-      { success: true, contractId: result.contract.id, idempotent: result.idempotentSkip },
+      { message: `Ignored unhandled event type: ${payload.event_type}` },
       { status: 200 }
     );
   } catch (error: any) {
@@ -138,3 +139,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

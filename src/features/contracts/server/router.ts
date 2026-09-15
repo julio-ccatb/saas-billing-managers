@@ -124,7 +124,7 @@ export const contractRouter = createTRPCRouter({
         billingCycle: z.enum(["MONTHLY", "QUARTERLY", "ANNUALLY", "ONE_TIME"]).default("MONTHLY"),
         startDate: z.date().default(() => new Date()),
         endDate: z.date().optional().nullable(),
-        status: z.enum(["DRAFT", "ACTIVE"]).default("ACTIVE"),
+        status: z.enum(["DRAFT", "ACTIVE"]).default("DRAFT"),
         terms: z.string().default(""),
         notes: z.string().default(""),
       })
@@ -364,6 +364,14 @@ export const contractRouter = createTRPCRouter({
         companyProfile: resolvedCompanyProfile,
       });
 
+      // Persist submissionId on the contract record
+      await ctx.db.contract.update({
+        where: { id: contract.id },
+        data: {
+          submissionId: result.submissionId,
+        },
+      });
+
       await recordAuditLog(ctx.db, {
         userId,
         operatorId: ctx.session.user.email ?? userId,
@@ -387,4 +395,63 @@ export const contractRouter = createTRPCRouter({
         contractNumber: contract.contractNumber,
       };
     }),
+
+  syncDocuSealStatus: protectedProcedure
+    .input(
+      z.object({
+        contractId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const contract = await ctx.db.contract.findUnique({
+        where: { id: input.contractId },
+      });
+
+      if (!contract || contract.userId !== userId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Contract not found",
+        });
+      }
+
+      if (!contract.submissionId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "This contract has not been dispatched to DocuSeal yet.",
+        });
+      }
+
+      const { getDocuSealSubmission } = await import("./docusealService");
+      const submission = await getDocuSealSubmission(contract.submissionId);
+
+      if (submission.status === "completed") {
+        const { processContractCompletion } = await import("./contractCompletionService");
+        const result = await processContractCompletion(ctx.db, {
+          contractIdentifier: contract.id,
+          submissionId: submission.id,
+          documents: submission.documents,
+          submitters: submission.submitters,
+          operatorId: ctx.session.user.email ?? userId,
+        });
+
+        return {
+          success: true,
+          isCompleted: true,
+          docuSealStatus: submission.status,
+          contract: result.contract,
+          generatedInvoiceId: result.generatedInvoiceId,
+          signedDocumentUrl: result.signedDocumentUrl,
+          message: "Contract signed and activated successfully!",
+        };
+      }
+
+      return {
+        success: true,
+        isCompleted: false,
+        docuSealStatus: submission.status,
+        message: `DocuSeal submission status is currently: ${submission.status}`,
+      };
+    }),
 });
+

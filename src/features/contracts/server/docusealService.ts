@@ -317,3 +317,45 @@ export async function createDynamicDocuSealSubmission(params: SendContractSubmis
     submitterId: clientSubmitter?.id,
   };
 }
+
+/**
+ * Fetches the current live status and documents for a DocuSeal submission.
+ * Enables zero-tunnel local development and manual reconciliation.
+ */
+export async function getDocuSealSubmission(submissionId: number) {
+  const apiUrl = (env.DOCUSEAL_API_URL ?? process.env.DOCUSEAL_API_URL ?? "https://lg.jcodea.com").replace(/\/+$/, "");
+  const apiKey = env.DOCUSEAL_API_KEY ?? process.env.DOCUSEAL_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("DOCUSEAL_API_KEY is not configured in .env");
+  }
+
+  const response = await fetch(`${apiUrl}/api/submissions/${submissionId}`, {
+    method: "GET",
+    headers: {
+      "X-Auth-Token": apiKey,
+    },
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`DocuSeal API error (${response.status}): ${errorText}`);
+  }
+
+  return (await response.json()) as {
+    id: number;
+    status: string; // "completed", "sent", "declined", etc.
+    slug: string;
+    source: string;
+    documents?: Array<{ name: string; url: string }>;
+    submitters?: Array<{
+      id: number;
+      slug: string;
+      email: string;
+      name: string;
+      status: string;
+      completed_at?: string;
+    }>;
+  };
+}
+

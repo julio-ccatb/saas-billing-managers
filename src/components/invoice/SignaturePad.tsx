@@ -39,15 +39,31 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
     }
   }, [isOpen, activeTab]);
 
+  // Helper to get accurate canvas-space coordinates considering element scaling
+  const getCoordinates = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+    canvas: HTMLCanvasElement
+  ) => {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = "touches" in e ? (e.touches[0]?.clientX ?? 0) : e.clientX;
+    const clientY = "touches" in e ? (e.touches[0]?.clientY ?? 0) : e.clientY;
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    return {
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
+    };
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = "touches" in e ? (e.touches[0]?.clientX ?? 0) - rect.left : e.clientX - rect.left;
-    const y = "touches" in e ? (e.touches[0]?.clientY ?? 0) - rect.top : e.clientY - rect.top;
+    const { x, y } = getCoordinates(e, canvas);
 
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -61,9 +77,7 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const rect = canvas.getBoundingClientRect();
-    const x = "touches" in e ? (e.touches[0]?.clientX ?? 0) - rect.left : e.clientX - rect.left;
-    const y = "touches" in e ? (e.touches[0]?.clientY ?? 0) - rect.top : e.clientY - rect.top;
+    const { x, y } = getCoordinates(e, canvas);
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -166,7 +180,7 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
 
       {/* Signature Modal with shadcn Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+        <DialogContent className="w-[95vw] sm:max-w-lg p-0 overflow-hidden">
           <DialogHeader className="p-4 pb-2 border-b border-border">
             <DialogTitle>Add Signature</DialogTitle>
           </DialogHeader>
@@ -216,8 +230,8 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
                 <div className="border border-input rounded-xl overflow-hidden bg-muted/20">
                   <canvas
                     ref={canvasRef}
-                    width={440}
-                    height={140}
+                    width={520}
+                    height={220}
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
@@ -225,7 +239,7 @@ export function SignaturePad({ value, onChange }: SignaturePadProps) {
                     onTouchStart={startDrawing}
                     onTouchMove={draw}
                     onTouchEnd={stopDrawing}
-                    className="w-full h-36 touch-none cursor-crosshair bg-white"
+                    className="w-full h-52 sm:h-44 touch-none cursor-crosshair bg-white"
                   />
                 </div>
                 <div className="flex justify-between items-center pt-2">

@@ -235,6 +235,8 @@ model Contract {
     signedAt       DateTime?
     terms          String    @default("")
     notes          String    @default("")
+    submissionId   Int?
+    signedDocumentUrl String?
     createdAt      DateTime  @default(now())
     updatedAt      DateTime  @updatedAt
 

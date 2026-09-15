@@ -15,7 +15,9 @@ import {
   Send,
   ExternalLink,
   Copy,
-  Check
+  Check,
+  RefreshCw,
+  FileText
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
@@ -46,6 +48,7 @@ export default function ContractsPage() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
   const [customTemplateId, setCustomTemplateId] = useState("");
+  const [syncingContractId, setSyncingContractId] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     customerId: "",
@@ -53,6 +56,7 @@ export default function ContractsPage() {
     value: 0,
     currency: "USD",
     billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
+    status: "DRAFT" as "DRAFT" | "ACTIVE",
     terms: "",
     notes: "",
   });
@@ -79,6 +83,7 @@ export default function ContractsPage() {
         value: 0,
         currency: "USD",
         billingCycle: "MONTHLY",
+        status: "DRAFT",
         terms: "",
         notes: "",
       });
@@ -102,6 +107,7 @@ export default function ContractsPage() {
 
   const sendForSignatureMutation = api.contract.sendForSignature.useMutation({
     onSuccess: (data) => {
+      utils.contract.getAll.invalidate();
       setDispatchModalContract(null);
       setSigningModalData({
         signingUrl: data.signingUrl,
@@ -114,16 +120,50 @@ export default function ContractsPage() {
     },
   });
 
+  const syncDocuSealMutation = api.contract.syncDocuSealStatus.useMutation({
+    onSuccess: (data) => {
+      utils.contract.getAll.invalidate();
+      utils.contract.getMetrics.invalidate();
+      utils.invoice.getAll.invalidate();
+      setSyncingContractId(null);
+      if (selectedContractDetails && data.contract) {
+        setSelectedContractDetails(data.contract);
+      }
+      alert(data.message);
+    },
+    onError: (err) => {
+      setSyncingContractId(null);
+      alert(`Sync failed: ${err.message}`);
+    },
+  });
+
+  const handleSyncStatus = (contractId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSyncingContractId(contractId);
+    syncDocuSealMutation.mutate({ contractId });
+  };
+
   const renderContractStatus = (c: any) => {
     if (c.status === "DRAFT") {
       return (
-        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+        <div className="flex flex-col gap-0.5">
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+            </span>
+            <span>Awaiting Signature</span>
           </span>
-          <span>Awaiting Signature</span>
-        </span>
+          {c.submissionId ? (
+            <span className="text-[10px] font-mono text-muted-foreground">
+              DocuSeal #{c.submissionId}
+            </span>
+          ) : (
+            <span className="text-[10px] text-muted-foreground">
+              Unsent
+            </span>
+          )}
+        </div>
       );
     }
 
@@ -362,20 +402,47 @@ export default function ContractsPage() {
                       {formatCurrency(c.value, c.currency)}
                     </td>
                     <td className="py-3.5 px-5 text-right">
-                      <div className="flex items-center justify-end gap-1">
+                      <div className="flex items-center justify-end gap-1.5">
                         {c.status === "DRAFT" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setDispatchModalContract(c);
-                              setCustomTemplateId("");
-                            }}
-                            className="text-xs h-7 px-2.5 gap-1.5 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setDispatchModalContract(c);
+                                setCustomTemplateId("");
+                              }}
+                              className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                            >
+                              <Send className="w-3 h-3" />
+                              <span>{c.submissionId ? "Re-send" : "Send e-Sign"}</span>
+                            </Button>
+                            {c.submissionId && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={syncingContractId === c.id}
+                                onClick={(e) => handleSyncStatus(c.id, e)}
+                                className="text-xs h-7 px-2 gap-1 text-sky-600 border-sky-500/40 hover:bg-sky-500/10"
+                                title="Sync status directly from DocuSeal (Zero-tunnel)"
+                              >
+                                <RefreshCw className={`w-3 h-3 ${syncingContractId === c.id ? "animate-spin" : ""}`} />
+                                <span>Sync</span>
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {c.status === "ACTIVE" && c.signedDocumentUrl && (
+                          <a
+                            href={c.signedDocumentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded-md border border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 transition-colors font-medium"
+                            title="View/Download executed agreement PDF"
                           >
-                            <Send className="w-3 h-3" />
-                            <span>Send e-Sign</span>
-                          </Button>
+                            <FileText className="w-3 h-3" />
+                            <span>PDF</span>
+                          </a>
                         )}
                         <Button
                           variant="ghost"
@@ -498,6 +565,27 @@ export default function ContractsPage() {
                 )}
               </div>
 
+              {selectedContractDetails.signedDocumentUrl && (
+                <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-emerald-600" />
+                    <div>
+                      <p className="font-semibold text-emerald-700">Executed Agreement PDF</p>
+                      <p className="text-[10px] text-muted-foreground">Digitally signed via DocuSeal</p>
+                    </div>
+                  </div>
+                  <a
+                    href={selectedContractDetails.signedDocumentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors"
+                  >
+                    <span>View PDF</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+              )}
+
               {selectedContractDetails.terms && (
                 <div>
                   <p className="font-semibold text-foreground mb-1">Contract Commitments &amp; SLA Terms:</p>
@@ -508,22 +596,36 @@ export default function ContractsPage() {
               )}
 
               <DialogFooter className="pt-2 gap-2 sm:justify-between">
-                <div>
+                <div className="flex items-center gap-2">
                   {selectedContractDetails.status === "DRAFT" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        const contractToDispatch = selectedContractDetails;
-                        setSelectedContractDetails(null);
-                        setDispatchModalContract(contractToDispatch);
-                        setCustomTemplateId("");
-                      }}
-                      className="gap-1.5 text-xs text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
-                    >
-                      <Send className="w-3.5 h-3.5" />
-                      <span>Send for e-Signature</span>
-                    </Button>
+                    <>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const contractToDispatch = selectedContractDetails;
+                          setSelectedContractDetails(null);
+                          setDispatchModalContract(contractToDispatch);
+                          setCustomTemplateId("");
+                        }}
+                        className="gap-1.5 text-xs text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>{selectedContractDetails.submissionId ? "Re-send e-Sign" : "Send for e-Signature"}</span>
+                      </Button>
+                      {selectedContractDetails.submissionId && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled={syncingContractId === selectedContractDetails.id}
+                          onClick={(e) => handleSyncStatus(selectedContractDetails.id, e)}
+                          className="gap-1.5 text-xs text-sky-600 border-sky-500/40 hover:bg-sky-500/10"
+                        >
+                          <RefreshCw className={`w-3.5 h-3.5 ${syncingContractId === selectedContractDetails.id ? "animate-spin" : ""}`} />
+                          <span>Sync Status</span>
+                        </Button>
+                      )}
+                    </>
                   )}
                 </div>
                 <Button variant="outline" size="sm" onClick={() => setSelectedContractDetails(null)}>
@@ -690,7 +792,7 @@ export default function ContractsPage() {
                 billingCycle: form.billingCycle,
                 terms: form.terms,
                 notes: form.notes,
-                status: "ACTIVE",
+                status: form.status,
               });
             }}
             className="space-y-4 py-2"
@@ -747,6 +849,21 @@ export default function ContractsPage() {
                   <option value="ONE_TIME">One-Time</option>
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
+              <select
+                value={form.status}
+                onChange={(e: any) => setForm({ ...form, status: e.target.value })}
+                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</option>
+                <option value="ACTIVE">Active — Pre-signed or Direct Activation</option>
+              </select>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
+              </p>
             </div>
 
             <div>
