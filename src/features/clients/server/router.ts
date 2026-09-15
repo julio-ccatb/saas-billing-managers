@@ -158,6 +158,7 @@ export const customerRouter = createTRPCRouter({
         let contract = null;
         if (contractInput.enabled) {
           const contractNumber = `CTR-${Date.now().toString().slice(-6)}`;
+          const isDirectActive = contractInput.status === "ACTIVE";
           contract = await tx.contract.create({
             data: {
               userId,
@@ -168,8 +169,8 @@ export const customerRouter = createTRPCRouter({
               currency: contractInput.currency,
               billingCycle: contractInput.billingCycle,
               startDate: contractInput.startDate,
-              signedAt: new Date(),
-              status: "ACTIVE",
+              signedAt: isDirectActive ? new Date() : null,
+              status: isDirectActive ? "ACTIVE" : "DRAFT",
               terms: contractInput.terms.trim(),
             },
           });

@@ -18,6 +18,7 @@ export const onboardingContractSchema = z.object({
   currency: z.string().default("USD"),
   billingCycle: z.enum(["MONTHLY", "QUARTERLY", "ANNUALLY", "ONE_TIME"]).default("MONTHLY"),
   startDate: z.date().default(() => new Date()),
+  status: z.enum(["DRAFT", "ACTIVE"]).default("DRAFT"),
   terms: z.string().default("Standard SLA response time 99.9% uptime commitment."),
 });
 

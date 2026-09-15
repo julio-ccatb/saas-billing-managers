@@ -52,6 +52,7 @@ export function OnboardingWizard() {
     currency: "USD",
     billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
     startDate: new Date(),
+    status: "DRAFT" as "DRAFT" | "ACTIVE",
     terms: "99.9% uptime SLA commitment with priority 4-hour technical support response.",
   });
 
@@ -368,6 +369,21 @@ export function OnboardingWizard() {
                       <option value="ONE_TIME">One-Time</option>
                     </select>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
+                  <select
+                    value={contract.status}
+                    onChange={(e: any) => setContract({ ...contract, status: e.target.value })}
+                    className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="DRAFT">Draft — Dispatch for e-Signature via DocuSeal (Recommended)</option>
+                    <option value="ACTIVE">Active — Pre-signed or Direct Immediate Activation</option>
+                  </select>
+                  <p className="text-[11px] text-muted-foreground mt-1">
+                    Draft contracts can be dispatched for digital signature immediately upon client onboarding.
+                  </p>
                 </div>
 
                 <div>

@@ -23,7 +23,9 @@ import {
   ExternalLink,
   DollarSign,
   CheckCircle2,
-  Send
+  Send,
+  RefreshCw,
+  FileText
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
@@ -60,6 +62,7 @@ export default function CustomerOperationsHubPage() {
     value: 0,
     currency: "USD",
     billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
+    status: "DRAFT" as "DRAFT" | "ACTIVE",
     terms: "",
     notes: "",
   });
@@ -67,6 +70,7 @@ export default function CustomerOperationsHubPage() {
   // Terminate contract modal state
   const [terminateContractId, setTerminateContractId] = useState<string | null>(null);
   const [terminateReason, setTerminateReason] = useState("");
+  const [syncingContractId, setSyncingContractId] = useState<string | null>(null);
 
   const utils = api.useUtils();
 
@@ -101,6 +105,7 @@ export default function CustomerOperationsHubPage() {
         value: 0,
         currency: "USD",
         billingCycle: "MONTHLY",
+        status: "DRAFT",
         terms: "",
         notes: "",
       });
@@ -132,6 +137,7 @@ export default function CustomerOperationsHubPage() {
 
   const sendForSignatureMutation = api.contract.sendForSignature.useMutation({
     onSuccess: (data) => {
+      utils.customer.getById.invalidate({ id: customerId });
       setDispatchModalContract(null);
       setSigningModalData({
         signingUrl: data.signingUrl,
@@ -143,6 +149,26 @@ export default function CustomerOperationsHubPage() {
       alert(`DocuSeal submission failed: ${err.message}`);
     },
   });
+
+  const syncDocuSealMutation = api.contract.syncDocuSealStatus.useMutation({
+    onSuccess: (data) => {
+      utils.customer.getById.invalidate({ id: customerId });
+      utils.contract.getMetrics.invalidate();
+      utils.invoice.getAll.invalidate();
+      setSyncingContractId(null);
+      alert(data.message);
+    },
+    onError: (err) => {
+      setSyncingContractId(null);
+      alert(`Sync failed: ${err.message}`);
+    },
+  });
+
+  const handleSyncStatus = (contractId: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setSyncingContractId(contractId);
+    syncDocuSealMutation.mutate({ contractId });
+  };
 
   const handleCopyKey = (key: string) => {
     navigator.clipboard.writeText(key);
@@ -365,13 +391,24 @@ export default function CustomerOperationsHubPage() {
                     </td>
                     <td className="py-3.5 px-5">
                       {c.status === "DRAFT" ? (
-                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
-                          <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                        <div className="flex flex-col gap-0.5">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
+                            <span className="relative flex h-2 w-2">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                            </span>
+                            <span>Awaiting Signature</span>
                           </span>
-                          <span>Awaiting Signature</span>
-                        </span>
+                          {c.submissionId ? (
+                            <span className="text-[10px] font-mono text-muted-foreground">
+                              DocuSeal #{c.submissionId}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-muted-foreground">
+                              Unsent
+                            </span>
+                          )}
+                        </div>
                       ) : c.status === "ACTIVE" ? (
                         <div className="flex flex-col gap-0.5">
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30">
@@ -399,18 +436,45 @@ export default function CustomerOperationsHubPage() {
                     <td className="py-3.5 px-5 text-right">
                       <div className="flex items-center justify-end gap-1.5">
                         {c.status === "DRAFT" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setDispatchModalContract(c);
-                              setCustomTemplateId("");
-                            }}
-                            className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setDispatchModalContract(c);
+                                setCustomTemplateId("");
+                              }}
+                              className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
+                            >
+                              <Send className="w-3 h-3" />
+                              <span>{c.submissionId ? "Re-send" : "Send e-Sign"}</span>
+                            </Button>
+                            {c.submissionId && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                disabled={syncingContractId === c.id}
+                                onClick={(e) => handleSyncStatus(c.id, e)}
+                                className="text-xs h-7 px-2 gap-1 text-sky-600 border-sky-500/40 hover:bg-sky-500/10"
+                                title="Sync status directly from DocuSeal (Zero-tunnel)"
+                              >
+                                <RefreshCw className={`w-3 h-3 ${syncingContractId === c.id ? "animate-spin" : ""}`} />
+                                <span>Sync</span>
+                              </Button>
+                            )}
+                          </>
+                        )}
+                        {c.status === "ACTIVE" && c.signedDocumentUrl && (
+                          <a
+                            href={c.signedDocumentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-xs h-7 px-2 rounded-md border border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10 transition-colors font-medium"
+                            title="View/Download executed agreement PDF"
                           >
-                            <Send className="w-3 h-3" />
-                            <span>Send e-Sign</span>
-                          </Button>
+                            <FileText className="w-3 h-3" />
+                            <span>PDF</span>
+                          </a>
                         )}
                         {c.status === "ACTIVE" && (
                           <Button
@@ -735,7 +799,7 @@ export default function CustomerOperationsHubPage() {
                 billingCycle: contractForm.billingCycle,
                 terms: contractForm.terms,
                 notes: contractForm.notes,
-                status: "ACTIVE",
+                status: contractForm.status,
               });
             }}
             className="space-y-4 py-2"
@@ -775,6 +839,21 @@ export default function CustomerOperationsHubPage() {
                   <option value="ONE_TIME">One-Time</option>
                 </select>
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
+              <select
+                value={contractForm.status}
+                onChange={(e: any) => setContractForm({ ...contractForm, status: e.target.value })}
+                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              >
+                <option value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</option>
+                <option value="ACTIVE">Active — Pre-signed or Direct Activation</option>
+              </select>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
+              </p>
             </div>
 
             <div>
