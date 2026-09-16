@@ -228,3 +228,90 @@ export async function sendInvoiceEmail(params: SendInvoiceEmailParams): Promise<
     messageId: response.data?.id,
   };
 }
+
+export interface SendPasswordResetEmailParams {
+  recipientEmail: string;
+  recipientName?: string | null;
+  resetUrl: string;
+  companyName?: string;
+}
+
+/**
+ * Sends a secure password reset link to a client
+ */
+export async function sendPasswordResetEmail(params: SendPasswordResetEmailParams): Promise<{
+  success: boolean;
+  messageId?: string;
+}> {
+  const { recipientEmail, recipientName, resetUrl, companyName } = params;
+  const senderName = companyName || "Client Billing Operations";
+  const fromAddress = env.EMAIL_FROM || `${senderName} <onboarding@resend.dev>`;
+
+  if (!resend) {
+    console.log(`\n======================================================`);
+    console.log(`[PASSWORD RESET EMAIL SIMULATION]`);
+    console.log(`To: ${recipientEmail}`);
+    console.log(`Reset Link: ${resetUrl}`);
+    console.log(`(Set RESEND_API_KEY to send real emails)`);
+    console.log(`======================================================\n`);
+    return { success: true, messageId: "simulated-dev-id" };
+  }
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Reset Your Password</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f1f5f9; margin: 0; padding: 32px 16px;">
+  <div style="max-width: 540px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    <div style="padding: 24px; border-bottom: 1px solid #e2e8f0; background-color: #0f172a; color: #ffffff;">
+      <h1 style="margin: 0; font-size: 18px; font-weight: 700;">${senderName}</h1>
+      <p style="margin: 4px 0 0 0; font-size: 12px; color: #94a3b8;">Client Portal Security</p>
+    </div>
+    <div style="padding: 24px;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; color: #334155;">
+        Hello${recipientName ? ` <strong>${recipientName}</strong>` : ""},
+      </p>
+      <p style="margin: 0 0 20px 0; font-size: 13px; color: #475569; line-height: 1.5;">
+        We received a request to reset the password for your Client Portal account. Click the secure button below to choose a new password. This link is valid for <strong>1 hour</strong>.
+      </p>
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${resetUrl}" style="display: inline-block; background-color: #2563eb; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 24px; border-radius: 8px; box-shadow: 0 2px 4px rgba(37,99,235,0.2);">
+          Reset Password
+        </a>
+      </div>
+      <p style="margin: 20px 0 8px 0; font-size: 12px; color: #64748b; line-height: 1.4;">
+        If you didn't request a password reset, you can safely ignore this email. Your password will not change.
+      </p>
+      <p style="margin: 0; font-size: 11px; color: #94a3b8; word-break: break-all;">
+        Or copy and paste this link in your browser:<br/>
+        <a href="${resetUrl}" style="color: #2563eb;">${resetUrl}</a>
+      </p>
+    </div>
+    <div style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
+      <p style="margin: 0;">Automated security notification from ${senderName}.</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  const response = await resend.emails.send({
+    from: fromAddress,
+    to: [recipientEmail],
+    subject: `Reset your Client Portal password - ${senderName}`,
+    html,
+  });
+
+  if (response.error) {
+    throw new Error(response.error.message);
+  }
+
+  return {
+    success: true,
+    messageId: response.data?.id,
+  };
+}
+

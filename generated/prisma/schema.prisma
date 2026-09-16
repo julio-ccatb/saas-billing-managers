@@ -237,7 +237,8 @@ model License {
   userId           String
   customerId       String?
   name             String
-  key              String    @unique
+  keyHash          String    @unique
+  keyPrefix        String
   status           String    @default("ACTIVE") // ACTIVE, SUSPENDED, REVOKED
   allowedDomain    String?
   suspensionNotice String?
@@ -255,7 +256,7 @@ model License {
 
   @@index([companyId, status])
   @@index([userId])
-  @@index([key])
+  @@index([keyHash])
 }
 
 model Contract {
@@ -336,4 +337,15 @@ model PaymentReceipt {
   @@index([customerId])
   @@index([uploadedById])
   @@index([status])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@index([token])
 }

@@ -6,6 +6,8 @@ export const AppRoutes = {
   // Public / Auth
   HOME: "/",
   SIGN_IN: "/auth/signin",
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  RESET_PASSWORD: (token?: string) => token ? `/auth/reset-password?token=${encodeURIComponent(token)}` : "/auth/reset-password",
 
   // Core Operations & Command Center
   DASHBOARD: "/dashboard",

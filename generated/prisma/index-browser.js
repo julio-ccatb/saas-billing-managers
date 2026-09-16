@@ -346,6 +346,14 @@ exports.Prisma.PaymentReceiptScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -376,7 +384,8 @@ exports.Prisma.ModelName = {
   License: 'License',
   Contract: 'Contract',
   AuditLog: 'AuditLog',
-  PaymentReceipt: 'PaymentReceipt'
+  PaymentReceipt: 'PaymentReceipt',
+  PasswordResetToken: 'PasswordResetToken'
 };
 
 /**

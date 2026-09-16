@@ -28,6 +28,8 @@ declare module "next-auth" {
   }
 }
 
+import { authorizeCredentials } from "./authorize";
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  */
@@ -48,84 +50,10 @@ export const authConfig = {
       credentials: {
         email: { label: "Email", type: "email", placeholder: "user@example.com" },
         password: { label: "Password", type: "password" },
-        name: { label: "Name", type: "text", placeholder: "User" },
+        isDemo: { label: "IsDemo", type: "text" },
       },
       async authorize(credentials) {
-        const email = (credentials?.email as string)?.trim().toLowerCase();
-        const password = (credentials?.password as string)?.trim();
-        const name = (credentials?.name as string)?.trim() || "User";
-
-        if (!email) {
-          return null;
-        }
-
-        // 1. Look for existing user
-        let user = await db.user.findUnique({
-          where: { email },
-          include: {
-            clientProfile: true,
-          },
-        });
-
-        // 2. If password provided, verify hash
-        if (password) {
-          if (!user || !user.passwordHash) {
-            return null;
-          }
-          const isMatch = await bcrypt.compare(password, user.passwordHash);
-          if (!isMatch) {
-            return null;
-          }
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            image: user.image,
-            role: user.userRole,
-            customerId: user.clientProfile?.id ?? null,
-          };
-        }
-
-        // 3. Passwordless / Demo fallback for testing operator
-        if (!user) {
-          user = await db.user.create({
-            data: {
-              email,
-              name,
-              userRole: "OPERATOR",
-              image: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
-            },
-            include: {
-              clientProfile: true,
-            },
-          });
-
-          // Pre-populate company workspace for the operator user
-          await db.company.create({
-            data: {
-              name: `${name}'s Workspace`,
-              email,
-              currency: "USD",
-              paymentTerms: "Payment due upon receipt",
-              notes: "Thank you for your business!",
-              members: {
-                create: {
-                  userId: user.id,
-                  role: "OWNER",
-                },
-              },
-            },
-          });
-        }
-
-        return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          role: user.userRole,
-          customerId: user.clientProfile?.id ?? null,
-        };
+        return authorizeCredentials(credentials as any);
       },
     }),
   ],
