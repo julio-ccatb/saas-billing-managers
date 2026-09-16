@@ -24,9 +24,32 @@ import { formatCurrency } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { NativeSelect } from "~/components/ui/native-select";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { AppRoutes } from "~/config/routes";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  clientProfileSchema,
+  onboardingContractSchema,
+  onboardingLicenseSchema,
+  onboardingInvoiceSchema,
+} from "../schemas/onboarding.schema";
+import type { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+
+type ClientProfileFormValues = z.infer<typeof clientProfileSchema>;
+type OnboardingContractFormValues = z.infer<typeof onboardingContractSchema>;
+type OnboardingLicenseFormValues = z.infer<typeof onboardingLicenseSchema>;
+type OnboardingInvoiceFormValues = z.infer<typeof onboardingInvoiceSchema>;
 
 type Step = "profile" | "contract" | "license" | "invoice" | "review";
 
@@ -34,44 +57,56 @@ export function OnboardingWizard() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<Step>("profile");
 
-  // Form State
-  const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    country: "",
-    taxId: "",
+  // RHF Forms for each stage
+  const profileForm = useForm<ClientProfileFormValues>({
+    resolver: zodResolver(clientProfileSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      zipCode: "",
+      country: "",
+      taxId: "",
+    },
   });
 
-  const [contract, setContract] = useState({
-    enabled: true,
-    title: "Software Platform Subscription & SLA",
-    value: 1200,
-    currency: "USD",
-    billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
-    startDate: new Date(),
-    status: "DRAFT" as "DRAFT" | "ACTIVE",
-    terms: "99.9% uptime SLA commitment with priority 4-hour technical support response.",
+  const contractForm = useForm<OnboardingContractFormValues>({
+    resolver: zodResolver(onboardingContractSchema),
+    defaultValues: {
+      enabled: true,
+      title: "Software Platform Subscription & SLA",
+      value: 1200,
+      currency: "USD",
+      billingCycle: "MONTHLY",
+      startDate: new Date(),
+      status: "DRAFT",
+      terms: "99.9% uptime SLA commitment with priority 4-hour technical support response.",
+    },
   });
 
-  const [license, setLicense] = useState({
-    enabled: true,
-    name: "Production API License",
-    allowedDomain: "",
-    leaseTtlMinutes: 60,
-    gracePeriodHours: 3,
-    suspensionNotice: "Service access suspended due to billing delinquency. Please contact finance to restore.",
+  const licenseForm = useForm<OnboardingLicenseFormValues>({
+    resolver: zodResolver(onboardingLicenseSchema),
+    defaultValues: {
+      enabled: true,
+      name: "Production API License",
+      allowedDomain: "",
+      leaseTtlMinutes: 60,
+      gracePeriodHours: 3,
+      suspensionNotice: "Service access suspended due to billing delinquency. Please contact finance to restore.",
+    },
   });
 
-  const [invoice, setInvoice] = useState({
-    enabled: true,
-    description: "Initial Retainer & Setup Implementation",
-    amount: 1200,
-    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
-    notes: "Payment due within 14 days of issue date.",
+  const invoiceForm = useForm<OnboardingInvoiceFormValues>({
+    resolver: zodResolver(onboardingInvoiceSchema),
+    defaultValues: {
+      enabled: true,
+      description: "Initial Retainer & Setup Implementation",
+      amount: 1200,
+      dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+      notes: "Payment due within 14 days of issue date.",
+    },
   });
 
   const onboardMutation = api.customer.onboardClient.useMutation({
@@ -84,24 +119,21 @@ export function OnboardingWizard() {
     },
   });
 
-  const handleNextFromProfile = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!profile.name.trim()) {
-      alert("Company or client name is required.");
-      return;
+  const syncInvoiceFromContract = () => {
+    const cValues = contractForm.getValues();
+    if (cValues.enabled) {
+      invoiceForm.setValue("amount", cValues.value);
+      invoiceForm.setValue(
+        "description",
+        `${cValues.title} (${cValues.billingCycle.toLowerCase()} cycle)`
+      );
     }
-    setCurrentStep("contract");
   };
 
-  const syncInvoiceFromContract = () => {
-    if (contract.enabled) {
-      setInvoice((prev) => ({
-        ...prev,
-        amount: contract.value,
-        description: `${contract.title} (${contract.billingCycle.toLowerCase()} cycle)`,
-      }));
-    }
-  };
+  const profile = profileForm.watch();
+  const contract = contractForm.watch();
+  const license = licenseForm.watch();
+  const invoice = invoiceForm.watch();
 
   const stepsList: { id: Step; label: string; icon: React.ElementType; isEnabled?: boolean }[] = [
     { id: "profile", label: "Client Profile", icon: Building2 },
@@ -189,108 +221,152 @@ export function OnboardingWizard() {
               Primary organization details, billing address, and tax registration
             </p>
           </CardHeader>
-          <form onSubmit={handleNextFromProfile}>
-            <CardContent className="p-5 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Company / Client Legal Name *
-                  </label>
-                  <Input
-                    required
-                    placeholder="e.g. Acme Corporation Inc."
-                    value={profile.name}
-                    onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-                  />
-                </div>
+          <Form {...profileForm}>
+            <form onSubmit={profileForm.handleSubmit(() => setCurrentStep("contract"))}>
+              <CardContent className="p-5 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">
+                            Company / Client Legal Name *
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. Acme Corporation Inc." {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Billing Email Address
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="billing@acmecorp.com"
-                    value={profile.email}
-                    onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Billing Email Address
+                        </FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="billing@acmecorp.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Direct Phone Number
-                  </label>
-                  <Input
-                    placeholder="+1 (555) 019-2834"
-                    value={profile.phone}
-                    onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Direct Phone Number
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="+1 (555) 019-2834" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Street Address
-                  </label>
-                  <Input
-                    placeholder="100 Innovation Way, Suite 400"
-                    value={profile.address}
-                    onChange={(e) => setProfile({ ...profile, address: e.target.value })}
-                  />
-                </div>
+                  <div className="sm:col-span-2">
+                    <FormField
+                      control={profileForm.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">
+                            Street Address
+                          </FormLabel>
+                          <FormControl>
+                            <Input placeholder="100 Innovation Way, Suite 400" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">City</label>
-                  <Input
-                    placeholder="San Francisco"
-                    value={profile.city}
-                    onChange={(e) => setProfile({ ...profile, city: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">City</FormLabel>
+                        <FormControl>
+                          <Input placeholder="San Francisco" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Postal / ZIP Code</label>
-                  <Input
-                    placeholder="94105"
-                    value={profile.zipCode}
-                    onChange={(e) => setProfile({ ...profile, zipCode: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">Postal / ZIP Code</FormLabel>
+                        <FormControl>
+                          <Input placeholder="94105" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Country</label>
-                  <Input
-                    placeholder="United States"
-                    value={profile.country}
-                    onChange={(e) => setProfile({ ...profile, country: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">Country</FormLabel>
+                        <FormControl>
+                          <Input placeholder="United States" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Tax ID / VAT Number</label>
-                  <Input
-                    placeholder="US-XX-XXXXXXX"
-                    value={profile.taxId}
-                    onChange={(e) => setProfile({ ...profile, taxId: e.target.value })}
+                  <FormField
+                    control={profileForm.control}
+                    name="taxId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">Tax ID / VAT Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="US-XX-XXXXXXX" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
+              </CardContent>
+
+              <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
+                <Button
+                  render={<Link href={AppRoutes.CUSTOMERS} />}
+                  nativeButton={false}
+                  variant="ghost"
+                  size="sm"
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" className="gap-1.5">
+                  <span>Continue to Contract</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </div>
-            </CardContent>
-
-            <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
-              <Button
-                render={<Link href={AppRoutes.CUSTOMERS} />}
-                nativeButton={false}
-                variant="ghost"
-                size="sm"
-              >
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" className="gap-1.5">
-                <span>Continue to Contract</span>
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-          </form>
+            </form>
+          </Form>
         </Card>
       )}
 
@@ -309,7 +385,7 @@ export function OnboardingWizard() {
             </div>
             <button
               type="button"
-              onClick={() => setContract((c) => ({ ...c, enabled: !c.enabled }))}
+              onClick={() => contractForm.setValue("enabled", !contract.enabled)}
               className="flex items-center gap-2 text-xs font-semibold cursor-pointer text-foreground"
             >
               <span>{contract.enabled ? "Enabled" : "Skip Contract"}</span>
@@ -321,105 +397,132 @@ export function OnboardingWizard() {
             </button>
           </CardHeader>
 
-          <CardContent className="p-5 space-y-4">
-            {!contract.enabled ? (
-              <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
-                <p className="font-semibold text-foreground">Contract step is skipped</p>
-                <p>This client will be onboarded without an active contract agreement.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Contract Title *</label>
-                  <Input
-                    required
-                    value={contract.title}
-                    onChange={(e) => setContract({ ...contract, title: e.target.value })}
-                  />
-                </div>
+          <Form {...contractForm}>
+            <form onSubmit={contractForm.handleSubmit(() => setCurrentStep("license"))}>
+              <CardContent className="p-5 space-y-4">
+                {!contract.enabled ? (
+                  <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
+                    <p className="font-semibold text-foreground">Contract step is skipped</p>
+                    <p>This client will be onboarded without an active contract agreement.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <FormField
+                      control={contractForm.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">Contract Title *</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Contract Value ({contract.currency}) *
-                    </label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      required
-                      value={contract.value}
-                      onChange={(e) =>
-                        setContract({ ...contract, value: parseFloat(e.target.value) || 0 })
-                      }
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={contractForm.control}
+                        name="value"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">
+                              Contract Value ({contract.currency}) *
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={contractForm.control}
+                        name="billingCycle"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">Billing Interval</FormLabel>
+                            <FormControl>
+                              <NativeSelect {...field}>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="QUARTERLY">Quarterly</option>
+                                <option value="ANNUALLY">Annually</option>
+                                <option value="ONE_TIME">One-Time</option>
+                              </NativeSelect>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={contractForm.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">Contract Execution Mode</FormLabel>
+                          <FormControl>
+                            <NativeSelect {...field}>
+                              <option value="DRAFT">Draft — Dispatch for e-Signature via DocuSeal (Recommended)</option>
+                              <option value="ACTIVE">Active — Pre-signed or Direct Immediate Activation</option>
+                            </NativeSelect>
+                          </FormControl>
+                          <p className="text-[11px] text-muted-foreground mt-1">
+                            Draft contracts can be dispatched for digital signature immediately upon client onboarding.
+                          </p>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={contractForm.control}
+                      name="terms"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">SLA &amp; Terms</FormLabel>
+                          <FormControl>
+                            <Textarea rows={3} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </div>
+                )}
+              </CardContent>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Billing Interval</label>
-                    <select
-                      value={contract.billingCycle}
-                      onChange={(e: any) =>
-                        setContract({ ...contract, billingCycle: e.target.value })
-                      }
-                      className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                    >
-                      <option value="MONTHLY">Monthly</option>
-                      <option value="QUARTERLY">Quarterly</option>
-                      <option value="ANNUALLY">Annually</option>
-                      <option value="ONE_TIME">One-Time</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
-                  <select
-                    value={contract.status}
-                    onChange={(e: any) => setContract({ ...contract, status: e.target.value })}
-                    className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                  >
-                    <option value="DRAFT">Draft — Dispatch for e-Signature via DocuSeal (Recommended)</option>
-                    <option value="ACTIVE">Active — Pre-signed or Direct Immediate Activation</option>
-                  </select>
-                  <p className="text-[11px] text-muted-foreground mt-1">
-                    Draft contracts can be dispatched for digital signature immediately upon client onboarding.
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">SLA &amp; Terms</label>
-                  <Textarea
-                    rows={3}
-                    value={contract.terms}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setContract({ ...contract, terms: e.target.value })
-                    }
-                  />
-                </div>
+              <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentStep("profile")}
+                  className="gap-1.5"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back</span>
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <span>Continue to License</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </div>
-            )}
-          </CardContent>
-
-          <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentStep("profile")}
-              className="gap-1.5"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setCurrentStep("license")}
-              className="gap-1.5"
-            >
-              <span>Continue to License</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
+            </form>
+          </Form>
         </Card>
       )}
 
@@ -438,7 +541,7 @@ export function OnboardingWizard() {
             </div>
             <button
               type="button"
-              onClick={() => setLicense((l) => ({ ...l, enabled: !l.enabled }))}
+              onClick={() => licenseForm.setValue("enabled", !license.enabled)}
               className="flex items-center gap-2 text-xs font-semibold cursor-pointer text-foreground"
             >
               <span>{license.enabled ? "Enabled" : "Skip License"}</span>
@@ -450,104 +553,142 @@ export function OnboardingWizard() {
             </button>
           </CardHeader>
 
-          <CardContent className="p-5 space-y-4">
-            {!license.enabled ? (
-              <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
-                <p className="font-semibold text-foreground">License step is skipped</p>
-                <p>This client will not have a provisioned runtime license key.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Service / App Name *</label>
-                  <Input
-                    required
-                    value={license.name}
-                    onChange={(e) => setLicense({ ...license, name: e.target.value })}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Domain Lock (Optional)
-                    </label>
-                    <Input
-                      placeholder="app.clientdomain.com"
-                      value={license.allowedDomain}
-                      onChange={(e) => setLicense({ ...license, allowedDomain: e.target.value })}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Lease TTL (Minutes)
-                    </label>
-                    <Input
-                      type="number"
-                      min="5"
-                      max="1440"
-                      value={license.leaseTtlMinutes}
-                      onChange={(e) =>
-                        setLicense({ ...license, leaseTtlMinutes: parseInt(e.target.value) || 60 })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Grace Period (Hours)
-                    </label>
-                    <Input
-                      type="number"
-                      min="1"
-                      max="72"
-                      value={license.gracePeriodHours}
-                      onChange={(e) =>
-                        setLicense({ ...license, gracePeriodHours: parseInt(e.target.value) || 3 })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Default Suspension Notice
-                  </label>
-                  <Textarea
-                    rows={2}
-                    value={license.suspensionNotice}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setLicense({ ...license, suspensionNotice: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-            )}
-          </CardContent>
-
-          <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentStep("contract")}
-              className="gap-1.5"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => {
+          <Form {...licenseForm}>
+            <form
+              onSubmit={licenseForm.handleSubmit(() => {
                 syncInvoiceFromContract();
                 setCurrentStep("invoice");
-              }}
-              className="gap-1.5"
+              })}
             >
-              <span>Continue to Initial Invoice</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
+              <CardContent className="p-5 space-y-4">
+                {!license.enabled ? (
+                  <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
+                    <p className="font-semibold text-foreground">License step is skipped</p>
+                    <p>This client will not have a provisioned runtime license key.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <FormField
+                      control={licenseForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">Service / App Name *</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <FormField
+                        control={licenseForm.control}
+                        name="allowedDomain"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">
+                              Domain Lock (Optional)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                placeholder="app.clientdomain.com"
+                                value={field.value ?? ""}
+                                onChange={field.onChange}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={licenseForm.control}
+                        name="leaseTtlMinutes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">
+                              Lease TTL (Minutes)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="5"
+                                max="1440"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 60)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={licenseForm.control}
+                        name="gracePeriodHours"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">
+                              Grace Period (Hours)
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min="1"
+                                max="72"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 3)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={licenseForm.control}
+                      name="suspensionNotice"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">
+                            Default Suspension Notice
+                          </FormLabel>
+                          <FormControl>
+                            <Textarea rows={2} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                )}
+              </CardContent>
+
+              <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentStep("contract")}
+                  className="gap-1.5"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back</span>
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <span>Continue to Initial Invoice</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </form>
+          </Form>
         </Card>
       )}
 
@@ -566,7 +707,7 @@ export function OnboardingWizard() {
             </div>
             <button
               type="button"
-              onClick={() => setInvoice((inv) => ({ ...inv, enabled: !inv.enabled }))}
+              onClick={() => invoiceForm.setValue("enabled", !invoice.enabled)}
               className="flex items-center gap-2 text-xs font-semibold cursor-pointer text-foreground"
             >
               <span>{invoice.enabled ? "Enabled" : "Skip Invoice"}</span>
@@ -578,106 +719,134 @@ export function OnboardingWizard() {
             </button>
           </CardHeader>
 
-          <CardContent className="p-5 space-y-4">
-            {!invoice.enabled ? (
-              <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
-                <p className="font-semibold text-foreground">Initial Invoice step is skipped</p>
-                <p>No opening invoice will be generated upon onboarding.</p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {contract.enabled && (
-                  <div className="flex items-center justify-between p-3 bg-muted/40 rounded-xl text-xs">
-                    <span className="text-muted-foreground">Pre-filled with Contract Value:</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={syncInvoiceFromContract}
-                      className="text-primary text-xs gap-1 h-7"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Sync {formatCurrency(contract.value)}</span>
-                    </Button>
+          <Form {...invoiceForm}>
+            <form onSubmit={invoiceForm.handleSubmit(() => setCurrentStep("review"))}>
+              <CardContent className="p-5 space-y-4">
+                {!invoice.enabled ? (
+                  <div className="p-8 text-center text-xs text-muted-foreground space-y-1">
+                    <p className="font-semibold text-foreground">Initial Invoice step is skipped</p>
+                    <p>No opening invoice will be generated upon onboarding.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {contract.enabled && (
+                      <div className="flex items-center justify-between p-3 bg-muted/40 rounded-xl text-xs">
+                        <span className="text-muted-foreground">Pre-filled with Contract Value:</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={syncInvoiceFromContract}
+                          className="text-primary text-xs gap-1 h-7"
+                        >
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Sync {formatCurrency(contract.value)}</span>
+                        </Button>
+                      </div>
+                    )}
+
+                    <FormField
+                      control={invoiceForm.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">
+                            Invoice Item Description *
+                          </FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <FormField
+                        control={invoiceForm.control}
+                        name="amount"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">
+                              Invoice Amount ({contract.currency}) *
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                {...field}
+                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={invoiceForm.control}
+                        name="dueDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-semibold text-foreground">Payment Due Date</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="date"
+                                value={field.value instanceof Date ? field.value.toISOString().split("T")[0] : ""}
+                                onChange={(e) => {
+                                  const d = new Date(e.target.value);
+                                  if (!isNaN(d.getTime())) {
+                                    field.onChange(d);
+                                  }
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={invoiceForm.control}
+                      name="notes"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-foreground">Invoice Notes / Terms</FormLabel>
+                          <FormControl>
+                            <Textarea rows={2} {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
                 )}
+              </CardContent>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Invoice Item Description *
-                  </label>
-                  <Input
-                    required
-                    value={invoice.description}
-                    onChange={(e) => setInvoice({ ...invoice, description: e.target.value })}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">
-                      Invoice Amount ({contract.currency}) *
-                    </label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      required
-                      value={invoice.amount}
-                      onChange={(e) =>
-                        setInvoice({ ...invoice, amount: parseFloat(e.target.value) || 0 })
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Payment Due Date</label>
-                    <Input
-                      type="date"
-                      value={invoice.dueDate.toISOString().split("T")[0]}
-                      onChange={(e) => {
-                        const d = new Date(e.target.value);
-                        if (!isNaN(d.getTime())) {
-                          setInvoice({ ...invoice, dueDate: d });
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Invoice Notes / Terms</label>
-                  <Textarea
-                    rows={2}
-                    value={invoice.notes}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                      setInvoice({ ...invoice, notes: e.target.value })
-                    }
-                  />
-                </div>
+              <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentStep("license")}
+                  className="gap-1.5"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Back</span>
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="gap-1.5"
+                >
+                  <span>Review &amp; Launch</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
               </div>
-            )}
-          </CardContent>
-
-          <div className="p-4 bg-muted/20 border-t border-border flex items-center justify-between">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setCurrentStep("license")}
-              className="gap-1.5"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => setCurrentStep("review")}
-              className="gap-1.5"
-            >
-              <span>Review &amp; Launch</span>
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
+            </form>
+          </Form>
         </Card>
       )}
 

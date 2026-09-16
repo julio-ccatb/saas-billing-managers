@@ -7,12 +7,23 @@ import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { forgotPasswordSchema, type ForgotPasswordValues } from "~/lib/schemas/forms";
 import { AppRoutes } from "~/config/routes";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
+  const [submittedEmail, setSubmittedEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [devResetUrl, setDevResetUrl] = useState<string | null>(null);
+
+  const form = useForm<ForgotPasswordValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+  });
 
   const resetMutation = api.auth.requestPasswordReset.useMutation({
     onSuccess: (data) => {
@@ -23,10 +34,9 @@ export default function ForgotPasswordPage() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    resetMutation.mutate({ email: email.trim().toLowerCase() });
+  const handleSubmit = (values: ForgotPasswordValues) => {
+    setSubmittedEmail(values.email);
+    resetMutation.mutate({ email: values.email.trim().toLowerCase() });
   };
 
   return (
@@ -54,7 +64,7 @@ export default function ForgotPasswordPage() {
             </CardTitle>
             <CardDescription className="text-xs">
               {submitted
-                ? `If an account with ${email} exists, we have sent instructions to reset your password.`
+                ? `If an account with ${submittedEmail} exists, we have sent instructions to reset your password.`
                 : "Enter your registered client email address and we will dispatch a secure reset link."}
             </CardDescription>
           </CardHeader>
@@ -80,68 +90,85 @@ export default function ForgotPasswordPage() {
                 </div>
 
                 {/* Local development quick-link when running in dev mode */}
-                {devResetUrl && (
-                  <div className="rounded-lg border border-border bg-muted/60 p-3 space-y-1.5 text-left">
-                    <span className="text-[10px] font-mono font-semibold text-primary uppercase">
-                      Dev Environment Quick Access:
-                    </span>
-                    <p className="text-xs break-all">
-                      <Link
-                        href={devResetUrl}
-                        className="text-primary underline hover:text-primary/80 font-mono text-[11px]"
-                      >
-                        {devResetUrl}
-                      </Link>
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-sm mb-1">Recovery link dispatched</p>
+                    <p className="leading-relaxed">
+                      We have sent a password reset link to{" "}
+                      <strong className="font-semibold text-foreground">{submittedEmail}</strong>. 
+                      Please check your inbox (and spam folder) within the next 15 minutes.
                     </p>
+                  </div>
+                </div>
+
+                {devResetUrl && (
+                  <div className="p-3 bg-muted rounded-lg border border-border text-[11px] space-y-1">
+                    <p className="font-semibold text-muted-foreground flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                      Local Sandbox / Preview Direct Link:
+                    </p>
+                    <Link
+                      href={devResetUrl}
+                      className="font-mono text-primary break-all hover:underline"
+                    >
+                      {devResetUrl}
+                    </Link>
                   </div>
                 )}
 
                 <Button
-                  type="button"
+                  render={<Link href={AppRoutes.SIGN_IN} />}
+                  nativeButton={false}
                   variant="outline"
-                  onClick={() => {
-                    setSubmitted(false);
-                    setEmail("");
-                    setDevResetUrl(null);
-                  }}
-                  className="w-full text-xs"
+                  className="w-full h-10 gap-2 text-xs font-semibold"
                 >
-                  Send to a different email
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>Return to Sign In</span>
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-1.5 text-left">
-                  <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span>Authorized Client Email</span>
-                  </label>
-                  <Input
-                    type="email"
-                    required
-                    placeholder="client@company.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    disabled={resetMutation.isPending}
-                    className="h-10"
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="text-left">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <Mail className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span>Authorized Client Email</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="client@company.com"
+                            disabled={resetMutation.isPending}
+                            className="h-10"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <Button
-                  type="submit"
-                  disabled={resetMutation.isPending}
-                  className="w-full h-10 gap-2 text-xs font-semibold shadow-xs"
-                >
-                  {resetMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Dispatching link...</span>
-                    </>
-                  ) : (
-                    <span>Send Reset Instructions</span>
-                  )}
-                </Button>
-              </form>
+                  <Button
+                    type="submit"
+                    disabled={resetMutation.isPending}
+                    className="w-full h-10 gap-2 text-xs font-semibold shadow-xs"
+                  >
+                    {resetMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Dispatching link...</span>
+                      </>
+                    ) : (
+                      <span>Send Reset Instructions</span>
+                    )}
+                  </Button>
+                </form>
+              </Form>
             )}
           </CardContent>
 

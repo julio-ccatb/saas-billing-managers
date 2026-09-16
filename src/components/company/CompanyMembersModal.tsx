@@ -14,6 +14,11 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/ui/form";
+import { NativeSelect, NativeSelectOption } from "~/components/ui/native-select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addMemberSchema, type AddMemberValues } from "~/lib/schemas/forms";
 import {
   ShieldAlert,
   UserPlus,
@@ -30,10 +35,16 @@ export function CompanyMembersModal() {
   const { isMembersModalOpen, setIsMembersModalOpen, activeCompany } = useCompany();
   const utils = api.useUtils();
 
-  const [newEmail, setNewEmail] = useState("");
-  const [newRole, setNewRole] = useState<"ADMIN" | "MEMBER">("MEMBER");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const addMemberForm = useForm<AddMemberValues>({
+    resolver: zodResolver(addMemberSchema),
+    defaultValues: {
+      email: "",
+      role: "MEMBER",
+    },
+  });
 
   const { data: members, isLoading } = api.company.getMembers.useQuery(undefined, {
     enabled: isMembersModalOpen,
@@ -42,7 +53,7 @@ export function CompanyMembersModal() {
   const addMemberMutation = api.company.addMember.useMutation({
     onSuccess: () => {
       setSuccessMessage("Member added to workspace successfully.");
-      setNewEmail("");
+      addMemberForm.reset();
       setErrorMessage(null);
       void utils.company.getMembers.invalidate();
       setTimeout(() => setSuccessMessage(null), 3000);
@@ -52,6 +63,11 @@ export function CompanyMembersModal() {
       setSuccessMessage(null);
     },
   });
+
+  const handleAddMember = (values: AddMemberValues) => {
+    setErrorMessage(null);
+    addMemberMutation.mutate(values);
+  };
 
   const updateRoleMutation = api.company.updateMemberRole.useMutation({
     onSuccess: () => {
@@ -81,15 +97,6 @@ export function CompanyMembersModal() {
     },
   });
 
-  const handleAddMember = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newEmail.trim()) return;
-    setErrorMessage(null);
-    addMemberMutation.mutate({
-      email: newEmail.trim().toLowerCase(),
-      role: newRole,
-    });
-  };
 
   const getRoleBadge = (role: string) => {
     switch (role) {
@@ -158,45 +165,66 @@ export function CompanyMembersModal() {
 
           {/* Add Member Form (available to Owner & Admin) */}
           {(isOwner || activeCompany?.role === "ADMIN") && (
-            <form onSubmit={handleAddMember} className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                <UserPlus className="w-4 h-4 text-primary" />
-                <span>Add New Member</span>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-2">
-                <Input
-                  type="email"
-                  required
-                  placeholder="colleague@company.com"
-                  value={newEmail}
-                  onChange={(e) => setNewEmail(e.target.value)}
-                  disabled={addMemberMutation.isPending}
-                  className="h-9 text-xs flex-1"
-                />
-                <select
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value as "ADMIN" | "MEMBER")}
-                  disabled={addMemberMutation.isPending}
-                  className="h-9 px-2.5 rounded-lg border border-input bg-card text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-ring"
-                >
-                  <option value="MEMBER">Member</option>
-                  <option value="ADMIN">Admin</option>
-                </select>
-                <Button
-                  type="submit"
-                  disabled={addMemberMutation.isPending}
-                  size="sm"
-                  className="h-9 gap-1.5 text-xs font-semibold"
-                >
-                  {addMemberMutation.isPending ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  ) : (
-                    <UserPlus className="w-3.5 h-3.5" />
-                  )}
-                  <span>Add Member</span>
-                </Button>
-              </div>
-            </form>
+            <Form {...addMemberForm}>
+              <form onSubmit={addMemberForm.handleSubmit(handleAddMember)} className="rounded-xl border border-border bg-muted/30 p-4 space-y-3">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                  <UserPlus className="w-4 h-4 text-primary" />
+                  <span>Add New Member</span>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <FormField
+                    control={addMemberForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="colleague@company.com"
+                            disabled={addMemberMutation.isPending}
+                            className="h-9 text-xs"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={addMemberForm.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <NativeSelect
+                            disabled={addMemberMutation.isPending}
+                            className="h-9 text-xs"
+                            {...field}
+                          >
+                            <NativeSelectOption value="MEMBER">Member</NativeSelectOption>
+                            <NativeSelectOption value="ADMIN">Admin</NativeSelectOption>
+                          </NativeSelect>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="submit"
+                    disabled={addMemberMutation.isPending}
+                    size="sm"
+                    className="h-9 gap-1.5 text-xs font-semibold"
+                  >
+                    {addMemberMutation.isPending ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <UserPlus className="w-3.5 h-3.5" />
+                    )}
+                    <span>Add Member</span>
+                  </Button>
+                </div>
+              </form>
+            </Form>
           )}
 
           {/* Member List */}

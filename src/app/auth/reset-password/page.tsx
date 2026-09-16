@@ -8,6 +8,10 @@ import { api } from "~/trpc/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema, type ResetPasswordValues } from "~/lib/schemas/forms";
 import { AppRoutes } from "~/config/routes";
 
 function ResetPasswordContent() {
@@ -15,10 +19,16 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const form = useForm<ResetPasswordValues>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+  });
 
   // Validate token query
   const { data: tokenCheck, isLoading: isCheckingToken } = api.auth.verifyResetToken.useQuery(
@@ -35,8 +45,7 @@ function ResetPasswordContent() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (values: ResetPasswordValues) => {
     setValidationError(null);
 
     if (!token) {
@@ -44,19 +53,9 @@ function ResetPasswordContent() {
       return;
     }
 
-    if (password.length < 8) {
-      setValidationError("Password must be at least 8 characters in length.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setValidationError("Passwords do not match.");
-      return;
-    }
-
     resetMutation.mutate({
       token,
-      newPassword: password,
+      newPassword: values.password,
     });
   };
 
@@ -184,54 +183,70 @@ function ResetPasswordContent() {
                 </Button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-1.5 text-left">
-                  <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                    <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span>New Password</span>
-                  </label>
-                  <Input
-                    type="password"
-                    required
-                    placeholder="••••••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={resetMutation.isPending}
-                    className="h-10"
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem className="text-left">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span>New Password</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="••••••••••••"
+                            disabled={resetMutation.isPending}
+                            className="h-10"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div className="space-y-1.5 text-left">
-                  <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                    <KeyRound className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span>Confirm Password</span>
-                  </label>
-                  <Input
-                    type="password"
-                    required
-                    placeholder="••••••••••••"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    disabled={resetMutation.isPending}
-                    className="h-10"
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem className="text-left">
+                        <FormLabel className="flex items-center gap-1.5">
+                          <KeyRound className="w-3.5 h-3.5 text-muted-foreground" />
+                          <span>Confirm Password</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="••••••••••••"
+                            disabled={resetMutation.isPending}
+                            className="h-10"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <Button
-                  type="submit"
-                  disabled={resetMutation.isPending}
-                  className="w-full h-10 gap-2 text-xs font-semibold shadow-xs"
-                >
-                  {resetMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Updating password...</span>
-                    </>
-                  ) : (
-                    <span>Save New Password</span>
-                  )}
-                </Button>
-              </form>
+                  <Button
+                    type="submit"
+                    disabled={resetMutation.isPending}
+                    className="w-full h-10 gap-2 text-xs font-semibold shadow-xs"
+                  >
+                    {resetMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Updating password...</span>
+                      </>
+                    ) : (
+                      <span>Save New Password</span>
+                    )}
+                  </Button>
+                </form>
+              </Form>
             )}
           </CardContent>
 

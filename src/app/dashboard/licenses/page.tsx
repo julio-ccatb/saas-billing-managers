@@ -26,6 +26,26 @@ import {
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatDate } from "~/lib/utils/format";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createLicenseSchema,
+  guardrailSuspensionSchema,
+  type CreateLicenseValues,
+  type GuardrailSuspensionValues,
+} from "~/lib/schemas/forms";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Button } from "~/components/ui/button";
+import { NativeSelect } from "~/components/ui/native-select";
 
 
 export default function LicensesPage() {
@@ -42,17 +62,26 @@ export default function LicensesPage() {
 
   // Guardrail Kill Switch Modal
   const [guardrailModalLicense, setGuardrailModalLicense] = useState<any>(null);
-  const [guardrailReason, setGuardrailReason] = useState("");
-  const [guardrailNotice, setGuardrailNotice] = useState("");
 
-  // Form State
-  const [formData, setFormData] = useState({
-    name: "",
-    customerId: "",
-    allowedDomain: "",
-    suspensionNotice: "Service temporarily suspended by administrator. Please contact billing to restore access.",
-    leaseTtlMinutes: 60,
-    gracePeriodHours: 3,
+  // Form Handlers via React Hook Form
+  const licenseForm = useForm<CreateLicenseValues>({
+    resolver: zodResolver(createLicenseSchema),
+    defaultValues: {
+      name: "",
+      customerId: "",
+      allowedDomain: "",
+      suspensionNotice: "Service temporarily suspended by administrator. Please contact billing to restore access.",
+      leaseTtlMinutes: 60,
+      gracePeriodHours: 3,
+    },
+  });
+
+  const guardrailForm = useForm<GuardrailSuspensionValues>({
+    resolver: zodResolver(guardrailSuspensionSchema),
+    defaultValues: {
+      reason: "",
+      suspensionNotice: "",
+    },
   });
 
   const utils = api.useUtils();
@@ -100,7 +129,7 @@ export default function LicensesPage() {
       utils.license.getAll.invalidate();
       utils.license.getMetrics.invalidate();
       setGuardrailModalLicense(null);
-      setGuardrailReason("");
+      guardrailForm.reset();
     },
     onError: (err) => {
       alert(`Guardrail error: ${err.message}`);
@@ -134,7 +163,7 @@ export default function LicensesPage() {
   };
 
   const handleOpenCreate = () => {
-    setFormData({
+    licenseForm.reset({
       name: "",
       customerId: "",
       allowedDomain: "",
@@ -142,12 +171,13 @@ export default function LicensesPage() {
       leaseTtlMinutes: 60,
       gracePeriodHours: 3,
     });
+    setEditingLicense(null);
     setIsCreateModalOpen(true);
   };
 
   const handleOpenEdit = (lic: any) => {
     setEditingLicense(lic);
-    setFormData({
+    licenseForm.reset({
       name: lic.name,
       customerId: lic.customerId || "",
       allowedDomain: lic.allowedDomain || "",
@@ -157,24 +187,33 @@ export default function LicensesPage() {
     });
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmitLicense = (values: CreateLicenseValues) => {
     if (editingLicense) {
       updateMutation.mutate({
         id: editingLicense.id,
-        ...formData,
-        customerId: formData.customerId || null,
-        allowedDomain: formData.allowedDomain || null,
-        suspensionNotice: formData.suspensionNotice || null,
+        ...values,
+        customerId: values.customerId || null,
+        allowedDomain: values.allowedDomain || null,
+        suspensionNotice: values.suspensionNotice || null,
       });
     } else {
       createMutation.mutate({
-        ...formData,
-        customerId: formData.customerId || null,
-        allowedDomain: formData.allowedDomain || null,
-        suspensionNotice: formData.suspensionNotice || null,
+        ...values,
+        customerId: values.customerId || null,
+        allowedDomain: values.allowedDomain || null,
+        suspensionNotice: values.suspensionNotice || null,
       });
     }
+  };
+
+  const onSubmitGuardrail = (values: GuardrailSuspensionValues) => {
+    if (!guardrailModalLicense) return;
+    toggleStatusMutation.mutate({
+      id: guardrailModalLicense.id,
+      status: "SUSPENDED",
+      reason: values.reason,
+      suspensionNotice: values.suspensionNotice,
+    });
   };
 
   const getRelativeTime = (date?: Date | string | null) => {
@@ -425,11 +464,12 @@ export default function LicensesPage() {
                               onClick={() => {
                                 if (isActive) {
                                   setGuardrailModalLicense(lic);
-                                  setGuardrailNotice(
-                                    lic.suspensionNotice ||
-                                      "Service temporarily suspended by administrator due to billing ledger delinquency."
-                                  );
-                                  setGuardrailReason("");
+                                  guardrailForm.reset({
+                                    reason: "",
+                                    suspensionNotice:
+                                      lic.suspensionNotice ||
+                                      "Service temporarily suspended by administrator due to billing ledger delinquency.",
+                                  });
                                 } else {
                                   toggleStatusMutation.mutate({
                                     id: lic.id,
@@ -554,141 +594,179 @@ export default function LicensesPage() {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit} className="space-y-4 pt-4">
-              {/* Service / Project Name */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                  Service / Project Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Acme Corp Web App or Client E-commerce Backend"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
+            <Form {...licenseForm}>
+              <form onSubmit={licenseForm.handleSubmit(onSubmitLicense)} className="space-y-4 pt-4">
+                {/* Service / Project Name */}
+                <FormField
+                  control={licenseForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                        Service / Project Name *
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. Acme Corp Web App or Client E-commerce Backend"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              {/* Linked Customer */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                  Assigned Customer (Optional)
-                </label>
-                <select
-                  value={formData.customerId}
-                  onChange={(e) => setFormData({ ...formData, customerId: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                >
-                  <option value="">-- No customer assigned --</option>
-                  {customers?.map((cust) => (
-                    <option key={cust.id} value={cust.id}>
-                      {cust.name} {cust.email ? `(${cust.email})` : ""}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Allowed Domain */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                  Allowed Domain Lock (Optional)
-                </label>
-                <div className="relative">
-                  <Globe className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    placeholder="e.g. clientapp.com or portal.acme.org"
-                    value={formData.allowedDomain}
-                    onChange={(e) => setFormData({ ...formData, allowedDomain: e.target.value })}
-                    className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 font-mono"
-                  />
-                </div>
-                <p className="text-[11px] text-gray-500 mt-1">
-                  If set, requests from other domains will be rejected with 403 Forbidden.
-                </p>
-              </div>
-
-              {/* Custom Suspension Notice */}
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                  Custom Suspension Notice
-                </label>
-                <textarea
-                  rows={2}
-                  value={formData.suspensionNotice}
-                  onChange={(e) => setFormData({ ...formData, suspensionNotice: e.target.value })}
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  placeholder="Message returned in the API when you trigger the kill-switch"
+                {/* Linked Customer */}
+                <FormField
+                  control={licenseForm.control}
+                  name="customerId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                        Assigned Customer (Optional)
+                      </FormLabel>
+                      <FormControl>
+                        <NativeSelect {...field}>
+                          <option value="">-- No customer assigned --</option>
+                          {customers?.map((cust) => (
+                            <option key={cust.id} value={cust.id}>
+                              {cust.name} {cust.email ? `(${cust.email})` : ""}
+                            </option>
+                          ))}
+                        </NativeSelect>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <p className="text-[11px] text-gray-500 mt-0.5">
-                  Returned to the client website backend when the service is deactivated.
-                </p>
-              </div>
 
-              {/* Lease TTL & Grace Period */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                    Lease TTL (Minutes)
-                  </label>
-                  <input
-                    type="number"
-                    min={5}
-                    max={1440}
-                    value={formData.leaseTtlMinutes}
-                    onChange={(e) =>
-                      setFormData({ ...formData, leaseTtlMinutes: parseInt(e.target.value) || 60 })
-                    }
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 font-mono"
-                  />
-                  <p className="text-[10px] text-gray-400 mt-0.5">Recommended: 60 mins</p>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 mb-1">
-                    Grace Window (Hours)
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={72}
-                    value={formData.gracePeriodHours}
-                    onChange={(e) =>
-                      setFormData({ ...formData, gracePeriodHours: parseInt(e.target.value) || 3 })
-                    }
-                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 font-mono"
-                  />
-                  <p className="text-[10px] text-gray-400 mt-0.5">Tolerance on downtime</p>
-                </div>
-              </div>
+                {/* Allowed Domain */}
+                <FormField
+                  control={licenseForm.control}
+                  name="allowedDomain"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                        Allowed Domain Lock (Optional)
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Globe className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                          <Input
+                            placeholder="e.g. clientapp.com or portal.acme.org"
+                            className="pl-9 font-mono"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                      <p className="text-[11px] text-gray-500 mt-1">
+                        If set, requests from other domains will be rejected with 403 Forbidden.
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsCreateModalOpen(false);
-                    setEditingLicense(null);
-                  }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={createMutation.isPending || updateMutation.isPending}
-                  className="px-4 py-2 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all active:scale-[0.98] shadow-xs cursor-pointer"
-                >
-                  {editingLicense
-                    ? updateMutation.isPending
-                      ? "Saving..."
-                      : "Save Changes"
-                    : createMutation.isPending
-                    ? "Generating..."
-                    : "Generate Key"}
-                </button>
-              </div>
-            </form>
+                {/* Custom Suspension Notice */}
+                <FormField
+                  control={licenseForm.control}
+                  name="suspensionNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                        Custom Suspension Notice
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          rows={2}
+                          placeholder="Message returned in the API when you trigger the kill-switch"
+                          {...field}
+                        />
+                      </FormControl>
+                      <p className="text-[11px] text-gray-500 mt-0.5">
+                        Returned to the client website backend when the service is deactivated.
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Lease TTL & Grace Period */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <FormField
+                    control={licenseForm.control}
+                    name="leaseTtlMinutes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                          Lease TTL (Minutes)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={5}
+                            max={1440}
+                            className="font-mono"
+                            {...field}
+                          />
+                        </FormControl>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Recommended: 60 mins</p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={licenseForm.control}
+                    name="gracePeriodHours"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold uppercase tracking-wider text-gray-700">
+                          Grace Window (Hours)
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min={0}
+                            max={720}
+                            className="font-mono"
+                            {...field}
+                          />
+                        </FormControl>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Tolerance on downtime</p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsCreateModalOpen(false);
+                      setEditingLicense(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={createMutation.isPending || updateMutation.isPending}
+                  >
+                    {editingLicense
+                      ? updateMutation.isPending
+                        ? "Saving..."
+                        : "Save Changes"
+                      : createMutation.isPending
+                      ? "Generating..."
+                      : "Generate Key"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       )}
@@ -809,20 +887,10 @@ export default function LicensesPage() {
                     onClick={() => {
                       const snippet = getCodeSnippet(activeSnippetTab, snippetDrawerLicense.key);
                       navigator.clipboard.writeText(snippet);
-                      setCopiedKeyId("snippet");
-                      setTimeout(() => setCopiedKeyId(null), 2000);
                     }}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-md text-[11px] cursor-pointer transition-colors"
+                    className="flex items-center gap-1 px-2.5 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] rounded-md transition-colors cursor-pointer"
                   >
-                    {copiedKeyId === "snippet" ? (
-                      <>
-                        <Check className="w-3 h-3 text-emerald-400" /> Copied!
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3 h-3" /> Copy Code
-                      </>
-                    )}
+                    <Copy className="w-3 h-3" /> Copy Code
                   </button>
                 </div>
                 <pre className="leading-relaxed whitespace-pre font-mono">
@@ -885,56 +953,65 @@ export default function LicensesPage() {
               </p>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Mandatory Operator Rationale (min 3 chars) *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Delinquent account 30+ days overdue"
-                value={guardrailReason}
-                onChange={(e) => setGuardrailReason(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-              />
-            </div>
+            <Form {...guardrailForm}>
+              <form onSubmit={guardrailForm.handleSubmit(onSubmitGuardrail)} className="space-y-4">
+                <FormField
+                  control={guardrailForm.control}
+                  name="reason"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-gray-700">
+                        Mandatory Operator Rationale (min 3 chars) *
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. Delinquent account 30+ days overdue"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">
-                Client-Facing Notice
-              </label>
-              <textarea
-                rows={2}
-                value={guardrailNotice}
-                onChange={(e) => setGuardrailNotice(e.target.value)}
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500"
-              />
-            </div>
+                <FormField
+                  control={guardrailForm.control}
+                  name="suspensionNotice"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-gray-700">
+                        Client-Facing Notice
+                      </FormLabel>
+                      <FormControl>
+                        <Textarea
+                          rows={2}
+                          placeholder="e.g. Service temporarily suspended due to billing status."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
-              <button
-                type="button"
-                onClick={() => setGuardrailModalLicense(null)}
-                className="px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                disabled={guardrailReason.trim().length < 3 || toggleStatusMutation.isPending}
-                onClick={() => {
-                  toggleStatusMutation.mutate({
-                    id: guardrailModalLicense.id,
-                    status: "SUSPENDED",
-                    reason: guardrailReason,
-                    suspensionNotice: guardrailNotice,
-                  });
-                }}
-                className="px-4 py-2 text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 disabled:opacity-50 rounded-lg shadow-xs transition-colors cursor-pointer"
-              >
-                Confirm &amp; Enforce Suspension
-              </button>
-            </div>
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setGuardrailModalLicense(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="destructive"
+                    disabled={toggleStatusMutation.isPending}
+                  >
+                    {toggleStatusMutation.isPending ? "Enforcing..." : "Confirm & Enforce Suspension"}
+                  </Button>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       )}

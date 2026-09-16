@@ -35,6 +35,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { NativeSelect } from "~/components/ui/native-select";
 import {
   Dialog,
   DialogContent,
@@ -42,6 +43,28 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createContractSchema,
+  guardrailSuspensionSchema,
+  terminateContractSchema,
+  customerPortalAccessSchema,
+  sendSignatureSchema,
+  type CreateContractValues,
+  type GuardrailSuspensionValues,
+  type TerminateContractValues,
+  type CustomerPortalAccessValues,
+  type SendSignatureValues,
+} from "~/lib/schemas/forms";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 
 export default function CustomerOperationsHubPage() {
   const params = useParams();
@@ -53,31 +76,71 @@ export default function CustomerOperationsHubPage() {
   // Kill-switch guardrail state
   const [killSwitchModalOpen, setKillSwitchModalOpen] = useState(false);
   const [selectedLicense, setSelectedLicense] = useState<any>(null);
-  const [killSwitchReason, setKillSwitchReason] = useState("");
-  const [killSwitchNotice, setKillSwitchNotice] = useState("");
 
   // Portal Access Modal state
   const [portalModalOpen, setPortalModalOpen] = useState(false);
-  const [portalEmail, setPortalEmail] = useState("");
-  const [portalPassword, setPortalPassword] = useState("");
-  const [portalEnabled, setPortalEnabled] = useState(true);
 
   // New contract modal state
   const [contractModalOpen, setContractModalOpen] = useState(false);
-  const [contractForm, setContractForm] = useState({
-    title: "",
-    value: 0,
-    currency: "USD",
-    billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
-    status: "DRAFT" as "DRAFT" | "ACTIVE",
-    terms: "",
-    notes: "",
-  });
 
   // Terminate contract modal state
   const [terminateContractId, setTerminateContractId] = useState<string | null>(null);
-  const [terminateReason, setTerminateReason] = useState("");
   const [syncingContractId, setSyncingContractId] = useState<string | null>(null);
+
+  // DocuSeal dispatch modal state
+  const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
+  const [signingModalData, setSigningModalData] = useState<{
+    signingUrl: string;
+    contractNumber: string;
+  } | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  // RHF Forms
+  const contractRHF = useForm<CreateContractValues>({
+    resolver: zodResolver(createContractSchema),
+    defaultValues: {
+      customerId: customerId || "",
+      title: "",
+      value: 0,
+      currency: "USD",
+      billingCycle: "MONTHLY",
+      status: "DRAFT",
+      terms: "",
+      notes: "",
+    },
+  });
+
+  const killSwitchRHF = useForm<GuardrailSuspensionValues>({
+    resolver: zodResolver(guardrailSuspensionSchema),
+    defaultValues: {
+      reason: "",
+      suspensionNotice: "",
+    },
+  });
+
+  const terminateRHF = useForm<TerminateContractValues>({
+    resolver: zodResolver(terminateContractSchema),
+    defaultValues: {
+      reason: "",
+    },
+  });
+
+  const portalRHF = useForm<CustomerPortalAccessValues>({
+    resolver: zodResolver(customerPortalAccessSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      portalEnabled: true,
+    },
+  });
+
+  const dispatchRHF = useForm<SendSignatureValues>({
+    resolver: zodResolver(sendSignatureSchema),
+    defaultValues: {
+      contractId: "",
+      templateId: "",
+    },
+  });
 
   const utils = api.useUtils();
 
@@ -93,8 +156,7 @@ export default function CustomerOperationsHubPage() {
       utils.license.getMetrics.invalidate();
       setKillSwitchModalOpen(false);
       setSelectedLicense(null);
-      setKillSwitchReason("");
-      setKillSwitchNotice("");
+      killSwitchRHF.reset();
     },
     onError: (err) => {
       alert(`Guardrail error: ${err.message}`);
@@ -107,7 +169,8 @@ export default function CustomerOperationsHubPage() {
       utils.customer.getById.invalidate({ id: customerId });
       utils.contract.getMetrics.invalidate();
       setContractModalOpen(false);
-      setContractForm({
+      contractRHF.reset({
+        customerId: customerId || "",
         title: "",
         value: 0,
         currency: "USD",
@@ -127,7 +190,7 @@ export default function CustomerOperationsHubPage() {
       utils.customer.getById.invalidate({ id: customerId });
       utils.contract.getMetrics.invalidate();
       setTerminateContractId(null);
-      setTerminateReason("");
+      terminateRHF.reset();
     },
     onError: (err) => {
       alert(`Error terminating contract: ${err.message}`);
@@ -138,25 +201,18 @@ export default function CustomerOperationsHubPage() {
     onSuccess: () => {
       utils.customer.getById.invalidate({ id: customerId });
       setPortalModalOpen(false);
-      setPortalPassword("");
+      portalRHF.reset();
     },
     onError: (err) => {
       alert(`Portal access error: ${err.message}`);
     },
   });
 
-  const [signingModalData, setSigningModalData] = useState<{
-    signingUrl: string;
-    contractNumber: string;
-  } | null>(null);
-  const [copiedLink, setCopiedLink] = useState(false);
-  const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
-  const [customTemplateId, setCustomTemplateId] = useState("");
-
   const sendForSignatureMutation = api.contract.sendForSignature.useMutation({
     onSuccess: (data) => {
       utils.customer.getById.invalidate({ id: customerId });
       setDispatchModalContract(null);
+      dispatchRHF.reset();
       setSigningModalData({
         signingUrl: data.signingUrl,
         contractNumber: data.contractNumber,
@@ -196,23 +252,61 @@ export default function CustomerOperationsHubPage() {
 
   const openKillSwitchModal = (lic: any) => {
     setSelectedLicense(lic);
-    setKillSwitchNotice(
-      lic.suspensionNotice ||
-        "Your service access is temporarily suspended due to outstanding billing ledger accounts. Please contact operations to resolve."
-    );
-    setKillSwitchReason("");
+    killSwitchRHF.reset({
+      reason: "",
+      suspensionNotice:
+        lic.suspensionNotice ||
+        "Your service access is temporarily suspended due to outstanding billing ledger accounts. Please contact operations to resolve.",
+    });
     setKillSwitchModalOpen(true);
   };
 
-  const handleConfirmKillSwitch = () => {
+  const onConfirmKillSwitch = (values: GuardrailSuspensionValues) => {
     if (!selectedLicense) return;
     const isActivating = selectedLicense.status !== "ACTIVE";
     toggleLicenseMutation.mutate({
       id: selectedLicense.id,
       status: isActivating ? "ACTIVE" : "SUSPENDED",
-      suspensionNotice: isActivating ? null : killSwitchNotice,
-      reason: isActivating ? "Reactivated by operator" : killSwitchReason,
+      suspensionNotice: isActivating ? null : values.suspensionNotice,
+      reason: isActivating ? "Reactivated by operator" : values.reason,
     });
+  };
+
+  const handleOpenContractModal = () => {
+    contractRHF.reset({
+      customerId: customerId || "",
+      title: "",
+      value: 0,
+      currency: "USD",
+      billingCycle: "MONTHLY",
+      status: "DRAFT",
+      terms: "",
+      notes: "",
+    });
+    setContractModalOpen(true);
+  };
+
+  const handleOpenPortalModal = () => {
+    if (!customer) return;
+    portalRHF.reset({
+      email: customer.email || "",
+      password: "",
+      portalEnabled: customer.portalEnabled ?? true,
+    });
+    setPortalModalOpen(true);
+  };
+
+  const handleOpenDispatchModal = (c: any) => {
+    setDispatchModalContract(c);
+    dispatchRHF.reset({
+      contractId: c.id,
+      templateId: "",
+    });
+  };
+
+  const handleOpenTerminateModal = (contractId: string) => {
+    setTerminateContractId(contractId);
+    terminateRHF.reset({ reason: "" });
   };
 
   if (isLoading) {
@@ -264,7 +358,7 @@ export default function CustomerOperationsHubPage() {
 
         <div className="flex items-center gap-2">
           <Button
-            onClick={() => setContractModalOpen(true)}
+            onClick={handleOpenContractModal}
             variant="outline"
             size="sm"
             className="gap-1.5"
@@ -352,11 +446,7 @@ export default function CustomerOperationsHubPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => {
-                    setPortalEmail(customer.email || "");
-                    setPortalEnabled(customer.portalEnabled);
-                    setPortalModalOpen(true);
-                  }}
+                  onClick={handleOpenPortalModal}
                   className="gap-1.5 text-xs h-9"
                 >
                   <KeyRound className="w-3.5 h-3.5 text-primary" />
@@ -383,7 +473,7 @@ export default function CustomerOperationsHubPage() {
             </p>
           </div>
           <Button
-            onClick={() => setContractModalOpen(true)}
+            onClick={handleOpenContractModal}
             variant="outline"
             size="sm"
             className="gap-1.5 text-xs"
@@ -476,10 +566,7 @@ export default function CustomerOperationsHubPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                setDispatchModalContract(c);
-                                setCustomTemplateId("");
-                              }}
+                              onClick={() => handleOpenDispatchModal(c)}
                               className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
                             >
                               <Send className="w-3 h-3" />
@@ -516,10 +603,7 @@ export default function CustomerOperationsHubPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              setTerminateContractId(c.id);
-                              setTerminateReason("");
-                            }}
+                            onClick={() => handleOpenTerminateModal(c.id)}
                             className="text-xs h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
                           >
                             Terminate
@@ -732,74 +816,89 @@ export default function CustomerOperationsHubPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-4 py-2 text-sm">
-            {selectedLicense?.status === "ACTIVE" ? (
-              <>
-                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl space-y-1.5 text-xs text-destructive">
-                  <p className="font-semibold flex items-center gap-1.5">
-                    <AlertTriangle className="w-4 h-4 shrink-0" />
-                    Destructive Action Notice
-                  </p>
-                  <p className="leading-relaxed">
-                    Suspending <strong>{selectedLicense?.name}</strong> will cause the client application&apos;s lease
-                    renewal to be rejected immediately.
-                  </p>
-                  {overdueAmount > 0 && (
-                    <p className="font-mono pt-1 font-semibold">
-                      Past Due Ledger Balance: {formatCurrency(overdueAmount)} ({overdueInvoices.length} invoice(s))
+          <Form {...killSwitchRHF}>
+            <form onSubmit={killSwitchRHF.handleSubmit(onConfirmKillSwitch)} className="space-y-4 py-2 text-sm">
+              {selectedLicense?.status === "ACTIVE" ? (
+                <>
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-xl space-y-1.5 text-xs text-destructive">
+                    <p className="font-semibold flex items-center gap-1.5">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      Destructive Action Notice
                     </p>
-                  )}
-                </div>
+                    <p className="leading-relaxed">
+                      Suspending <strong>{selectedLicense?.name}</strong> will cause the client application&apos;s lease
+                      renewal to be rejected immediately.
+                    </p>
+                    {overdueAmount > 0 && (
+                      <p className="font-mono pt-1 font-semibold">
+                        Past Due Ledger Balance: {formatCurrency(overdueAmount)} ({overdueInvoices.length} invoice(s))
+                      </p>
+                    )}
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Operator Rationale (Mandatory for Audit Trail) *
-                  </label>
-                  <Input
-                    required
-                    placeholder="e.g. Delinquent account past 30-day grace period"
-                    value={killSwitchReason}
-                    onChange={(e) => setKillSwitchReason(e.target.value)}
+                  <FormField
+                    control={killSwitchRHF.control}
+                    name="reason"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Operator Rationale (Mandatory for Audit Trail) *
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g. Delinquent account past 30-day grace period"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    Client-Facing Suspension Notice
-                  </label>
-                  <Textarea
-                    rows={3}
-                    placeholder="Notice returned to client software upon verification failure"
-                    value={killSwitchNotice}
-                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setKillSwitchNotice(e.target.value)}
+                  <FormField
+                    control={killSwitchRHF.control}
+                    name="suspensionNotice"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-semibold text-foreground">
+                          Client-Facing Suspension Notice
+                        </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            rows={3}
+                            placeholder="Notice returned to client software upon verification failure"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
+                </>
+              ) : (
+                <div className="p-3 bg-muted/40 rounded-xl text-xs space-y-1">
+                  <p className="font-semibold text-foreground">Reactivate Client Software Access</p>
+                  <p className="text-muted-foreground">
+                    The client application will receive active authorization upon its next heartbeat check.
+                  </p>
                 </div>
-              </>
-            ) : (
-              <div className="p-3 bg-muted/40 rounded-xl text-xs space-y-1">
-                <p className="font-semibold text-foreground">Reactivate Client Software Access</p>
-                <p className="text-muted-foreground">
-                  The client application will receive active authorization upon its next heartbeat check.
-                </p>
-              </div>
-            )}
-          </div>
+              )}
 
-          <DialogFooter className="gap-2">
-            <Button variant="outline" size="sm" onClick={() => setKillSwitchModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              variant={selectedLicense?.status === "ACTIVE" ? "destructive" : "default"}
-              size="sm"
-              disabled={
-                selectedLicense?.status === "ACTIVE" && killSwitchReason.trim().length < 3
-              }
-              onClick={handleConfirmKillSwitch}
-            >
-              {selectedLicense?.status === "ACTIVE" ? "Enforce Suspension" : "Confirm Reactivation"}
-            </Button>
-          </DialogFooter>
+              <DialogFooter className="gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setKillSwitchModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant={selectedLicense?.status === "ACTIVE" ? "destructive" : "default"}
+                  size="sm"
+                  disabled={toggleLicenseMutation.isPending}
+                >
+                  {selectedLicense?.status === "ACTIVE" ? "Enforce Suspension" : "Confirm Reactivation"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
@@ -813,93 +912,127 @@ export default function CustomerOperationsHubPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              createContractMutation.mutate({
-                customerId,
-                title: contractForm.title,
-                value: Number(contractForm.value),
-                currency: contractForm.currency,
-                billingCycle: contractForm.billingCycle,
-                terms: contractForm.terms,
-                notes: contractForm.notes,
-                status: contractForm.status,
-              });
-            }}
-            className="space-y-4 py-2"
-          >
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Contract Title *</label>
-              <Input
-                required
-                placeholder="e.g. Enterprise SaaS Platform License & Support"
-                value={contractForm.title}
-                onChange={(e) => setContractForm({ ...contractForm, title: e.target.value })}
+          <Form {...contractRHF}>
+            <form
+              onSubmit={contractRHF.handleSubmit((values) => {
+                createContractMutation.mutate({
+                  customerId,
+                  title: values.title,
+                  value: Number(values.value),
+                  currency: values.currency,
+                  billingCycle: values.billingCycle,
+                  terms: values.terms,
+                  notes: values.notes,
+                  status: values.status,
+                });
+              })}
+              className="space-y-4 py-2"
+            >
+              <FormField
+                control={contractRHF.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold text-foreground">Contract Title *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Enterprise SaaS Platform License & Support"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Contract Value *</label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  required
-                  value={contractForm.value}
-                  onChange={(e) => setContractForm({ ...contractForm, value: parseFloat(e.target.value) || 0 })}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <FormField
+                  control={contractRHF.control}
+                  name="value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-foreground">Contract Value *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={contractRHF.control}
+                  name="billingCycle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-foreground">Billing Cycle</FormLabel>
+                      <FormControl>
+                        <NativeSelect {...field}>
+                          <option value="MONTHLY">Monthly</option>
+                          <option value="QUARTERLY">Quarterly</option>
+                          <option value="ANNUALLY">Annually</option>
+                          <option value="ONE_TIME">One-Time</option>
+                        </NativeSelect>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Billing Cycle</label>
-                <select
-                  value={contractForm.billingCycle}
-                  onChange={(e: any) => setContractForm({ ...contractForm, billingCycle: e.target.value })}
-                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                >
-                  <option value="MONTHLY">Monthly</option>
-                  <option value="QUARTERLY">Quarterly</option>
-                  <option value="ANNUALLY">Annually</option>
-                  <option value="ONE_TIME">One-Time</option>
-                </select>
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
-              <select
-                value={contractForm.status}
-                onChange={(e: any) => setContractForm({ ...contractForm, status: e.target.value })}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              >
-                <option value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</option>
-                <option value="ACTIVE">Active — Pre-signed or Direct Activation</option>
-              </select>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Terms &amp; Commitments</label>
-              <Textarea
-                rows={3}
-                placeholder="SLA response guarantees, uptime targets, renewal conditions..."
-                value={contractForm.terms}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContractForm({ ...contractForm, terms: e.target.value })}
+              <FormField
+                control={contractRHF.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold text-foreground">Contract Execution Mode</FormLabel>
+                    <FormControl>
+                      <NativeSelect {...field}>
+                        <option value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</option>
+                        <option value="ACTIVE">Active — Pre-signed or Direct Activation</option>
+                      </NativeSelect>
+                    </FormControl>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <DialogFooter className="gap-2 pt-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setContractModalOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" disabled={createContractMutation.isPending}>
-                Create Contract
-              </Button>
-            </DialogFooter>
-          </form>
+              <FormField
+                control={contractRHF.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold text-foreground">Terms &amp; Commitments</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={3}
+                        placeholder="SLA response guarantees, uptime targets, renewal conditions..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="gap-2 pt-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setContractModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" disabled={createContractMutation.isPending}>
+                  {createContractMutation.isPending ? "Creating..." : "Create Contract"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
@@ -913,43 +1046,55 @@ export default function CustomerOperationsHubPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-3 py-2 text-sm">
-            <p className="text-muted-foreground text-xs">
-              Terminated contracts are permanently locked as immutable historical records and will cease contributing to active MRR calculations.
-            </p>
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Termination Reason (Mandatory) *
-              </label>
-              <Input
-                required
-                placeholder="e.g. Mutual termination agreement / Non-payment"
-                value={terminateReason}
-                onChange={(e) => setTerminateReason(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2">
-            <Button variant="outline" size="sm" onClick={() => setTerminateContractId(null)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={terminateReason.trim().length < 3 || terminateContractMutation.isPending}
-              onClick={() => {
+          <Form {...terminateRHF}>
+            <form
+              onSubmit={terminateRHF.handleSubmit((values) => {
                 if (terminateContractId) {
                   terminateContractMutation.mutate({
                     id: terminateContractId,
-                    reason: terminateReason,
+                    reason: values.reason,
                   });
                 }
-              }}
+              })}
+              className="space-y-3 py-2 text-sm"
             >
-              Terminate Contract
-            </Button>
-          </DialogFooter>
+              <p className="text-muted-foreground text-xs">
+                Terminated contracts are permanently locked as immutable historical records and will cease contributing to active MRR calculations.
+              </p>
+              <FormField
+                control={terminateRHF.control}
+                name="reason"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-semibold text-foreground">
+                      Termination Reason (Mandatory) *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Mutual termination agreement / Non-payment"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="gap-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setTerminateContractId(null)}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  size="sm"
+                  disabled={terminateContractMutation.isPending}
+                >
+                  {terminateContractMutation.isPending ? "Terminating..." : "Terminate Contract"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
@@ -964,60 +1109,69 @@ export default function CustomerOperationsHubPage() {
           </DialogHeader>
 
           {dispatchModalContract && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                sendForSignatureMutation.mutate({
-                  contractId: dispatchModalContract.id,
-                  templateId: customTemplateId.trim() || undefined,
-                });
-              }}
-              className="space-y-4 py-2 text-xs"
-            >
-              <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
-                <div className="flex justify-between">
-                  <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
-                  <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
+            <Form {...dispatchRHF}>
+              <form
+                onSubmit={dispatchRHF.handleSubmit((values) => {
+                  sendForSignatureMutation.mutate({
+                    contractId: values.contractId,
+                    templateId: values.templateId ? values.templateId.trim() : undefined,
+                  });
+                })}
+                className="space-y-4 py-2 text-xs"
+              >
+                <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
+                  <div className="flex justify-between">
+                    <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
+                    <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
+                  </div>
+                  <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
+                  <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{customer?.name}</strong> ({customer?.email || "No email"})</p>
                 </div>
-                <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
-                <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{customer?.name}</strong> ({customer?.email || "No email"})</p>
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
-                  DocuSeal Template ID (Optional)
-                </label>
-                <Input
-                  placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
-                  value={customTemplateId}
-                  onChange={(e) => setCustomTemplateId(e.target.value)}
-                  className="font-mono text-xs"
+                <FormField
+                  control={dispatchRHF.control}
+                  name="templateId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-semibold text-foreground">
+                        DocuSeal Template ID (Optional)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
+                          className="font-mono text-xs"
+                          {...field}
+                        />
+                      </FormControl>
+                      <p className="text-[11px] text-muted-foreground mt-1">
+                        Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
+                      </p>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
-                </p>
-              </div>
 
-              <DialogFooter className="gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setDispatchModalContract(null)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  size="sm"
-                  disabled={sendForSignatureMutation.isPending}
-                  className="gap-1.5"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
-                </Button>
-              </DialogFooter>
-            </form>
+                <DialogFooter className="gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDispatchModalContract(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={sendForSignatureMutation.isPending}
+                    className="gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
           )}
         </DialogContent>
       </Dialog>
@@ -1096,99 +1250,121 @@ export default function CustomerOperationsHubPage() {
             </p>
           </DialogHeader>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setPortalAccessMutation.mutate({
-                customerId: customer.id,
-                email: portalEmail.trim().toLowerCase(),
-                password: portalPassword.trim() || undefined,
-                portalEnabled,
-              });
-            }}
-            className="space-y-4 py-2"
-          >
-            {/* Status toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border">
-              <div>
-                <p className="text-xs font-semibold text-foreground">Portal Access Status</p>
-                <p className="text-[11px] text-muted-foreground">
-                  {portalEnabled ? "Client can log into /portal" : "Portal access is disabled for this client"}
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant={portalEnabled ? "default" : "outline"}
-                size="sm"
-                onClick={() => setPortalEnabled(!portalEnabled)}
-                className="text-xs h-8"
-              >
-                {portalEnabled ? "Active" : "Disabled"}
-              </Button>
-            </div>
-
-            {/* Email Field */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">Client Login Email</label>
-              <Input
-                type="email"
-                required
-                value={portalEmail}
-                onChange={(e) => setPortalEmail(e.target.value)}
-                placeholder="client@company.com"
-                className="text-xs h-9"
+          <Form {...portalRHF}>
+            <form
+              onSubmit={portalRHF.handleSubmit((values) => {
+                setPortalAccessMutation.mutate({
+                  customerId: customer.id,
+                  email: values.email.trim().toLowerCase(),
+                  password: values.password?.trim() || undefined,
+                  portalEnabled: values.portalEnabled,
+                });
+              })}
+              className="space-y-4 py-2"
+            >
+              {/* Status toggle */}
+              <FormField
+                control={portalRHF.control}
+                name="portalEnabled"
+                render={({ field }) => (
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-muted/40 border border-border">
+                    <div>
+                      <p className="text-xs font-semibold text-foreground">Portal Access Status</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {field.value ? "Client can log into /portal" : "Portal access is disabled for this client"}
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant={field.value ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => field.onChange(!field.value)}
+                      className="text-xs h-8"
+                    >
+                      {field.value ? "Active" : "Disabled"}
+                    </Button>
+                  </div>
+                )}
               />
-            </div>
 
-            {/* Password Field */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-foreground">
-                  {customer.clientUser ? "New Password (leave blank to keep current)" : "Initial Password"}
-                </label>
-                <button
+              {/* Email Field */}
+              <FormField
+                control={portalRHF.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xs font-medium text-foreground">Client Login Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="client@company.com"
+                        className="text-xs h-9"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Password Field */}
+              <FormField
+                control={portalRHF.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel className="text-xs font-medium text-foreground">
+                        {customer.clientUser ? "New Password (leave blank to keep current)" : "Initial Password"}
+                      </FormLabel>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const generated = Math.random().toString(36).slice(-8) + "!9A";
+                          field.onChange(generated);
+                        }}
+                        className="text-[11px] text-primary hover:underline cursor-pointer"
+                      >
+                        Generate Password
+                      </button>
+                    </div>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        placeholder={customer.clientUser ? "Leave blank to keep existing password" : "Enter temporary password (min 6 chars)"}
+                        className="text-xs h-9 font-mono"
+                        {...field}
+                      />
+                    </FormControl>
+                    <p className="text-[10px] text-muted-foreground">
+                      Client login page: <span className="font-mono text-foreground">http://localhost:3000/portal/login</span>
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button
                   type="button"
-                  onClick={() => {
-                    const generated = Math.random().toString(36).slice(-8) + "!9A";
-                    setPortalPassword(generated);
-                  }}
-                  className="text-[11px] text-primary hover:underline cursor-pointer"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPortalModalOpen(false)}
+                  disabled={setPortalAccessMutation.isPending}
                 >
-                  Generate Password
-                </button>
-              </div>
-              <Input
-                type="text"
-                value={portalPassword}
-                onChange={(e) => setPortalPassword(e.target.value)}
-                placeholder={customer.clientUser ? "Leave blank to keep existing password" : "Enter temporary password (min 6 chars)"}
-                className="text-xs h-9 font-mono"
-              />
-              <p className="text-[10px] text-muted-foreground">
-                Client login page: <span className="font-mono text-foreground">http://localhost:3000/portal/login</span>
-              </p>
-            </div>
-
-            <DialogFooter className="gap-2 sm:gap-0">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setPortalModalOpen(false)}
-                disabled={setPortalAccessMutation.isPending}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="sm"
-                disabled={setPortalAccessMutation.isPending}
-                className="gap-1.5"
-              >
-                <span>Save Credentials</span>
-              </Button>
-            </DialogFooter>
-          </form>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={setPortalAccessMutation.isPending}
+                  className="gap-1.5"
+                >
+                  <span>{setPortalAccessMutation.isPending ? "Saving..." : "Save Credentials"}</span>
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

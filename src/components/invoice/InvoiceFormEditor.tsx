@@ -26,6 +26,7 @@ import { SignaturePad } from "./SignaturePad";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
+import { NativeSelect } from "~/components/ui/native-select";
 import { cn } from "~/lib/utils";
 
 export function InvoiceFormEditor() {
@@ -248,9 +249,9 @@ export function InvoiceFormEditor() {
             {customers && customers.length > 0 && (
               <div className="flex items-center gap-1.5 text-xs">
                 <Users className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                <select
+                <NativeSelect
                   aria-label="Select existing client"
-                  className="bg-muted border border-input rounded-md px-2.5 py-1 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-ring w-full sm:w-auto"
+                  className="w-full sm:w-auto"
                   value={invoice.customerId ?? ""}
                   onChange={(e) => {
                     const id = e.target.value;
@@ -278,7 +279,7 @@ export function InvoiceFormEditor() {
                       {c.name} {c.email ? `(${c.email})` : ""}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </div>
             )}
           </div>

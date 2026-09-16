@@ -14,6 +14,10 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { customerUpsertSchema, type CustomerUpsertValues } from "~/lib/schemas/forms";
 import { AppRoutes } from "~/config/routes";
 
 export default function CustomersPage() {
@@ -21,15 +25,18 @@ export default function CustomersPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    country: "",
-    taxId: "",
+  const customerForm = useForm<CustomerUpsertValues>({
+    resolver: zodResolver(customerUpsertSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      zipCode: "",
+      country: "",
+      taxId: "",
+    },
   });
 
   const utils = api.useUtils();
@@ -57,19 +64,19 @@ export default function CustomersPage() {
   const openModal = (customer?: any) => {
     if (customer) {
       setEditingId(customer.id);
-      setFormData({
-        name: customer.name,
-        email: customer.email ?? "",
-        phone: customer.phone ?? "",
-        address: customer.address ?? "",
-        city: customer.city ?? "",
-        zipCode: customer.zipCode ?? "",
-        country: customer.country ?? "",
-        taxId: customer.taxId ?? "",
+      customerForm.reset({
+        name: customer.name || "",
+        email: customer.email || "",
+        phone: customer.phone || "",
+        address: customer.address || "",
+        city: customer.city || "",
+        zipCode: customer.zipCode || "",
+        country: customer.country || "",
+        taxId: customer.taxId || "",
       });
     } else {
       setEditingId(null);
-      setFormData({
+      customerForm.reset({
         name: "",
         email: "",
         phone: "",
@@ -86,13 +93,22 @@ export default function CustomersPage() {
   const closeModal = () => {
     setIsModalOpen(false);
     setEditingId(null);
+    customerForm.reset({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      zipCode: "",
+      country: "",
+      taxId: "",
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (values: CustomerUpsertValues) => {
     upsertMutation.mutate({
-      ...formData,
       id: editingId ?? undefined,
+      ...values,
     });
   };
 
@@ -229,91 +245,131 @@ export default function CustomersPage() {
             <DialogHeader>
               <DialogTitle>{editingId ? "Edit Customer" : "New Customer"}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4 py-2">
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Company or Person Name *</label>
-                <Input
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Acme Corp"
+            <Form {...customerForm}>
+              <form onSubmit={customerForm.handleSubmit(handleSubmit)} className="space-y-4 py-2">
+                <FormField
+                  control={customerForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Company or Person Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Acme Corp" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Email</label>
-                  <Input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="billing@acme.com"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <FormField
+                    control={customerForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="billing@acme.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={customerForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+1 (555) 000-0000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Phone</label>
-                  <Input
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    placeholder="+1 (555) 000-0000"
-                  />
-                </div>
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Tax ID / VAT Number</label>
-                <Input
-                  value={formData.taxId}
-                  onChange={(e) => setFormData({ ...formData, taxId: e.target.value })}
-                  placeholder="US123456789"
+                <FormField
+                  control={customerForm.control}
+                  name="taxId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tax ID / VAT Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="US123456789" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Street Address</label>
-                <Input
-                  value={formData.address}
-                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  placeholder="123 Main St"
+                <FormField
+                  control={customerForm.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Street Address</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123 Main St" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">City</label>
-                  <Input
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    placeholder="San Francisco"
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <FormField
+                    control={customerForm.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>City</FormLabel>
+                        <FormControl>
+                          <Input placeholder="San Francisco" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={customerForm.control}
+                    name="zipCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>ZIP / Postal</FormLabel>
+                        <FormControl>
+                          <Input placeholder="94105" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={customerForm.control}
+                    name="country"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Country</FormLabel>
+                        <FormControl>
+                          <Input placeholder="USA" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">ZIP / Postal</label>
-                  <Input
-                    value={formData.zipCode}
-                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
-                    placeholder="94105"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Country</label>
-                  <Input
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    placeholder="USA"
-                  />
-                </div>
-              </div>
 
-              <DialogFooter className="pt-2">
-                <Button type="button" variant="outline" onClick={closeModal}>
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={upsertMutation.isPending}>
-                  {upsertMutation.isPending ? "Saving..." : editingId ? "Update Customer" : "Create Customer"}
-                </Button>
-              </DialogFooter>
-            </form>
+                <DialogFooter className="pt-2">
+                  <Button type="button" variant="outline" onClick={closeModal}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={upsertMutation.isPending}>
+                    {upsertMutation.isPending ? "Saving..." : editingId ? "Update Customer" : "Create Customer"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
           </DialogContent>
         </Dialog>
       </div>

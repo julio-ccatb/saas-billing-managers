@@ -20,6 +20,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "~/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { clientSignInSchema, type ClientSignInValues } from "~/lib/schemas/forms";
 import { AppRoutes } from "~/config/routes";
 
 function SignInContent() {
@@ -29,11 +33,17 @@ function SignInContent() {
 
   const [activeTab, setActiveTab] = useState(initialTab);
 
-  // Client credentials state
-  const [clientEmail, setClientEmail] = useState("");
-  const [clientPassword, setClientPassword] = useState("");
+  // Client credentials form
   const [clientError, setClientError] = useState<string | null>(null);
   const [isClientLoading, setIsClientLoading] = useState(false);
+
+  const clientForm = useForm<ClientSignInValues>({
+    resolver: zodResolver(clientSignInSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
   // Operator states
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
@@ -89,15 +99,14 @@ function SignInContent() {
     }
   };
 
-  const handleClientLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleClientLogin = async (data: ClientSignInValues) => {
     setClientError(null);
     setIsClientLoading(true);
 
     try {
       const res = await signIn("credentials", {
-        email: clientEmail.trim().toLowerCase(),
-        password: clientPassword,
+        email: data.email.trim().toLowerCase(),
+        password: data.password,
         redirect: false,
       });
 
@@ -287,65 +296,81 @@ function SignInContent() {
                   </div>
                 )}
 
-                <form onSubmit={handleClientLogin} className="space-y-3.5">
-                  <div className="space-y-1.5 text-left">
-                    <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5 text-muted-foreground" />
-                      <span>Authorized Email</span>
-                    </label>
-                    <Input
-                      type="email"
-                      required
-                      placeholder="client@company.com"
-                      value={clientEmail}
-                      onChange={(e) => setClientEmail(e.target.value)}
-                      disabled={isClientLoading}
-                      className="h-10"
+                <Form {...clientForm}>
+                  <form onSubmit={clientForm.handleSubmit(handleClientLogin)} className="space-y-3.5">
+                    <FormField
+                      control={clientForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="text-left">
+                          <FormLabel className="flex items-center gap-1.5">
+                            <Mail className="w-3.5 h-3.5 text-muted-foreground" />
+                            <span>Authorized Email</span>
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="client@company.com"
+                              disabled={isClientLoading}
+                              className="h-10"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <div className="space-y-1.5 text-left">
-                    <div className="flex items-center justify-between">
-                      <label className="text-xs font-medium text-foreground flex items-center gap-1.5">
-                        <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                        <span>Password</span>
-                      </label>
-                      <Link
-                        href={AppRoutes.FORGOT_PASSWORD}
-                        className="text-[11px] font-medium text-primary hover:underline"
-                      >
-                        Forgot password?
-                      </Link>
-                    </div>
-                    <Input
-                      type="password"
-                      required
-                      placeholder="••••••••••••"
-                      value={clientPassword}
-                      onChange={(e) => setClientPassword(e.target.value)}
-                      disabled={isClientLoading}
-                      className="h-10"
+                    <FormField
+                      control={clientForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem className="text-left">
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="flex items-center gap-1.5">
+                              <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                              <span>Password</span>
+                            </FormLabel>
+                            <Link
+                              href={AppRoutes.FORGOT_PASSWORD}
+                              className="text-[11px] font-medium text-primary hover:underline"
+                            >
+                              Forgot password?
+                            </Link>
+                          </div>
+                          <FormControl>
+                            <Input
+                              type="password"
+                              placeholder="••••••••••••"
+                              disabled={isClientLoading}
+                              className="h-10"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
 
-                  <Button
-                    type="submit"
-                    disabled={isClientLoading}
-                    className="w-full h-10 mt-1 gap-2 text-xs font-semibold shadow-xs"
-                  >
-                    {isClientLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Verifying credentials...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Enter Client Portal</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </>
-                    )}
-                  </Button>
-                </form>
+                    <Button
+                      type="submit"
+                      disabled={isClientLoading}
+                      className="w-full h-10 mt-1 gap-2 text-xs font-semibold shadow-xs"
+                    >
+                      {isClientLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Verifying credentials...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Enter Client Portal</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </Form>
 
                 <div className="pt-2 text-center">
                   <p className="text-[11px] text-muted-foreground">

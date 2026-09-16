@@ -15,6 +15,10 @@ import { formatCurrency } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { uploadPaymentReceiptSchema, type UploadPaymentReceiptValues } from "~/lib/schemas/forms";
 import {
   Dialog,
   DialogContent,
@@ -47,8 +51,14 @@ export function UploadReceiptModal({
     type: string;
     base64: string;
   } | null>(null);
-  const [notes, setNotes] = useState("");
   const [fileError, setFileError] = useState<string | null>(null);
+
+  const form = useForm<UploadPaymentReceiptValues>({
+    resolver: zodResolver(uploadPaymentReceiptSchema),
+    defaultValues: {
+      notes: "",
+    },
+  });
 
   const utils = api.useUtils();
 
@@ -66,7 +76,7 @@ export function UploadReceiptModal({
 
   const handleClose = () => {
     setSelectedFile(null);
-    setNotes("");
+    form.reset();
     setFileError(null);
     onClose();
   };
@@ -98,8 +108,7 @@ export function UploadReceiptModal({
     reader.readAsDataURL(file);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (values: UploadPaymentReceiptValues) => {
     if (!invoice || !selectedFile) return;
 
     submitMutation.mutate({
@@ -108,7 +117,7 @@ export function UploadReceiptModal({
       fileSize: selectedFile.size,
       mimeType: selectedFile.type,
       fileData: selectedFile.base64,
-      notes: notes.trim(),
+      notes: values.notes?.trim() || "",
     });
   };
 
@@ -131,75 +140,82 @@ export function UploadReceiptModal({
           </p>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 py-2">
-          {/* File Picker Zone */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-medium text-foreground">
-              Receipt File (PNG, JPG, or PDF max 5MB)
-            </label>
-
-            {!selectedFile ? (
-              <label className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/30 transition-colors rounded-xl p-6 cursor-pointer group">
-                <Upload className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
-                <span className="text-xs font-semibold text-foreground">Click to upload payment proof</span>
-                <span className="text-[11px] text-muted-foreground mt-0.5">Supports PDF, PNG, JPG</span>
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp,application/pdf"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-2">
+            {/* File Picker Zone */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-foreground">
+                Receipt File (PNG, JPG, or PDF max 5MB)
               </label>
-            ) : (
-              <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                    {selectedFile.type.includes("pdf") ? (
-                      <FileText className="w-5 h-5" />
-                    ) : (
-                      <ImageIcon className="w-5 h-5" />
-                    )}
+
+              {!selectedFile ? (
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/30 transition-colors rounded-xl p-6 cursor-pointer group">
+                  <Upload className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
+                  <span className="text-xs font-semibold text-foreground">Click to upload payment proof</span>
+                  <span className="text-[11px] text-muted-foreground mt-0.5">Supports PDF, PNG, JPG</span>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp,application/pdf"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              ) : (
+                <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                      {selectedFile.type.includes("pdf") ? (
+                        <FileText className="w-5 h-5" />
+                      ) : (
+                        <ImageIcon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">{selectedFile.name}</p>
+                      <p className="text-[10px] text-muted-foreground font-mono">
+                        {(selectedFile.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-foreground truncate">{selectedFile.name}</p>
-                    <p className="text-[10px] text-muted-foreground font-mono">
-                      {(selectedFile.size / 1024).toFixed(1)} KB
-                    </p>
-                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setSelectedFile(null)}
+                    className="text-muted-foreground hover:text-destructive h-8 w-8"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
                 </div>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setSelectedFile(null)}
-                  className="text-muted-foreground hover:text-destructive h-8 w-8"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            )}
+              )}
 
-            {fileError && (
-              <p className="text-[11px] text-destructive flex items-center gap-1 mt-1">
-                <AlertCircle className="w-3.5 h-3.5" />
-                <span>{fileError}</span>
-              </p>
-            )}
-          </div>
+              {fileError && (
+                <p className="text-[11px] text-destructive flex items-center gap-1 mt-1">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{fileError}</span>
+                </p>
+              )}
+            </div>
 
-          {/* Transfer reference / notes */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-medium text-foreground">
-              Reference / Notes (Optional)
-            </label>
-            <Textarea
-              rows={2}
-              placeholder="e.g. Wire transfer ref #84920 via Chase Bank on Sept 14"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              className="text-xs"
+            {/* Transfer reference / notes */}
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Reference / Notes (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      rows={2}
+                      placeholder="e.g. Wire transfer ref #84920 via Chase Bank on Sept 14"
+                      className="text-xs"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
           <div className="p-3 rounded-lg bg-muted/40 border border-border text-[11px] text-muted-foreground space-y-1">
             <p className="font-semibold text-foreground">Verification Notice:</p>
@@ -241,7 +257,8 @@ export function UploadReceiptModal({
               )}
             </Button>
           </DialogFooter>
-        </form>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

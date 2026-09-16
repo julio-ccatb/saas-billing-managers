@@ -21,44 +21,63 @@ import { LogoUploader } from "~/components/invoice/LogoUploader";
 import { SignaturePad } from "~/components/invoice/SignaturePad";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Textarea } from "~/components/ui/textarea";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { NativeSelect, NativeSelectOption } from "~/components/ui/native-select";
 import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import { useCompany } from "~/components/company/CompanyContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  companyProfileSchema,
+  type CompanyProfileValues,
+  addMemberSchema,
+  type AddMemberValues,
+} from "~/lib/schemas/forms";
 
 export default function SettingsPage() {
   const { activeCompany } = useCompany();
   const utils = api.useUtils();
 
   const [activeTab, setActiveTab] = useState("profile");
-
-  const [profileData, setProfileData] = useState({
-    companyName: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    zipCode: "",
-    country: "",
-    taxId: "",
-    bankName: "",
-    bankAccountName: "",
-    bankAccountNumber: "",
-    logoUrl: null as string | null,
-    signatureData: null as string | null,
-    currency: "USD",
-    paymentTerms: "Payment due upon receipt",
-    notes: "Thank you for your business!",
-  });
-
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [signatureData, setSignatureData] = useState<string | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  // Members state
-  const [newMemberEmail, setNewMemberEmail] = useState("");
-  const [newMemberRole, setNewMemberRole] = useState<"ADMIN" | "MEMBER">("MEMBER");
+  // Members notification state
   const [memberError, setMemberError] = useState<string | null>(null);
   const [memberSuccess, setMemberSuccess] = useState<string | null>(null);
+
+  const profileForm = useForm<CompanyProfileValues>({
+    resolver: zodResolver(companyProfileSchema),
+    defaultValues: {
+      companyName: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      zipCode: "",
+      country: "",
+      taxId: "",
+      currency: "USD",
+      paymentTerms: "Payment due upon receipt",
+      notes: "Thank you for your business!",
+      bankName: "",
+      bankAccountName: "",
+      bankAccountNumber: "",
+    },
+  });
+
+  const memberForm = useForm<AddMemberValues>({
+    resolver: zodResolver(addMemberSchema),
+    defaultValues: {
+      email: "",
+      role: "MEMBER",
+    },
+  });
 
   const { data, isLoading } = api.profile.get.useQuery();
   const { data: members, isLoading: isMembersLoading } = api.company.getMembers.useQuery();
@@ -66,7 +85,7 @@ export default function SettingsPage() {
   const addMemberMutation = api.company.addMember.useMutation({
     onSuccess: () => {
       setMemberSuccess("Member added to workspace.");
-      setNewMemberEmail("");
+      memberForm.reset();
       setMemberError(null);
       void utils.company.getMembers.invalidate();
       setTimeout(() => setMemberSuccess(null), 3000);
@@ -108,14 +127,9 @@ export default function SettingsPage() {
   const isOwner = activeCompany?.role === "OWNER";
   const isAdmin = activeCompany?.role === "ADMIN";
 
-  const handleAddMember = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMemberEmail.trim()) return;
+  const handleAddMember = (values: AddMemberValues) => {
     setMemberError(null);
-    addMemberMutation.mutate({
-      email: newMemberEmail.trim().toLowerCase(),
-      role: newMemberRole,
-    });
+    addMemberMutation.mutate(values);
   };
 
   const getRoleBadge = (role: string) => {
@@ -146,7 +160,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     if (data) {
-      setProfileData({
+      profileForm.reset({
         companyName: data.companyName ?? "",
         email: data.email ?? "",
         phone: data.phone ?? "",
@@ -158,14 +172,14 @@ export default function SettingsPage() {
         bankName: (data as any).bankName ?? "",
         bankAccountName: (data as any).bankAccountName ?? "",
         bankAccountNumber: (data as any).bankAccountNumber ?? "",
-        logoUrl: data.logoUrl ?? null,
-        signatureData: (data as any).signatureData ?? null,
         currency: data.currency ?? "USD",
         paymentTerms: data.paymentTerms ?? "Payment due upon receipt",
         notes: data.notes ?? "Thank you for your business!",
       });
+      setLogoUrl(data.logoUrl ?? null);
+      setSignatureData((data as any).signatureData ?? null);
     }
-  }, [data]);
+  }, [data, profileForm]);
 
   const upsertMutation = api.profile.upsert.useMutation({
     onSuccess: () => {
@@ -177,9 +191,12 @@ export default function SettingsPage() {
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    upsertMutation.mutate(profileData);
+  const handleSubmit = (values: CompanyProfileValues) => {
+    upsertMutation.mutate({
+      ...values,
+      logoUrl,
+      signatureData,
+    });
   };
 
   return (
@@ -206,212 +223,280 @@ export default function SettingsPage() {
         {/* Tab 1: Profile & Banking */}
         <TabsContent value="profile" className="pt-2">
           <Card>
-            <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-6">
-              <div className="flex items-center gap-2 pb-3 border-b border-border text-sm font-semibold text-foreground">
-                <Building2 className="w-5 h-5 text-primary" />
-                <span>Company &amp; Sender Profile</span>
-              </div>
+            <Form {...profileForm}>
+              <form onSubmit={profileForm.handleSubmit(handleSubmit)} className="p-5 sm:p-6 space-y-6">
+                <div className="flex items-center gap-2 pb-3 border-b border-border text-sm font-semibold text-foreground">
+                  <Building2 className="w-5 h-5 text-primary" />
+                  <span>Company &amp; Sender Profile</span>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Company / Legal Name</label>
-                  <Input
-                    type="text"
-                    value={profileData.companyName}
-                    onChange={(e) => setProfileData({ ...profileData, companyName: e.target.value })}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <FormField
+                    control={profileForm.control}
+                    name="companyName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company / Legal Name *</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={profileForm.control}
+                    name="taxId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tax / VAT ID</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={profileForm.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Billing Email</FormLabel>
+                        <FormControl>
+                          <Input type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={profileForm.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Tax / VAT ID</label>
-                  <Input
-                    type="text"
-                    value={profileData.taxId}
-                    onChange={(e) => setProfileData({ ...profileData, taxId: e.target.value })}
+
+                <div className="space-y-4 pt-2 border-t border-border text-sm">
+                  <FormField
+                    control={profileForm.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Street Address</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <FormField
+                      control={profileForm.control}
+                      name="city"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>City</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="zipCode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Postal Code</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="country"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Country</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-4 pt-2 border-t border-border text-sm">
+                  <h3 className="text-xs uppercase font-semibold tracking-wider text-muted-foreground">
+                    Default Invoicing Terms
+                  </h3>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <FormField
+                      control={profileForm.control}
+                      name="currency"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Default Currency</FormLabel>
+                          <FormControl>
+                            <NativeSelect className="w-full" {...field}>
+                              <NativeSelectOption value="USD">USD ($)</NativeSelectOption>
+                              <NativeSelectOption value="EUR">EUR (€)</NativeSelectOption>
+                              <NativeSelectOption value="GBP">GBP (£)</NativeSelectOption>
+                              <NativeSelectOption value="CAD">CAD ($)</NativeSelectOption>
+                              <NativeSelectOption value="AUD">AUD ($)</NativeSelectOption>
+                            </NativeSelect>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={profileForm.control}
+                      name="paymentTerms"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Default Payment Terms</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <FormField
+                    control={profileForm.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Default Notes / Memo</FormLabel>
+                        <FormControl>
+                          <Textarea rows={2} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Billing Email</label>
-                  <Input
-                    type="email"
-                    value={profileData.email}
-                    onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Phone</label>
-                  <Input
-                    type="text"
-                    value={profileData.phone}
-                    onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
-                  />
-                </div>
-              </div>
 
-              <div className="space-y-4 pt-2 border-t border-border text-sm">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Street Address</label>
-                  <Input
-                    type="text"
-                    value={profileData.address}
-                    onChange={(e) => setProfileData({ ...profileData, address: e.target.value })}
-                  />
-                </div>
+                {/* Bank & Payment Information */}
+                <div className="space-y-4 pt-2 border-t border-border text-sm">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                    <Landmark className="w-4 h-4 text-primary" />
+                    <span>Payment &amp; Bank Information</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Provide banking details to automatically pre-fill wire/ACH payment instructions on invoices.
+                  </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">City</label>
-                    <Input
-                      type="text"
-                      value={profileData.city}
-                      onChange={(e) => setProfileData({ ...profileData, city: e.target.value })}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <FormField
+                      control={profileForm.control}
+                      name="bankName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Bank Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. Chase" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Postal Code</label>
-                    <Input
-                      type="text"
-                      value={profileData.zipCode}
-                      onChange={(e) => setProfileData({ ...profileData, zipCode: e.target.value })}
+                    <FormField
+                      control={profileForm.control}
+                      name="bankAccountName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account Beneficiary</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. Acme Studio LLC" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Country</label>
-                    <Input
-                      type="text"
-                      value={profileData.country}
-                      onChange={(e) => setProfileData({ ...profileData, country: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-4 pt-2 border-t border-border text-sm">
-                <h3 className="text-xs uppercase font-semibold tracking-wider text-muted-foreground">
-                  Default Invoicing Terms
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Default Currency</label>
-                    <select
-                      className="w-full px-3 py-2 border border-input rounded-lg bg-card text-foreground text-sm focus:outline-hidden focus:ring-2 focus:ring-ring"
-                      value={profileData.currency}
-                      onChange={(e) => setProfileData({ ...profileData, currency: e.target.value })}
-                    >
-                      <option value="USD">USD ($)</option>
-                      <option value="EUR">EUR (€)</option>
-                      <option value="GBP">GBP (£)</option>
-                      <option value="CAD">CAD ($)</option>
-                      <option value="AUD">AUD ($)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Default Payment Terms</label>
-                    <Input
-                      type="text"
-                      value={profileData.paymentTerms}
-                      onChange={(e) => setProfileData({ ...profileData, paymentTerms: e.target.value })}
+                    <FormField
+                      control={profileForm.control}
+                      name="bankAccountNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Account # / IBAN</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. 1234567890" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">Default Notes / Memo</label>
-                  <textarea
-                    rows={2}
-                    className="w-full px-3 py-2 border border-input bg-card text-foreground rounded-lg text-sm focus:outline-hidden focus:ring-2 focus:ring-ring"
-                    value={profileData.notes}
-                    onChange={(e) => setProfileData({ ...profileData, notes: e.target.value })}
-                  />
-                </div>
-              </div>
+                {/* Company Branding & Signature */}
+                <div className="space-y-4 pt-2 border-t border-border text-sm">
+                  <h3 className="text-xs uppercase font-semibold tracking-wider text-muted-foreground">
+                    Company Branding &amp; Default Signature
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Your default logo and authorized signature will be automatically pre-filled on every newly created invoice.
+                  </p>
 
-              {/* Bank & Payment Information */}
-              <div className="space-y-4 pt-2 border-t border-border text-sm">
-                <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <Landmark className="w-4 h-4 text-primary" />
-                  <span>Payment &amp; Bank Information</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Provide banking details to automatically pre-fill wire/ACH payment instructions on invoices.
-                </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                    <div className="bg-muted/40 p-4 rounded-xl border border-border">
+                      <LogoUploader
+                        value={logoUrl}
+                        onChange={(logo) => setLogoUrl(logo)}
+                      />
+                    </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Bank Name</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. Chase"
-                      value={profileData.bankName}
-                      onChange={(e) => setProfileData({ ...profileData, bankName: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Account Beneficiary</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. Acme Studio LLC"
-                      value={profileData.bankAccountName}
-                      onChange={(e) => setProfileData({ ...profileData, bankAccountName: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1">Account # / IBAN</label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. 1234567890"
-                      value={profileData.bankAccountNumber}
-                      onChange={(e) => setProfileData({ ...profileData, bankAccountNumber: e.target.value })}
-                    />
+                    <div className="bg-muted/40 p-4 rounded-xl border border-border">
+                      <SignaturePad
+                        value={signatureData}
+                        onChange={(sig) => setSignatureData(sig)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Company Branding & Signature */}
-              <div className="space-y-4 pt-2 border-t border-border text-sm">
-                <h3 className="text-xs uppercase font-semibold tracking-wider text-muted-foreground">
-                  Company Branding &amp; Default Signature
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Your default logo and authorized signature will be automatically pre-filled on every newly created invoice.
-                </p>
+                <div className="pt-4 border-t border-border flex items-center justify-between">
+                  {savedSuccess ? (
+                    <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
+                      <Check className="w-4 h-4" /> Changes saved successfully!
+                    </span>
+                  ) : (
+                    <span />
+                  )}
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-                  <div className="bg-muted/40 p-4 rounded-xl border border-border">
-                    <LogoUploader
-                      value={profileData.logoUrl}
-                      onChange={(logo) => setProfileData({ ...profileData, logoUrl: logo })}
-                    />
-                  </div>
-
-                  <div className="bg-muted/40 p-4 rounded-xl border border-border">
-                    <SignaturePad
-                      value={profileData.signatureData}
-                      onChange={(sig) => setProfileData({ ...profileData, signatureData: sig })}
-                    />
-                  </div>
+                  <Button
+                    type="submit"
+                    disabled={upsertMutation.isPending}
+                    className="gap-1.5 shadow-xs"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{upsertMutation.isPending ? "Saving..." : "Save Settings"}</span>
+                  </Button>
                 </div>
-              </div>
-
-              <div className="pt-4 border-t border-border flex items-center justify-between">
-                {savedSuccess ? (
-                  <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 font-semibold">
-                    <Check className="w-4 h-4" /> Changes saved successfully!
-                  </span>
-                ) : (
-                  <span />
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={upsertMutation.isPending}
-                  className="gap-1.5 shadow-xs"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>{upsertMutation.isPending ? "Saving..." : "Save Settings"}</span>
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           </Card>
         </TabsContent>
 
@@ -452,45 +537,68 @@ export default function SettingsPage() {
 
             {/* Add member form */}
             {(isOwner || isAdmin) && (
-              <form onSubmit={handleAddMember} className="rounded-xl border border-border bg-muted/40 p-4 space-y-3">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                  <UserPlus className="w-4 h-4 text-primary" />
-                  <span>Invite or Add Team Member</span>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2.5">
-                  <Input
-                    type="email"
-                    required
-                    placeholder="colleague@company.com"
-                    value={newMemberEmail}
-                    onChange={(e) => setNewMemberEmail(e.target.value)}
-                    disabled={addMemberMutation.isPending}
-                    className="h-9 text-xs flex-1"
-                  />
-                  <select
-                    value={newMemberRole}
-                    onChange={(e) => setNewMemberRole(e.target.value as "ADMIN" | "MEMBER")}
-                    disabled={addMemberMutation.isPending}
-                    className="h-9 px-3 rounded-lg border border-input bg-card text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-ring"
-                  >
-                    <option value="MEMBER">Member (Read &amp; Create)</option>
-                    <option value="ADMIN">Admin (Full Management)</option>
-                  </select>
-                  <Button
-                    type="submit"
-                    disabled={addMemberMutation.isPending}
-                    size="sm"
-                    className="h-9 gap-1.5 text-xs font-semibold"
-                  >
-                    {addMemberMutation.isPending ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <UserPlus className="w-3.5 h-3.5" />
-                    )}
-                    <span>Add Member</span>
-                  </Button>
-                </div>
-              </form>
+              <Form {...memberForm}>
+                <form onSubmit={memberForm.handleSubmit(handleAddMember)} className="rounded-xl border border-border bg-muted/40 p-4 space-y-3">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
+                    <UserPlus className="w-4 h-4 text-primary" />
+                    <span>Invite or Add Team Member</span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-2.5">
+                    <FormField
+                      control={memberForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="flex-1">
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="colleague@company.com"
+                              disabled={addMemberMutation.isPending}
+                              className="h-9 text-xs"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={memberForm.control}
+                      name="role"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <NativeSelect
+                              disabled={addMemberMutation.isPending}
+                              className="h-9 text-xs"
+                              {...field}
+                            >
+                              <NativeSelectOption value="MEMBER">Member (Read &amp; Create)</NativeSelectOption>
+                              <NativeSelectOption value="ADMIN">Admin (Full Management)</NativeSelectOption>
+                            </NativeSelect>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="submit"
+                      disabled={addMemberMutation.isPending}
+                      size="sm"
+                      className="h-9 gap-1.5 text-xs font-semibold"
+                    >
+                      {addMemberMutation.isPending ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <UserPlus className="w-3.5 h-3.5" />
+                      )}
+                      <span>Invite Member</span>
+                    </Button>
+                  </div>
+                </form>
+              </Form>
             )}
 
             {/* Member List */}

@@ -34,6 +34,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "~/components/ui/dialog";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import { NativeSelect, NativeSelectOption } from "~/components/ui/native-select";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  createContractSchema,
+  type CreateContractValues,
+  sendSignatureSchema,
+  type SendSignatureValues,
+} from "~/lib/schemas/forms";
 
 export default function ContractsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,18 +58,28 @@ export default function ContractsPage() {
   } | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
   const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
-  const [customTemplateId, setCustomTemplateId] = useState("");
   const [syncingContractId, setSyncingContractId] = useState<string | null>(null);
 
-  const [form, setForm] = useState({
-    customerId: "",
-    title: "",
-    value: 0,
-    currency: "USD",
-    billingCycle: "MONTHLY" as "MONTHLY" | "QUARTERLY" | "ANNUALLY" | "ONE_TIME",
-    status: "DRAFT" as "DRAFT" | "ACTIVE",
-    terms: "",
-    notes: "",
+  const createContractForm = useForm<CreateContractValues>({
+    resolver: zodResolver(createContractSchema),
+    defaultValues: {
+      customerId: "",
+      title: "",
+      value: 0,
+      currency: "USD",
+      billingCycle: "MONTHLY",
+      status: "DRAFT",
+      terms: "",
+      notes: "",
+    },
+  });
+
+  const sendSignatureForm = useForm<SendSignatureValues>({
+    resolver: zodResolver(sendSignatureSchema),
+    defaultValues: {
+      contractId: "",
+      templateId: "",
+    },
   });
 
   const utils = api.useUtils();
@@ -78,16 +98,7 @@ export default function ContractsPage() {
       utils.contract.getAll.invalidate();
       utils.contract.getMetrics.invalidate();
       setIsCreateOpen(false);
-      setForm({
-        customerId: "",
-        title: "",
-        value: 0,
-        currency: "USD",
-        billingCycle: "MONTHLY",
-        status: "DRAFT",
-        terms: "",
-        notes: "",
-      });
+      createContractForm.reset();
     },
     onError: (err) => {
       alert(`Error creating contract: ${err.message}`);
@@ -411,7 +422,7 @@ export default function ContractsPage() {
                               size="sm"
                               onClick={() => {
                                 setDispatchModalContract(c);
-                                setCustomTemplateId("");
+                                sendSignatureForm.reset({ contractId: c.id, templateId: "" });
                               }}
                               className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
                             >
@@ -607,7 +618,7 @@ export default function ContractsPage() {
                           const contractToDispatch = selectedContractDetails;
                           setSelectedContractDetails(null);
                           setDispatchModalContract(contractToDispatch);
-                          setCustomTemplateId("");
+                          sendSignatureForm.reset({ contractId: contractToDispatch.id, templateId: "" });
                         }}
                         className="gap-1.5 text-xs text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
                       >
@@ -649,60 +660,69 @@ export default function ContractsPage() {
           </DialogHeader>
 
           {dispatchModalContract && (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                sendForSignatureMutation.mutate({
-                  contractId: dispatchModalContract.id,
-                  templateId: customTemplateId.trim() || undefined,
-                });
-              }}
-              className="space-y-4 py-2 text-xs"
-            >
-              <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
-                <div className="flex justify-between">
-                  <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
-                  <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
+            <Form {...sendSignatureForm}>
+              <form
+                onSubmit={sendSignatureForm.handleSubmit((values) => {
+                  sendForSignatureMutation.mutate({
+                    contractId: dispatchModalContract.id,
+                    templateId: values.templateId?.trim() || undefined,
+                  });
+                })}
+                className="space-y-4 py-2 text-xs"
+              >
+                <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
+                  <div className="flex justify-between">
+                    <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
+                    <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
+                  </div>
+                  <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
+                  <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{dispatchModalContract.customer?.name}</strong> ({dispatchModalContract.customer?.email || "No email"})</p>
                 </div>
-                <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
-                <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{dispatchModalContract.customer?.name}</strong> ({dispatchModalContract.customer?.email || "No email"})</p>
-              </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
-                  DocuSeal Template ID (Optional)
-                </label>
-                <Input
-                  placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
-                  value={customTemplateId}
-                  onChange={(e) => setCustomTemplateId(e.target.value)}
-                  className="font-mono text-xs"
+                <FormField
+                  control={sendSignatureForm.control}
+                  name="templateId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        DocuSeal Template ID (Optional)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
+                          className="font-mono text-xs"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <p className="text-[11px] text-muted-foreground mt-1">
-                  Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
-                </p>
-              </div>
 
-              <DialogFooter className="gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setDispatchModalContract(null)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  size="sm"
-                  disabled={sendForSignatureMutation.isPending}
-                  className="gap-1.5"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
-                </Button>
-              </DialogFooter>
-            </form>
+                <DialogFooter className="gap-2 pt-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setDispatchModalContract(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    disabled={sendForSignatureMutation.isPending}
+                    className="gap-1.5"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
           )}
         </DialogContent>
       </Dialog>
@@ -778,114 +798,139 @@ export default function ContractsPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!form.customerId) {
-                alert("Please select a client.");
-                return;
-              }
-              createContractMutation.mutate({
-                customerId: form.customerId,
-                title: form.title,
-                value: Number(form.value),
-                currency: form.currency,
-                billingCycle: form.billingCycle,
-                terms: form.terms,
-                notes: form.notes,
-                status: form.status,
-              });
-            }}
-            className="space-y-4 py-2"
-          >
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Target Client *</label>
-              <select
-                required
-                value={form.customerId}
-                onChange={(e) => setForm({ ...form, customerId: e.target.value })}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              >
-                <option value="">Select a client...</option>
-                {customers?.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name} {c.email ? `(${c.email})` : ""}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Contract Title *</label>
-              <Input
-                required
-                placeholder="e.g. Platform SaaS Subscription & Technical Support"
-                value={form.title}
-                onChange={(e) => setForm({ ...form, title: e.target.value })}
+          <Form {...createContractForm}>
+            <form
+              onSubmit={createContractForm.handleSubmit((values) => {
+                createContractMutation.mutate(values);
+              })}
+              className="space-y-4 py-2"
+            >
+              <FormField
+                control={createContractForm.control}
+                name="customerId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Target Client *</FormLabel>
+                    <FormControl>
+                      <NativeSelect className="w-full" {...field}>
+                        <NativeSelectOption value="">Select a client...</NativeSelectOption>
+                        {customers?.map((c) => (
+                          <NativeSelectOption key={c.id} value={c.id}>
+                            {c.name} {c.email ? `(${c.email})` : ""}
+                          </NativeSelectOption>
+                        ))}
+                      </NativeSelect>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Contract Value *</label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  required
-                  value={form.value}
-                  onChange={(e) => setForm({ ...form, value: parseFloat(e.target.value) || 0 })}
+              <FormField
+                control={createContractForm.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Contract Title *</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="e.g. Platform SaaS Subscription & Technical Support"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <FormField
+                  control={createContractForm.control}
+                  name="value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contract Value *</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={createContractForm.control}
+                  name="billingCycle"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Billing Cycle</FormLabel>
+                      <FormControl>
+                        <NativeSelect className="w-full" {...field}>
+                          <NativeSelectOption value="MONTHLY">Monthly</NativeSelectOption>
+                          <NativeSelectOption value="QUARTERLY">Quarterly</NativeSelectOption>
+                          <NativeSelectOption value="ANNUALLY">Annually</NativeSelectOption>
+                          <NativeSelectOption value="ONE_TIME">One-Time</NativeSelectOption>
+                        </NativeSelect>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">Billing Cycle</label>
-                <select
-                  value={form.billingCycle}
-                  onChange={(e: any) => setForm({ ...form, billingCycle: e.target.value })}
-                  className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                >
-                  <option value="MONTHLY">Monthly</option>
-                  <option value="QUARTERLY">Quarterly</option>
-                  <option value="ANNUALLY">Annually</option>
-                  <option value="ONE_TIME">One-Time</option>
-                </select>
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Contract Execution Mode</label>
-              <select
-                value={form.status}
-                onChange={(e: any) => setForm({ ...form, status: e.target.value })}
-                className="w-full h-9 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-              >
-                <option value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</option>
-                <option value="ACTIVE">Active — Pre-signed or Direct Activation</option>
-              </select>
-              <p className="text-[11px] text-muted-foreground mt-1">
-                Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">Terms &amp; Commitments</label>
-              <Textarea
-                rows={3}
-                placeholder="SLA response guarantees, uptime targets, renewal conditions..."
-                value={form.terms}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, terms: e.target.value })}
+              <FormField
+                control={createContractForm.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Contract Execution Mode</FormLabel>
+                    <FormControl>
+                      <NativeSelect className="w-full" {...field}>
+                        <NativeSelectOption value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</NativeSelectOption>
+                        <NativeSelectOption value="ACTIVE">Active — Pre-signed or Direct Activation</NativeSelectOption>
+                      </NativeSelect>
+                    </FormControl>
+                    <FormDescription>
+                      Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            <DialogFooter className="gap-2 pt-2">
-              <Button type="button" variant="outline" size="sm" onClick={() => setIsCreateOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit" size="sm" disabled={createContractMutation.isPending}>
-                Create Contract
-              </Button>
-            </DialogFooter>
-          </form>
+              <FormField
+                control={createContractForm.control}
+                name="terms"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Terms &amp; Commitments</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        rows={3}
+                        placeholder="SLA response guarantees, uptime targets, renewal conditions..."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter className="gap-2 pt-2">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsCreateOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" size="sm" disabled={createContractMutation.isPending}>
+                  {createContractMutation.isPending ? "Creating..." : "Create Contract"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
 
