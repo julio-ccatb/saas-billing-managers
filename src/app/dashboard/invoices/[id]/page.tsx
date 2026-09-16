@@ -25,6 +25,7 @@ import { InvoiceStatusBadge } from "~/features/billing/components/InvoiceStatusB
 import { SendInvoiceModal } from "~/components/invoice/SendInvoiceModal";
 import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
 import { AppRoutes } from "~/config/routes";
+import { toast } from "~/components/ui/toast";
 
 export default function InvoiceDetailPage() {
   const params = useParams<{ id: string }>();
@@ -74,11 +75,11 @@ export default function InvoiceDetailPage() {
   const sendEmailMutation = api.invoice.sendEmail.useMutation({
     onSuccess: () => {
       setSendingInvoice(null);
-      alert("Invoice email dispatched successfully via Resend.");
+      toast.success("Email sent", "Invoice email dispatched successfully via Resend.");
       utils.invoice.getById.invalidate({ id: invoiceId });
     },
     onError: (err) => {
-      alert(`Failed to send email: ${err.message}`);
+      toast.error("Failed to send email", err.message);
     },
   });
 

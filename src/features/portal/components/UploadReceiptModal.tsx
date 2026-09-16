@@ -20,6 +20,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uploadPaymentReceiptSchema, type UploadPaymentReceiptValues } from "~/lib/schemas/forms";
+import { toast } from "~/components/ui/toast";
 import {
   Dialog,
   DialogContent,
@@ -68,11 +69,12 @@ export function UploadReceiptModal({
     onSuccess: () => {
       utils.portal.getOverview.invalidate();
       utils.portal.getInvoices.invalidate();
+      toast.success("Receipt submitted", "Payment verification proof has been uploaded.");
       handleClose();
       if (onSuccess) onSuccess();
     },
     onError: (err) => {
-      alert(`Upload error: ${err.message}`);
+      toast.error("Upload error", err.message);
     },
   });
 

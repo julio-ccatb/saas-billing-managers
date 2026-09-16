@@ -23,6 +23,7 @@ import {
   onboardingLicenseSchema,
   onboardingInvoiceSchema,
 } from "../schemas/onboarding.schema";
+import { toast } from "~/components/ui/toast";
 import type { z } from "zod";
 
 import { StepClientInfo } from "./steps/StepClientInfo";
@@ -96,10 +97,11 @@ export function OnboardingWizard() {
 
   const onboardMutation = api.customer.onboardClient.useMutation({
     onSuccess: (data) => {
+      toast.success("Client onboarded", "Client profile, agreements, and accounts created.");
       router.push(AppRoutes.CUSTOMER_DETAILS(data.customerId));
     },
     onError: (err) => {
-      alert(`Onboarding error: ${err.message}`);
+      toast.error("Onboarding error", err.message);
     },
   });
 

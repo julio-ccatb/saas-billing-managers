@@ -11,6 +11,7 @@ import { AppRoutes } from "~/config/routes";
 import { type CustomerUpsertValues } from "~/lib/schemas/forms";
 import { CustomerCard } from "~/features/clients/components/CustomerCard";
 import { CustomerUpsertDialog } from "~/features/clients/components/CustomerUpsertDialog";
+import { toast } from "~/components/ui/toast";
 
 export default function CustomersPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,15 +29,20 @@ export default function CustomersPage() {
       utils.customer.getAll.invalidate();
       setIsModalOpen(false);
       setEditingCustomer(null);
+      toast.success("Customer saved", "Customer account updated successfully.");
     },
     onError: (err) => {
-      alert(`Error saving customer: ${err.message}`);
+      toast.error("Error saving customer", err.message);
     },
   });
 
   const deleteMutation = api.customer.delete.useMutation({
     onSuccess: () => {
       utils.customer.getAll.invalidate();
+      toast.success("Customer deleted");
+    },
+    onError: (err) => {
+      toast.error("Error deleting customer", err.message);
     },
   });
 

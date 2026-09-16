@@ -7,7 +7,63 @@ import { cn } from "cn"
 import { Button } from "~/components/ui/button"
 import { XIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
-const toast = ToastPrimitive.createToastManager()
+const toastManager = ToastPrimitive.createToastManager()
+
+const toast = Object.assign(
+  (
+    titleOrOptions: string | React.ReactNode | Parameters<typeof toastManager.add>[0],
+    options?: Parameters<typeof toastManager.add>[0]
+  ) => {
+    if (typeof titleOrOptions === "string" || React.isValidElement(titleOrOptions)) {
+      return toastManager.add({
+        title: titleOrOptions,
+        ...options,
+      })
+    }
+    if (titleOrOptions && typeof titleOrOptions === "object" && !React.isValidElement(titleOrOptions)) {
+      return toastManager.add(titleOrOptions as Parameters<typeof toastManager.add>[0])
+    }
+    return toastManager.add({
+      title: String(titleOrOptions ?? ""),
+      ...options,
+    })
+  },
+  toastManager,
+  {
+    success: (title: React.ReactNode, description?: React.ReactNode, options?: Omit<Parameters<typeof toastManager.add>[0], "title" | "description" | "type">) => {
+      return toastManager.add({
+        title,
+        description,
+        type: "success",
+        ...options,
+      })
+    },
+    error: (title: React.ReactNode, description?: React.ReactNode, options?: Omit<Parameters<typeof toastManager.add>[0], "title" | "description" | "type">) => {
+      return toastManager.add({
+        title,
+        description,
+        type: "error",
+        ...options,
+      })
+    },
+    info: (title: React.ReactNode, description?: React.ReactNode, options?: Omit<Parameters<typeof toastManager.add>[0], "title" | "description" | "type">) => {
+      return toastManager.add({
+        title,
+        description,
+        type: "info",
+        ...options,
+      })
+    },
+    warning: (title: React.ReactNode, description?: React.ReactNode, options?: Omit<Parameters<typeof toastManager.add>[0], "title" | "description" | "type">) => {
+      return toastManager.add({
+        title,
+        description,
+        type: "warning",
+        ...options,
+      })
+    },
+  }
+)
 
 function ToastProvider({ ...props }: ToastPrimitive.Provider.Props) {
   return <ToastPrimitive.Provider {...props} />

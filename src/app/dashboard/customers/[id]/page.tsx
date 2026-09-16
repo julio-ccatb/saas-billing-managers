@@ -18,6 +18,7 @@ import { Button } from "~/components/ui/button";
 import { AppRoutes } from "~/config/routes";
 import { Card, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import { toast } from "~/components/ui/toast";
 import { 
   type CreateContractValues, 
   type GuardrailSuspensionValues,
@@ -61,9 +62,10 @@ export default function CustomerDetailPage() {
       utils.customer.getById.invalidate({ id: customerId });
       utils.license.getMetrics.invalidate();
       setSelectedLicense(null);
+      toast.success("License status updated");
     },
     onError: (err) => {
-      alert(`License toggle error: ${err.message}`);
+      toast.error("License toggle error", err.message);
     },
   });
 
@@ -72,9 +74,10 @@ export default function CustomerDetailPage() {
       utils.customer.getById.invalidate({ id: customerId });
       utils.contract.getMetrics.invalidate();
       setContractModalOpen(false);
+      toast.success("Contract created successfully");
     },
     onError: (err) => {
-      alert(`Contract creation error: ${err.message}`);
+      toast.error("Contract creation error", err.message);
     },
   });
 
@@ -83,9 +86,10 @@ export default function CustomerDetailPage() {
       utils.customer.getById.invalidate({ id: customerId });
       utils.contract.getMetrics.invalidate();
       setTerminateContractId(null);
+      toast.success("Contract terminated");
     },
     onError: (err) => {
-      alert(`Contract termination error: ${err.message}`);
+      toast.error("Contract termination error", err.message);
     },
   });
 
@@ -94,20 +98,22 @@ export default function CustomerDetailPage() {
       utils.customer.getById.invalidate({ id: customerId });
       setPortalModalOpen(false);
       if (data.inviteEmailSent) {
-        alert(`Portal access updated! A password setup invitation email has been dispatched to ${data.email}.`);
+        toast.success("Portal access updated", `Password setup invitation dispatched to ${data.email}.`);
+      } else {
+        toast.success("Portal access updated");
       }
     },
     onError: (err) => {
-      alert(`Portal access error: ${err.message}`);
+      toast.error("Portal access error", err.message);
     },
   });
 
   const resendInviteMutation = api.customer.resendPortalInvitation.useMutation({
     onSuccess: (data) => {
-      alert(data.message);
+      toast.success("Invitation resent", data.message);
     },
     onError: (err) => {
-      alert(`Resend invitation error: ${err.message}`);
+      toast.error("Resend invitation error", err.message);
     },
   });
 
@@ -119,9 +125,10 @@ export default function CustomerDetailPage() {
         signingUrl: data.signingUrl,
         contractNumber: data.contractNumber,
       });
+      toast.success("DocuSeal envelope created", "Signing session ready.");
     },
     onError: (err) => {
-      alert(`DocuSeal submission failed: ${err.message}`);
+      toast.error("DocuSeal submission failed", err.message);
     },
   });
 
@@ -131,11 +138,11 @@ export default function CustomerDetailPage() {
       utils.contract.getMetrics.invalidate();
       utils.invoice.getAll.invalidate();
       setSyncingContractId(null);
-      alert(data.message);
+      toast.info("DocuSeal sync", data.message);
     },
     onError: (err) => {
       setSyncingContractId(null);
-      alert(`Sync failed: ${err.message}`);
+      toast.error("Sync failed", err.message);
     },
   });
 

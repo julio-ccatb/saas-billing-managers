@@ -14,6 +14,7 @@ import { INVOICE_TEMPLATES, ACCENT_COLORS } from "~/lib/templates/invoiceTemplat
 import { getTemplateComponent } from "~/server/services/renderHtml";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { toast } from "~/components/ui/toast";
 
 export function InvoicePreviewCard() {
   const { invoice, updateField } = useInvoiceForm();
@@ -47,8 +48,9 @@ export function InvoicePreviewCard() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+      toast.success("PDF Downloaded", `Invoice ${invoice.invoiceNumber || "draft"} saved.`);
     } catch (err: any) {
-      alert(`PDF download failed: ${err.message}. You can also use the "Print / Save PDF" button.`);
+      toast.error("PDF download failed", `${err.message}. You can also use the "Print / Save PDF" button.`);
     } finally {
       setIsGeneratingPdf(false);
     }

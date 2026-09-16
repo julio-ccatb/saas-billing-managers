@@ -17,6 +17,7 @@ import { NativeSelect, NativeSelectOption } from "~/components/ui/native-select"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createCompanySchema, type CreateCompanyValues } from "~/lib/schemas/forms";
+import { toast } from "~/components/ui/toast";
 
 export function CreateCompanyModal() {
   const { isCreateModalOpen, setIsCreateModalOpen, switchCompany } = useCompany();
@@ -40,11 +41,12 @@ export function CreateCompanyModal() {
     onSuccess: (newCompany) => {
       utils.company.list.invalidate();
       switchCompany(newCompany.id);
+      toast.success("Company created", `Switched to workspace ${newCompany.name}.`);
       setIsCreateModalOpen(false);
       form.reset();
     },
     onError: (err) => {
-      alert(`Error creating company: ${err.message}`);
+      toast.error("Error creating company", err.message);
     },
   });
 

@@ -22,6 +22,7 @@ import {
   companyProfileSchema,
   type CompanyProfileValues,
 } from "~/lib/schemas/forms";
+import { toast } from "~/components/ui/toast";
 
 export function CompanyProfileForm() {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -76,10 +77,11 @@ export function CompanyProfileForm() {
   const upsertMutation = api.profile.upsert.useMutation({
     onSuccess: () => {
       setSavedSuccess(true);
+      toast.success("Settings saved", "Company profile information updated successfully.");
       setTimeout(() => setSavedSuccess(false), 3000);
     },
     onError: (err) => {
-      alert(`Failed to save settings: ${err.message}`);
+      toast.error("Save failed", err.message);
     },
   });
 

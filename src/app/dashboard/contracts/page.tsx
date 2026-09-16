@@ -14,6 +14,7 @@ import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { toast } from "~/components/ui/toast";
 import { AppRoutes } from "~/config/routes";
 import { type CreateContractValues, type SendSignatureValues } from "~/lib/schemas/forms";
 
@@ -55,9 +56,10 @@ export default function ContractsPage() {
       utils.contract.getAll.invalidate();
       utils.contract.getMetrics.invalidate();
       setIsCreateOpen(false);
+      toast.success("Contract created", "Service agreement created successfully.");
     },
     onError: (err) => {
-      alert(`Error creating contract: ${err.message}`);
+      toast.error("Error creating contract", err.message);
     },
   });
 
@@ -66,9 +68,10 @@ export default function ContractsPage() {
       utils.contract.getAll.invalidate();
       utils.contract.getMetrics.invalidate();
       setTerminateContractId(null);
+      toast.success("Contract terminated");
     },
     onError: (err) => {
-      alert(`Error terminating contract: ${err.message}`);
+      toast.error("Error terminating contract", err.message);
     },
   });
 
@@ -80,9 +83,10 @@ export default function ContractsPage() {
         signingUrl: data.signingUrl,
         contractNumber: data.contractNumber,
       });
+      toast.success("DocuSeal envelope dispatched", "Signing session ready.");
     },
     onError: (err) => {
-      alert(`DocuSeal submission failed: ${err.message}`);
+      toast.error("DocuSeal submission failed", err.message);
     },
   });
 
@@ -95,11 +99,11 @@ export default function ContractsPage() {
       if (selectedContractDetails && data.contract) {
         setSelectedContractDetails(data.contract);
       }
-      alert(data.message);
+      toast.info("DocuSeal sync", data.message);
     },
     onError: (err) => {
       setSyncingContractId(null);
-      alert(`Sync failed: ${err.message}`);
+      toast.error("Sync failed", err.message);
     },
   });
 

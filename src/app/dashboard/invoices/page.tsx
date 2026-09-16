@@ -23,6 +23,7 @@ import { AppRoutes } from "~/config/routes";
 import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
 import { SendInvoiceModal } from "~/components/invoice/SendInvoiceModal";
 import { InvoicePdfViewerModal } from "~/components/invoice/InvoicePdfViewerModal";
+import { toast } from "~/components/ui/toast";
 import { InvoiceStatusBadge } from "~/features/billing/components/InvoiceStatusBadge";
 import { Pagination } from "~/components/Pagination";
 
@@ -48,11 +49,11 @@ export default function InvoicesPage() {
 
   const sendEmailMutation = api.invoice.sendEmail.useMutation({
     onSuccess: () => {
-      alert("Invoice successfully emailed to client via Resend!");
+      toast.success("Email sent", "Invoice successfully emailed to client via Resend.");
       setSendingInvoice(null);
     },
     onError: (err) => {
-      alert(`Failed to send email: ${err.message}`);
+      toast.error("Failed to send email", err.message);
     },
   });
 
@@ -60,6 +61,10 @@ export default function InvoicesPage() {
     onSuccess: () => {
       utils.invoice.getAll.invalidate();
       utils.invoice.getMetrics.invalidate();
+      toast.success("Status updated");
+    },
+    onError: (err) => {
+      toast.error("Status update failed", err.message);
     },
   });
 
@@ -67,6 +72,10 @@ export default function InvoicesPage() {
     onSuccess: () => {
       utils.invoice.getAll.invalidate();
       utils.invoice.getMetrics.invalidate();
+      toast.success("Invoice deleted");
+    },
+    onError: (err) => {
+      toast.error("Delete failed", err.message);
     },
   });
 
@@ -75,9 +84,10 @@ export default function InvoicesPage() {
       utils.invoice.getAll.invalidate();
       utils.invoice.getMetrics.invalidate();
       setReviewingReceipt(null);
+      toast.success("Payment verified", "Receipt verified and invoice updated.");
     },
     onError: (err) => {
-      alert(`Verification error: ${err.message}`);
+      toast.error("Verification error", err.message);
     },
   });
 
@@ -103,8 +113,9 @@ export default function InvoicesPage() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
+      toast.success("PDF Downloaded", `Invoice ${inv.invoiceNumber} saved.`);
     } catch (err: any) {
-      alert(`Error downloading PDF: ${err.message}`);
+      toast.error("Error downloading PDF", err.message);
     } finally {
       setDownloadingId(null);
     }

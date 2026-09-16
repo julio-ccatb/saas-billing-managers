@@ -5,6 +5,7 @@ import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import { AuthSessionProvider } from "~/components/auth/SessionProvider";
+import { Toaster } from "~/components/ui/toast";
 
 export const metadata: Metadata = {
   title: "Invoify SaaS Billing Manager",
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`}>
       <body>
         <AuthSessionProvider>
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            {children}
+            <Toaster />
+          </TRPCReactProvider>
         </AuthSessionProvider>
       </body>
     </html>

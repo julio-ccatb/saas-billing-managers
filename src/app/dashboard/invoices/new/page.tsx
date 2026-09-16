@@ -9,6 +9,7 @@ import { InvoiceFormEditor } from "~/components/invoice/InvoiceFormEditor";
 import { InvoicePreviewCard } from "~/components/invoice/InvoicePreviewCard";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
+import { toast } from "~/components/ui/toast";
 import { api } from "~/trpc/react";
 import { AppRoutes } from "~/config/routes";
 
@@ -53,10 +54,11 @@ function InvoiceCreateContent() {
 
   const createInvoiceMutation = api.invoice.create.useMutation({
     onSuccess: () => {
+      toast.success("Invoice created", `Invoice ${invoice.invoiceNumber || ""} saved.`);
       router.push(AppRoutes.INVOICES);
     },
     onError: (err) => {
-      alert(`Error saving invoice: ${err.message}`);
+      toast.error("Error saving invoice", err.message);
       setIsSaving(false);
     },
   });

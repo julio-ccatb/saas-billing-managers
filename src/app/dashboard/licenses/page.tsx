@@ -15,6 +15,7 @@ import { api } from "~/trpc/react";
 import { formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { toast } from "~/components/ui/toast";
 import { type CreateLicenseValues, type GuardrailSuspensionValues } from "~/lib/schemas/forms";
 
 import { LicenseMetricsRow } from "~/features/licenses/components/LicenseMetricsRow";
@@ -58,9 +59,10 @@ export default function LicensesPage() {
       utils.license.getMetrics.invalidate();
       setIsCreateModalOpen(false);
       setCreatedKeyModal({ key: newLicense.key, name: newLicense.name });
+      toast.success("License generated", `License key for ${newLicense.name} ready.`);
     },
     onError: (err) => {
-      alert(`Error creating license: ${err.message}`);
+      toast.error("Error creating license", err.message);
     },
   });
 
@@ -69,9 +71,10 @@ export default function LicensesPage() {
       utils.license.getAll.invalidate();
       utils.license.getMetrics.invalidate();
       setEditingLicense(null);
+      toast.success("License updated");
     },
     onError: (err) => {
-      alert(`Error updating license: ${err.message}`);
+      toast.error("Error updating license", err.message);
     },
   });
 
@@ -80,9 +83,10 @@ export default function LicensesPage() {
       utils.license.getAll.invalidate();
       utils.license.getMetrics.invalidate();
       setGuardrailModalLicense(null);
+      toast.success("License status modified");
     },
     onError: (err) => {
-      alert(`Guardrail error: ${err.message}`);
+      toast.error("Guardrail error", err.message);
     },
   });
 
@@ -90,9 +94,10 @@ export default function LicensesPage() {
     onSuccess: (updated) => {
       utils.license.getAll.invalidate();
       setCreatedKeyModal({ key: updated.key, name: updated.name });
+      toast.success("Key regenerated", "New license key generated successfully.");
     },
     onError: (err) => {
-      alert(`Error regenerating key: ${err.message}`);
+      toast.error("Error regenerating key", err.message);
     },
   });
 
@@ -100,9 +105,10 @@ export default function LicensesPage() {
     onSuccess: () => {
       utils.license.getAll.invalidate();
       utils.license.getMetrics.invalidate();
+      toast.success("License revoked");
     },
     onError: (err) => {
-      alert(`Error deleting license: ${err.message}`);
+      toast.error("Error deleting license", err.message);
     },
   });
 
