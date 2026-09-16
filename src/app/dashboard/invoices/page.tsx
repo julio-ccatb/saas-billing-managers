@@ -21,6 +21,8 @@ import { Card, CardContent } from "~/components/ui/card";
 import { AppRoutes } from "~/config/routes";
 import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
 import { SendInvoiceModal } from "~/components/invoice/SendInvoiceModal";
+import { InvoiceStatusBadge } from "~/features/billing/components/InvoiceStatusBadge";
+import { Pagination } from "~/components/Pagination";
 
 export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<
@@ -105,20 +107,7 @@ export default function InvoicesPage() {
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "PAID":
-        return <Badge variant="success">Paid</Badge>;
-      case "PAYMENT_PENDING_VERIFICATION":
-        return <Badge variant="verification">Verification Pending</Badge>;
-      case "OVERDUE":
-        return <Badge variant="destructive">Overdue</Badge>;
-      case "DRAFT":
-        return <Badge variant="secondary">Draft</Badge>;
-      default:
-        return <Badge variant="warning">Pending</Badge>;
-    }
-  };
+
 
   return (
     <div className="space-y-6">
@@ -235,7 +224,7 @@ export default function InvoicesPage() {
                         {formatCurrency(inv.totalAmount, inv.currency)}
                       </td>
                       <td className="py-4 px-5">
-                        {getStatusBadge(inv.status)}
+                        <InvoiceStatusBadge status={inv.status} />
                       </td>
                       <td className="py-4 px-5 text-right">
                         <div className="flex items-center justify-end gap-1.5">
@@ -332,7 +321,7 @@ export default function InvoicesPage() {
                       <span className="font-bold text-sm text-foreground block">{inv.invoiceNumber}</span>
                       <span className="text-xs text-muted-foreground">{inv.receiverName}</span>
                     </div>
-                    {getStatusBadge(inv.status)}
+                    <InvoiceStatusBadge status={inv.status} />
                   </div>
 
                   <div className="flex items-center justify-between text-xs py-1 border-y border-border/60">
@@ -413,33 +402,11 @@ export default function InvoicesPage() {
           </div>
 
           {/* Pagination */}
-          {data && data.totalPages > 1 && (
-            <div className="p-4 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
-              <span>
-                Showing page {data.page} of {data.totalPages} ({data.totalCount} total)
-              </span>
-              <div className="flex gap-2 w-full sm:w-auto justify-end">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page <= 1}
-                  onClick={() => setPage(p => p - 1)}
-                  className="flex-1 sm:flex-initial"
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={page >= data.totalPages}
-                  onClick={() => setPage(p => p + 1)}
-                  className="flex-1 sm:flex-initial"
-                >
-                  Next
-                </Button>
-              </div>
-            </div>
-          )}
+          <Pagination
+            page={page}
+            totalPages={data?.totalPages ?? 1}
+            onPageChange={setPage}
+          />
         </Card>
 
         {/* Operator Review & Verification Modal */}

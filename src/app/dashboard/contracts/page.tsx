@@ -5,82 +5,39 @@ import Link from "next/link";
 import { 
   FileSignature, 
   Plus, 
-  Search, 
   Building2, 
-  TrendingUp, 
-  CheckCircle2, 
-  Clock, 
-  AlertTriangle,
-  ArrowRight,
-  Send,
-  ExternalLink,
-  Copy,
-  Check,
-  RefreshCw,
-  FileText
+  Send, 
+  RefreshCw, 
+  FileText 
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency, formatDate } from "~/lib/utils/format";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
+import { Card } from "~/components/ui/card";
 import { AppRoutes } from "~/config/routes";
-import { Textarea } from "~/components/ui/textarea";
-import { Card, CardHeader, CardTitle, CardContent } from "~/components/ui/card";
-import { Badge } from "~/components/ui/badge";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "~/components/ui/dialog";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
-import { NativeSelect, NativeSelectOption } from "~/components/ui/native-select";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  createContractSchema,
-  type CreateContractValues,
-  sendSignatureSchema,
-  type SendSignatureValues,
-} from "~/lib/schemas/forms";
+import { type CreateContractValues, type SendSignatureValues } from "~/lib/schemas/forms";
+
+import { ContractStatusBadge } from "~/features/contracts/components/ContractStatusBadge";
+import { ContractMetricsRow } from "~/features/contracts/components/ContractMetricsRow";
+import { ContractFilterBar } from "~/features/contracts/components/ContractFilterBar";
+import { TerminateContractDialog } from "~/features/contracts/components/TerminateContractDialog";
+import { SigningUrlModal } from "~/features/contracts/components/SigningUrlModal";
+import { CreateContractDialog } from "~/features/contracts/components/CreateContractDialog";
+import { SendSignatureDialog } from "~/features/contracts/components/SendSignatureDialog";
+import { ContractDetailsModal } from "~/features/contracts/components/ContractDetailsModal";
 
 export default function ContractsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"ALL" | "ACTIVE" | "DRAFT" | "TERMINATED">("ALL");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [terminateContractId, setTerminateContractId] = useState<string | null>(null);
-  const [terminateReason, setTerminateReason] = useState("");
   const [selectedContractDetails, setSelectedContractDetails] = useState<any>(null);
   const [signingModalData, setSigningModalData] = useState<{
     signingUrl: string;
     contractNumber: string;
   } | null>(null);
-  const [copiedLink, setCopiedLink] = useState(false);
   const [dispatchModalContract, setDispatchModalContract] = useState<any>(null);
   const [syncingContractId, setSyncingContractId] = useState<string | null>(null);
-
-  const createContractForm = useForm<CreateContractValues>({
-    resolver: zodResolver(createContractSchema),
-    defaultValues: {
-      customerId: "",
-      title: "",
-      value: 0,
-      currency: "USD",
-      billingCycle: "MONTHLY",
-      status: "DRAFT",
-      terms: "",
-      notes: "",
-    },
-  });
-
-  const sendSignatureForm = useForm<SendSignatureValues>({
-    resolver: zodResolver(sendSignatureSchema),
-    defaultValues: {
-      contractId: "",
-      templateId: "",
-    },
-  });
 
   const utils = api.useUtils();
 
@@ -98,7 +55,6 @@ export default function ContractsPage() {
       utils.contract.getAll.invalidate();
       utils.contract.getMetrics.invalidate();
       setIsCreateOpen(false);
-      createContractForm.reset();
     },
     onError: (err) => {
       alert(`Error creating contract: ${err.message}`);
@@ -110,7 +66,6 @@ export default function ContractsPage() {
       utils.contract.getAll.invalidate();
       utils.contract.getMetrics.invalidate();
       setTerminateContractId(null);
-      setTerminateReason("");
     },
     onError: (err) => {
       alert(`Error terminating contract: ${err.message}`);
@@ -125,7 +80,6 @@ export default function ContractsPage() {
         signingUrl: data.signingUrl,
         contractNumber: data.contractNumber,
       });
-      setCopiedLink(false);
     },
     onError: (err) => {
       alert(`DocuSeal submission failed: ${err.message}`);
@@ -153,53 +107,6 @@ export default function ContractsPage() {
     e?.stopPropagation();
     setSyncingContractId(contractId);
     syncDocuSealMutation.mutate({ contractId });
-  };
-
-  const renderContractStatus = (c: any) => {
-    if (c.status === "DRAFT") {
-      return (
-        <div className="flex flex-col gap-0.5">
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/15 text-amber-600 border border-amber-500/30">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-            </span>
-            <span>Awaiting Signature</span>
-          </span>
-          {c.submissionId ? (
-            <span className="text-[10px] font-mono text-muted-foreground">
-              DocuSeal #{c.submissionId}
-            </span>
-          ) : (
-            <span className="text-[10px] text-muted-foreground">
-              Unsent
-            </span>
-          )}
-        </div>
-      );
-    }
-
-    if (c.status === "ACTIVE") {
-      return (
-        <div className="flex flex-col gap-0.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 border border-emerald-500/30">
-            <CheckCircle2 className="w-3 h-3" />
-            <span>Active &amp; Signed</span>
-          </span>
-          {c.signedAt && (
-            <span className="text-[10px] font-mono text-muted-foreground">
-              Signed: {formatDate(c.signedAt)}
-            </span>
-          )}
-        </div>
-      );
-    }
-
-    if (c.status === "TERMINATED") {
-      return <Badge variant="destructive">Terminated</Badge>;
-    }
-
-    return <Badge variant="secondary">{c.status}</Badge>;
   };
 
   const handleOpenDetails = (contract: any) => {
@@ -234,117 +141,17 @@ export default function ContractsPage() {
       </div>
 
       {/* Metrics Bar */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Estimated MRR */}
-        <Card>
-          <CardContent className="p-5 flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Contract MRR
-              </p>
-              <p className="text-2xl font-bold text-foreground font-mono">
-                {loadingMetrics ? "..." : formatCurrency(metrics?.estimatedMRR ?? 0)}
-              </p>
-              <p className="text-xs text-muted-foreground pt-0.5 font-mono">
-                ARR: {formatCurrency((metrics?.estimatedMRR ?? 0) * 12)}
-              </p>
-            </div>
-            <div className="p-2.5 bg-primary/10 text-primary rounded-xl shrink-0">
-              <TrendingUp className="w-5 h-5" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Active Contracts */}
-        <Card>
-          <CardContent className="p-5 flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Active Contracts
-              </p>
-              <p className="text-2xl font-bold text-foreground font-mono">
-                {loadingMetrics ? "..." : metrics?.activeCount ?? 0}
-              </p>
-              <p className="text-xs text-muted-foreground pt-0.5">
-                Total commitments: {metrics?.totalContracts ?? 0}
-              </p>
-            </div>
-            <div className="p-2.5 bg-secondary text-secondary-foreground rounded-xl shrink-0">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Total Pipeline Value */}
-        <Card>
-          <CardContent className="p-5 flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Total Active Value
-              </p>
-              <p className="text-2xl font-bold text-foreground font-mono">
-                {loadingMetrics ? "..." : formatCurrency(metrics?.totalActiveValue ?? 0)}
-              </p>
-              <p className="text-xs text-muted-foreground pt-0.5 font-mono">Cumulative contract book</p>
-            </div>
-            <div className="p-2.5 bg-primary/10 text-primary rounded-xl shrink-0">
-              <FileSignature className="w-5 h-5" />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Draft & Terminated */}
-        <Card>
-          <CardContent className="p-5 flex items-start justify-between">
-            <div className="space-y-1">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Status Breakdown
-              </p>
-              <p className="text-2xl font-bold text-foreground font-mono">
-                {loadingMetrics ? "..." : metrics?.draftCount ?? 0}
-                <span className="text-xs font-normal text-muted-foreground ml-1">drafts</span>
-              </p>
-              <p className="text-xs text-muted-foreground pt-0.5">
-                {metrics?.terminatedCount ?? 0} terminated
-              </p>
-            </div>
-            <div className="p-2.5 bg-muted text-muted-foreground rounded-xl shrink-0">
-              <Clock className="w-5 h-5" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <ContractMetricsRow metrics={metrics} isLoading={loadingMetrics} />
 
       {/* Filter and Search Bar */}
-      <Card className="p-3 sm:p-4">
-        <div className="flex flex-col md:flex-row gap-3 items-center justify-between">
-          <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
-            <Input
-              placeholder="Search contract #, title, client..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
-          </div>
+      <ContractFilterBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        statusFilter={statusFilter}
+        onStatusFilterChange={setStatusFilter}
+      />
 
-          <div className="flex items-center gap-1.5 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-            {(["ALL", "ACTIVE", "DRAFT", "TERMINATED"] as const).map((st) => (
-              <Button
-                key={st}
-                variant={statusFilter === st ? "default" : "outline"}
-                size="sm"
-                onClick={() => setStatusFilter(st)}
-                className="text-xs"
-              >
-                {st === "ALL" ? "All Contracts" : st}
-              </Button>
-            ))}
-          </div>
-        </div>
-      </Card>
-
-      {/* Contracts Presentation: Desktop Table & Mobile Card Stack */}
+      {/* Contracts Presentation */}
       <Card className="overflow-hidden">
         {/* Desktop Table */}
         <div className="hidden md:block overflow-x-auto">
@@ -405,7 +212,11 @@ export default function ContractsPage() {
                       {c.billingCycle}
                     </td>
                     <td className="py-3.5 px-5">
-                      {renderContractStatus(c)}
+                      <ContractStatusBadge
+                        status={c.status}
+                        signedAt={c.signedAt}
+                        submissionId={c.submissionId}
+                      />
                     </td>
                     <td className="py-3.5 px-5 font-mono text-xs text-muted-foreground">
                       {formatDate(c.startDate)}
@@ -420,10 +231,7 @@ export default function ContractsPage() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                setDispatchModalContract(c);
-                                sendSignatureForm.reset({ contractId: c.id, templateId: "" });
-                              }}
+                              onClick={() => setDispatchModalContract(c)}
                               className="text-xs h-7 px-2.5 gap-1 text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
                             >
                               <Send className="w-3 h-3" />
@@ -468,10 +276,7 @@ export default function ContractsPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              setTerminateContractId(c.id);
-                              setTerminateReason("");
-                            }}
+                            onClick={() => setTerminateContractId(c.id)}
                             className="text-xs h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10"
                           >
                             Terminate
@@ -511,7 +316,11 @@ export default function ContractsPage() {
                       <span className="truncate">{c.customer?.name}</span>
                     </div>
                   </div>
-                  {renderContractStatus(c)}
+                  <ContractStatusBadge
+                    status={c.status}
+                    signedAt={c.signedAt}
+                    submissionId={c.submissionId}
+                  />
                 </div>
 
                 <div className="flex items-center justify-between text-xs font-mono pt-1">
@@ -528,461 +337,52 @@ export default function ContractsPage() {
         </div>
       </Card>
 
-      {/* CONTRACT DETAILS MODAL */}
-      <Dialog open={!!selectedContractDetails} onOpenChange={() => setSelectedContractDetails(null)}>
-        <DialogContent className="sm:max-w-lg border-border">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <FileSignature className="w-5 h-5 text-primary" />
-              <span>Contract Execution Details</span>
-            </DialogTitle>
-          </DialogHeader>
+      {/* Extracted Modals */}
+      <ContractDetailsModal
+        contract={selectedContractDetails}
+        onClose={() => setSelectedContractDetails(null)}
+        onDispatchSign={(contract) => {
+          setSelectedContractDetails(null);
+          setDispatchModalContract(contract);
+        }}
+        onSyncStatus={handleSyncStatus}
+        syncingContractId={syncingContractId}
+      />
 
-          {selectedContractDetails && (
-            <div className="space-y-4 py-2 text-xs">
-              <div className="flex items-center justify-between p-3.5 bg-muted/30 rounded-xl">
-                <div>
-                  <p className="font-mono text-muted-foreground text-[10px] uppercase tracking-wider">
-                    {selectedContractDetails.contractNumber}
-                  </p>
-                  <p className="text-base font-bold text-foreground mt-0.5">
-                    {selectedContractDetails.title}
-                  </p>
-                  <p className="text-xs text-primary font-medium mt-0.5">
-                    {selectedContractDetails.customer?.name}
-                  </p>
-                </div>
-                <div>{renderContractStatus(selectedContractDetails)}</div>
-              </div>
+      <SendSignatureDialog
+        contract={dispatchModalContract}
+        onClose={() => setDispatchModalContract(null)}
+        onSubmit={(values: SendSignatureValues) => {
+          if (dispatchModalContract) {
+            sendForSignatureMutation.mutate({
+              contractId: dispatchModalContract.id,
+              templateId: values.templateId?.trim() || undefined,
+            });
+          }
+        }}
+        isPending={sendForSignatureMutation.isPending}
+      />
 
-              <div className="grid grid-cols-2 gap-3 p-3 bg-muted/20 border border-border rounded-xl font-mono">
-                <div>
-                  <span className="text-muted-foreground text-[10px] uppercase">Value &amp; Interval</span>
-                  <p className="font-bold text-foreground text-sm mt-0.5">
-                    {formatCurrency(selectedContractDetails.value, selectedContractDetails.currency)}{" "}
-                    <span className="text-xs font-normal">/ {selectedContractDetails.billingCycle.toLowerCase()}</span>
-                  </p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground text-[10px] uppercase">Effective Start</span>
-                  <p className="text-foreground mt-0.5">{formatDate(selectedContractDetails.startDate)}</p>
-                </div>
-                {selectedContractDetails.signedAt && (
-                  <div className="col-span-2 pt-1 border-t border-border">
-                    <span className="text-muted-foreground text-[10px] uppercase">E-Signed Timestamp</span>
-                    <p className="text-emerald-600 font-semibold mt-0.5">
-                      {formatDate(selectedContractDetails.signedAt)}
-                    </p>
-                  </div>
-                )}
-              </div>
+      <SigningUrlModal
+        data={signingModalData}
+        onClose={() => setSigningModalData(null)}
+      />
 
-              {selectedContractDetails.signedDocumentUrl && (
-                <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-emerald-600" />
-                    <div>
-                      <p className="font-semibold text-emerald-700">Executed Agreement PDF</p>
-                      <p className="text-[10px] text-muted-foreground">Digitally signed via DocuSeal</p>
-                    </div>
-                  </div>
-                  <a
-                    href={selectedContractDetails.signedDocumentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition-colors"
-                  >
-                    <span>View PDF</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              )}
+      <CreateContractDialog
+        isOpen={isCreateOpen}
+        onClose={() => setIsCreateOpen(false)}
+        onSubmit={(values: CreateContractValues) => createContractMutation.mutate(values)}
+        isPending={createContractMutation.isPending}
+        customers={customers}
+      />
 
-              {selectedContractDetails.terms && (
-                <div>
-                  <p className="font-semibold text-foreground mb-1">Contract Commitments &amp; SLA Terms:</p>
-                  <p className="p-3 bg-card border border-border rounded-lg text-foreground leading-relaxed">
-                    {selectedContractDetails.terms}
-                  </p>
-                </div>
-              )}
-
-              <DialogFooter className="pt-2 gap-2 sm:justify-between">
-                <div className="flex items-center gap-2">
-                  {selectedContractDetails.status === "DRAFT" && (
-                    <>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const contractToDispatch = selectedContractDetails;
-                          setSelectedContractDetails(null);
-                          setDispatchModalContract(contractToDispatch);
-                          sendSignatureForm.reset({ contractId: contractToDispatch.id, templateId: "" });
-                        }}
-                        className="gap-1.5 text-xs text-amber-600 border-amber-500/40 hover:bg-amber-500/10"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>{selectedContractDetails.submissionId ? "Re-send e-Sign" : "Send for e-Signature"}</span>
-                      </Button>
-                      {selectedContractDetails.submissionId && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          disabled={syncingContractId === selectedContractDetails.id}
-                          onClick={(e) => handleSyncStatus(selectedContractDetails.id, e)}
-                          className="gap-1.5 text-xs text-sky-600 border-sky-500/40 hover:bg-sky-500/10"
-                        >
-                          <RefreshCw className={`w-3.5 h-3.5 ${syncingContractId === selectedContractDetails.id ? "animate-spin" : ""}`} />
-                          <span>Sync Status</span>
-                        </Button>
-                      )}
-                    </>
-                  )}
-                </div>
-                <Button variant="outline" size="sm" onClick={() => setSelectedContractDetails(null)}>
-                  Close
-                </Button>
-              </DialogFooter>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* DISPATCH TO DOCUSEAL MODAL */}
-      <Dialog open={!!dispatchModalContract} onOpenChange={() => setDispatchModalContract(null)}>
-        <DialogContent className="sm:max-w-md border-border">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Send className="w-5 h-5 text-primary" />
-              <span>Send Contract for e-Signature</span>
-            </DialogTitle>
-          </DialogHeader>
-
-          {dispatchModalContract && (
-            <Form {...sendSignatureForm}>
-              <form
-                onSubmit={sendSignatureForm.handleSubmit((values) => {
-                  sendForSignatureMutation.mutate({
-                    contractId: dispatchModalContract.id,
-                    templateId: values.templateId?.trim() || undefined,
-                  });
-                })}
-                className="space-y-4 py-2 text-xs"
-              >
-                <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-1">
-                  <div className="flex justify-between">
-                    <span className="font-mono text-muted-foreground uppercase text-[10px]">Contract</span>
-                    <span className="font-mono font-semibold text-foreground">{dispatchModalContract.contractNumber}</span>
-                  </div>
-                  <p className="font-bold text-sm text-foreground">{dispatchModalContract.title}</p>
-                  <p className="text-muted-foreground">Recipient: <strong className="text-foreground">{dispatchModalContract.customer?.name}</strong> ({dispatchModalContract.customer?.email || "No email"})</p>
-                </div>
-
-                <FormField
-                  control={sendSignatureForm.control}
-                  name="templateId"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>
-                        DocuSeal Template ID (Optional)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="e.g. 12345 or template slug (leave blank for dynamic agreement)"
-                          className="font-mono text-xs"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Enter the ID or slug of your DocuSeal template. If left blank, our dynamic contract document generator will be used.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter className="gap-2 pt-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDispatchModalContract(null)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    disabled={sendForSignatureMutation.isPending}
-                    className="gap-1.5"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>{sendForSignatureMutation.isPending ? "Connecting to DocuSeal..." : "Dispatch to DocuSeal"}</span>
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* SIGNING LINK SUCCESS MODAL */}
-      <Dialog open={!!signingModalData} onOpenChange={() => setSigningModalData(null)}>
-        <DialogContent className="sm:max-w-md border-border">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-emerald-600">
-              <CheckCircle2 className="w-5 h-5" />
-              <span>DocuSeal Contract Dispatched!</span>
-            </DialogTitle>
-          </DialogHeader>
-
-          {signingModalData && (
-            <div className="space-y-4 py-2 text-xs">
-              <p className="text-muted-foreground">
-                The dynamic agreement for contract <strong className="font-mono text-foreground">{signingModalData.contractNumber}</strong> has been generated and pushed to DocuSeal.
-              </p>
-
-              <div className="p-3 bg-muted/40 rounded-xl border border-border space-y-2">
-                <span className="text-[10px] font-mono uppercase font-semibold text-muted-foreground">
-                  Client Direct Signing Link
-                </span>
-                <div className="flex items-center gap-2">
-                  <Input
-                    readOnly
-                    value={signingModalData.signingUrl}
-                    className="font-mono text-xs bg-background h-8"
-                  />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-2.5 gap-1 shrink-0"
-                    onClick={() => {
-                      void navigator.clipboard.writeText(signingModalData.signingUrl);
-                      setCopiedLink(true);
-                      setTimeout(() => setCopiedLink(false), 2000);
-                    }}
-                  >
-                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedLink ? "Copied" : "Copy"}</span>
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2 pt-2">
-                <a
-                  href={signingModalData.signingUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold text-xs hover:bg-primary/90 transition-colors"
-                >
-                  <span>Open Client Signing View</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-                <p className="text-center text-[11px] text-muted-foreground">
-                  Open this link in a new tab to test signing the document as the client.
-                </p>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* CREATE CONTRACT MODAL */}
-      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="sm:max-w-lg border-border">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <FileSignature className="w-5 h-5 text-primary" />
-              <span>Create New Client Contract</span>
-            </DialogTitle>
-          </DialogHeader>
-
-          <Form {...createContractForm}>
-            <form
-              onSubmit={createContractForm.handleSubmit((values) => {
-                createContractMutation.mutate(values);
-              })}
-              className="space-y-4 py-2"
-            >
-              <FormField
-                control={createContractForm.control}
-                name="customerId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Target Client *</FormLabel>
-                    <FormControl>
-                      <NativeSelect className="w-full" {...field}>
-                        <NativeSelectOption value="">Select a client...</NativeSelectOption>
-                        {customers?.map((c) => (
-                          <NativeSelectOption key={c.id} value={c.id}>
-                            {c.name} {c.email ? `(${c.email})` : ""}
-                          </NativeSelectOption>
-                        ))}
-                      </NativeSelect>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={createContractForm.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contract Title *</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="e.g. Platform SaaS Subscription & Technical Support"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <FormField
-                  control={createContractForm.control}
-                  name="value"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Contract Value *</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          min="0"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={createContractForm.control}
-                  name="billingCycle"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Billing Cycle</FormLabel>
-                      <FormControl>
-                        <NativeSelect className="w-full" {...field}>
-                          <NativeSelectOption value="MONTHLY">Monthly</NativeSelectOption>
-                          <NativeSelectOption value="QUARTERLY">Quarterly</NativeSelectOption>
-                          <NativeSelectOption value="ANNUALLY">Annually</NativeSelectOption>
-                          <NativeSelectOption value="ONE_TIME">One-Time</NativeSelectOption>
-                        </NativeSelect>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <FormField
-                control={createContractForm.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contract Execution Mode</FormLabel>
-                    <FormControl>
-                      <NativeSelect className="w-full" {...field}>
-                        <NativeSelectOption value="DRAFT">Draft — Send for e-Signature via DocuSeal (Recommended)</NativeSelectOption>
-                        <NativeSelectOption value="ACTIVE">Active — Pre-signed or Direct Activation</NativeSelectOption>
-                      </NativeSelect>
-                    </FormControl>
-                    <FormDescription>
-                      Draft agreements can be dispatched to DocuSeal and signed digitally by the client.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={createContractForm.control}
-                name="terms"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Terms &amp; Commitments</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        rows={3}
-                        placeholder="SLA response guarantees, uptime targets, renewal conditions..."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <DialogFooter className="gap-2 pt-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setIsCreateOpen(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" disabled={createContractMutation.isPending}>
-                  {createContractMutation.isPending ? "Creating..." : "Create Contract"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
-
-      {/* TERMINATE CONTRACT MODAL */}
-      <Dialog open={!!terminateContractId} onOpenChange={() => setTerminateContractId(null)}>
-        <DialogContent className="sm:max-w-md border-border">
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5" />
-              <span>Terminate Contract</span>
-            </DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-3 py-2 text-sm">
-            <p className="text-muted-foreground text-xs">
-              Terminated contracts are permanently locked as immutable historical records and will cease contributing to active MRR calculations.
-            </p>
-            <div>
-              <label className="block text-xs font-semibold text-foreground mb-1">
-                Termination Reason (Mandatory) *
-              </label>
-              <Input
-                required
-                placeholder="e.g. Mutual termination agreement / Non-payment"
-                value={terminateReason}
-                onChange={(e) => setTerminateReason(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2">
-            <Button variant="outline" size="sm" onClick={() => setTerminateContractId(null)}>
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              size="sm"
-              disabled={terminateReason.trim().length < 3 || terminateMutation.isPending}
-              onClick={() => {
-                if (terminateContractId) {
-                  terminateMutation.mutate({
-                    id: terminateContractId,
-                    reason: terminateReason,
-                  });
-                }
-              }}
-            >
-              Terminate Contract
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <TerminateContractDialog
+        contractId={terminateContractId}
+        isOpen={!!terminateContractId}
+        onClose={() => setTerminateContractId(null)}
+        onTerminate={(id, reason) => terminateMutation.mutate({ id, reason })}
+        isPending={terminateMutation.isPending}
+      />
     </div>
   );
 }

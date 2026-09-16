@@ -180,8 +180,14 @@ export type TerminateContractValues = z.infer<typeof terminateContractSchema>;
 
 export const customerPortalAccessSchema = z.object({
   email: z.string().min(1, "Client login email is required").email("Valid email required"),
-  password: z.string().optional(),
+  password: z
+    .string()
+    .refine((val) => !val || val.length >= 8, {
+      message: "Password must be at least 8 characters if provided",
+    })
+    .optional(),
   portalEnabled: z.boolean(),
+  sendInviteEmail: z.boolean(),
 });
 
 export type CustomerPortalAccessValues = z.infer<typeof customerPortalAccessSchema>;

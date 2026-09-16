@@ -18,6 +18,7 @@ function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
+  const isSetup = searchParams.get("setup") === "true";
 
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -108,13 +109,15 @@ function ResetPasswordContent() {
               </div>
               <CardTitle className="text-base font-semibold">Expired or Invalid Token</CardTitle>
               <CardDescription className="text-xs">
-                This password reset link has expired or has already been used. Please request a new link.
+                {isSetup
+                  ? "This portal activation link has expired or has already been used. Please ask your administrator to resend an invitation."
+                  : "This password reset link has expired or has already been used. Please request a new link."}
               </CardDescription>
             </CardHeader>
             <CardFooter className="p-6 pt-0 justify-center">
-              <Link href={AppRoutes.FORGOT_PASSWORD}>
+              <Link href={isSetup ? `${AppRoutes.SIGN_IN}?tab=portal` : AppRoutes.FORGOT_PASSWORD}>
                 <Button size="sm" className="text-xs">
-                  Request New Password Reset
+                  {isSetup ? "Go to Client Portal Sign In" : "Request New Password Reset"}
                 </Button>
               </Link>
             </CardFooter>
@@ -133,10 +136,16 @@ function ResetPasswordContent() {
           <ShieldCheck className="w-6 h-6" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Set New Password
+          {isSetup ? "Activate Client Portal" : "Set New Password"}
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          {tokenCheck?.email ? `Resetting password for ${tokenCheck.email}` : "Choose a secure new password"}
+          {tokenCheck?.email
+            ? isSetup
+              ? `Setting up credentials for ${tokenCheck.email}`
+              : `Resetting password for ${tokenCheck.email}`
+            : isSetup
+              ? "Create a password to activate your access"
+              : "Choose a secure new password"}
         </p>
       </div>
 
@@ -144,11 +153,17 @@ function ResetPasswordContent() {
         <Card className="border-border shadow-xl backdrop-blur-sm">
           <CardHeader className="p-6 pb-3">
             <CardTitle className="text-base font-semibold">
-              {isSuccess ? "Password updated" : "Create your new password"}
+              {isSuccess
+                ? isSetup
+                  ? "Account activated"
+                  : "Password updated"
+                : isSetup
+                  ? "Create your password"
+                  : "Create your new password"}
             </CardTitle>
             <CardDescription className="text-xs">
               {isSuccess
-                ? "Your Client Portal credentials have been safely updated."
+                ? "Your Client Portal credentials have been safely configured."
                 : "Must be at least 8 characters long."}
             </CardDescription>
           </CardHeader>
@@ -166,9 +181,13 @@ function ResetPasswordContent() {
                 <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-800 dark:text-emerald-300 text-xs flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <div className="space-y-1 text-left">
-                    <p className="font-semibold">Password changed successfully</p>
+                    <p className="font-semibold">
+                      {isSetup ? "Welcome to your Client Portal!" : "Password changed successfully"}
+                    </p>
                     <p className="text-[11px] leading-relaxed opacity-90">
-                      You can now log in to the Client Portal using your updated credentials.
+                      {isSetup
+                        ? "Your account is active. You can now sign in to view invoices, upload receipts, and check active services."
+                        : "You can now log in to the Client Portal using your updated credentials."}
                     </p>
                   </div>
                 </div>
@@ -192,7 +211,7 @@ function ResetPasswordContent() {
                       <FormItem className="text-left">
                         <FormLabel className="flex items-center gap-1.5">
                           <Lock className="w-3.5 h-3.5 text-muted-foreground" />
-                          <span>New Password</span>
+                          <span>{isSetup ? "Create Password" : "New Password"}</span>
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -239,10 +258,10 @@ function ResetPasswordContent() {
                     {resetMutation.isPending ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Updating password...</span>
+                        <span>{isSetup ? "Activating account..." : "Updating password..."}</span>
                       </>
                     ) : (
-                      <span>Save New Password</span>
+                      <span>{isSetup ? "Activate Account & Continue" : "Save New Password"}</span>
                     )}
                   </Button>
                 </form>

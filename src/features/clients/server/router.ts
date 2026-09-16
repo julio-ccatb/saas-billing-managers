@@ -5,7 +5,9 @@ import { customerSchema } from "~/lib/schemas/invoice";
 import { clientOnboardingSchema } from "../schemas/onboarding.schema";
 import { generateLicenseKey, hashLicenseKey, generateKeyPrefix } from "~/features/licenses/server/keygen";
 import { recordAuditLog } from "~/features/audit/server/auditService";
+import { sendPortalInvitationEmail } from "~/server/services/emailService";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export const customerRouter = createTRPCRouter({
   getAll: companyProcedure
@@ -324,8 +326,9 @@ export const customerRouter = createTRPCRouter({
       z.object({
         customerId: z.string(),
         email: z.string().email(),
-        password: z.string().min(6, "Password must be at least 6 characters").optional(),
+        password: z.string().min(8, "Password must be at least 8 characters").optional().or(z.literal("")),
         portalEnabled: z.boolean(),
+        sendInviteEmail: z.boolean().default(true),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -342,14 +345,14 @@ export const customerRouter = createTRPCRouter({
       }
 
       const email = input.email.trim().toLowerCase();
-
       let clientUserId = customer.clientUserId;
+      let devSetupUrl: string | undefined;
 
       if (input.portalEnabled) {
         // If updating or creating password
         let passwordHash: string | undefined;
-        if (input.password) {
-          passwordHash = await bcrypt.hash(input.password, 10);
+        if (input.password && input.password.trim().length > 0) {
+          passwordHash = await bcrypt.hash(input.password.trim(), 10);
         }
 
         if (customer.clientUser) {
@@ -370,12 +373,6 @@ export const customerRouter = createTRPCRouter({
           });
 
           if (existingUser) {
-            if (!passwordHash && !existingUser.passwordHash) {
-              throw new TRPCError({
-                code: "BAD_REQUEST",
-                message: "Password is required to set up portal access for this client.",
-              });
-            }
             const updatedUser = await ctx.db.user.update({
               where: { id: existingUser.id },
               data: {
@@ -385,23 +382,54 @@ export const customerRouter = createTRPCRouter({
             });
             clientUserId = updatedUser.id;
           } else {
-            if (!passwordHash) {
-              throw new TRPCError({
-                code: "BAD_REQUEST",
-                message: "Password is required to create new client credentials.",
-              });
-            }
             const newUser = await ctx.db.user.create({
               data: {
                 email,
                 name: customer.name,
-                passwordHash,
+                passwordHash: passwordHash ?? null,
                 userRole: "CLIENT",
                 image: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(customer.name)}`,
               },
             });
             clientUserId = newUser.id;
           }
+        }
+
+        // Dispatch invitation email if enabled
+        if (input.sendInviteEmail) {
+          // Invalidate any older unexpired tokens for this email
+          await ctx.db.passwordResetToken.deleteMany({
+            where: { email },
+          });
+
+          // Generate cryptographically secure token valid for 24 hours
+          const rawToken = crypto.randomBytes(32).toString("hex");
+          const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+          await ctx.db.passwordResetToken.create({
+            data: {
+              email,
+              token: rawToken,
+              expiresAt,
+            },
+          });
+
+          const host =
+            ctx.headers?.get("x-forwarded-host") ||
+            ctx.headers?.get("host") ||
+            "localhost:3000";
+          const protocol =
+            ctx.headers?.get("x-forwarded-proto") ||
+            (host.includes("localhost") ? "http" : "https");
+          const setupUrl = `${protocol}://${host}/auth/reset-password?token=${rawToken}&setup=true`;
+          devSetupUrl = setupUrl;
+
+          await sendPortalInvitationEmail({
+            recipientEmail: email,
+            recipientName: customer.name,
+            setupUrl,
+            companyName: ctx.company?.name ?? "Client Software Operations",
+          });
         }
       }
 
@@ -431,17 +459,137 @@ export const customerRouter = createTRPCRouter({
         entityType: "CUSTOMER",
         entityId: customer.id,
         reason: input.portalEnabled
-          ? `Client Portal access enabled for ${customer.name} (${email})`
+          ? `Client Portal access enabled for ${customer.name} (${email})${input.sendInviteEmail ? " with password setup email dispatched" : ""}`
           : `Client Portal access revoked for ${customer.name}`,
         metadata: {
           customerId: customer.id,
           customerName: customer.name,
           portalEnabled: input.portalEnabled,
           clientEmail: email,
+          inviteEmailSent: input.portalEnabled && input.sendInviteEmail,
         },
       });
 
-      return updatedCustomer;
+      return {
+        ...updatedCustomer,
+        inviteEmailSent: Boolean(input.portalEnabled && input.sendInviteEmail),
+        devSetupUrl: process.env.NODE_ENV !== "production" ? devSetupUrl : undefined,
+      };
+    }),
+
+  /**
+   * Resend the portal password setup invitation email for a customer.
+   */
+  resendPortalInvitation: companyProcedure
+    .input(
+      z.object({
+        customerId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const customer = await ctx.db.customer.findUnique({
+        where: { id: input.customerId },
+        include: { clientUser: true },
+      });
+
+      if (!customer || customer.companyId !== ctx.companyId) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Customer not found or unauthorized.",
+        });
+      }
+
+      if (!customer.portalEnabled) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Client portal access must be enabled before dispatching an invitation.",
+        });
+      }
+
+      const email = (customer.clientUser?.email || customer.email || "").trim().toLowerCase();
+      if (!email) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Customer does not have a valid email configured.",
+        });
+      }
+
+      // Ensure linked client user account exists
+      let clientUserId = customer.clientUserId;
+      if (!customer.clientUser) {
+        const existingUser = await ctx.db.user.findUnique({ where: { email } });
+        if (existingUser) {
+          await ctx.db.user.update({
+            where: { id: existingUser.id },
+            data: { userRole: "CLIENT" },
+          });
+          clientUserId = existingUser.id;
+        } else {
+          const newUser = await ctx.db.user.create({
+            data: {
+              email,
+              name: customer.name,
+              userRole: "CLIENT",
+              image: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(customer.name)}`,
+            },
+          });
+          clientUserId = newUser.id;
+        }
+        await ctx.db.customer.update({
+          where: { id: customer.id },
+          data: { clientUserId },
+        });
+      }
+
+      // Invalidate existing tokens & create fresh 24h token
+      await ctx.db.passwordResetToken.deleteMany({ where: { email } });
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+      await ctx.db.passwordResetToken.create({
+        data: {
+          email,
+          token: rawToken,
+          expiresAt,
+        },
+      });
+
+      const host =
+        ctx.headers?.get("x-forwarded-host") ||
+        ctx.headers?.get("host") ||
+        "localhost:3000";
+      const protocol =
+        ctx.headers?.get("x-forwarded-proto") ||
+        (host.includes("localhost") ? "http" : "https");
+      const setupUrl = `${protocol}://${host}/auth/reset-password?token=${rawToken}&setup=true`;
+
+      await sendPortalInvitationEmail({
+        recipientEmail: email,
+        recipientName: customer.name,
+        setupUrl,
+        companyName: ctx.company?.name ?? "Client Software Operations",
+      });
+
+      await recordAuditLog(ctx.db, {
+        companyId: ctx.companyId,
+        userId: ctx.session.user.id,
+        operatorId: ctx.session.user.email ?? ctx.session.user.id,
+        action: "BILLING_OVERRIDE",
+        entityType: "CUSTOMER",
+        entityId: customer.id,
+        reason: `Portal invitation email re-sent to ${customer.name} (${email})`,
+        metadata: {
+          customerId: customer.id,
+          customerName: customer.name,
+          clientEmail: email,
+        },
+      });
+
+      return {
+        success: true,
+        message: `Password setup invitation dispatched to ${email}`,
+        devSetupUrl: process.env.NODE_ENV !== "production" ? setupUrl : undefined,
+      };
     }),
 });
 

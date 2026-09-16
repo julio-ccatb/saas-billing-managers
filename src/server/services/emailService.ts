@@ -315,3 +315,140 @@ export async function sendPasswordResetEmail(params: SendPasswordResetEmailParam
   };
 }
 
+export interface SendPortalInvitationEmailParams {
+  recipientEmail: string;
+  recipientName?: string | null;
+  setupUrl: string;
+  companyName?: string;
+}
+
+/**
+ * Generates an operational, CSOC-branded HTML template for portal activation & password setup
+ */
+export function renderPortalInvitationEmailHtml(params: {
+  recipientName?: string | null;
+  setupUrl: string;
+  senderName: string;
+}): string {
+  const { recipientName, setupUrl, senderName } = params;
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Your Client Portal</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 32px 16px;">
+  <div style="max-width: 560px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    
+    <!-- Header -->
+    <div style="padding: 24px; border-bottom: 1px solid #e2e8f0; background-color: #0f172a; color: #ffffff;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">${senderName}</h1>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: #94a3b8;">Client Software Operations Controller</p>
+        </div>
+        <div style="text-align: right;">
+          <span style="display: inline-block; padding: 4px 10px; background-color: #1e293b; border: 1px solid #334155; border-radius: 6px; font-family: monospace; font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase;">
+            Portal Invitation
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding: 28px 24px;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; color: #334155;">
+        Hello${recipientName ? ` <strong>${recipientName}</strong>` : ""},
+      </p>
+
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+        Your Client Portal account for <strong>${senderName}</strong> has been enabled. Through your self-service portal, you can:
+      </p>
+
+      <div style="margin: 16px 0; padding: 14px 16px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; color: #334155;">
+        <ul style="margin: 0; padding-left: 20px; line-height: 1.8;">
+          <li>Review real-time billing history and download official invoices</li>
+          <li>Upload bank wire transfer receipts for instant operator verification</li>
+          <li>Inspect active software licenses, domain bindings, and service SLAs</li>
+        </ul>
+      </div>
+
+      <p style="margin: 16px 0 20px 0; font-size: 13px; color: #475569; line-height: 1.5;">
+        To activate your access, please click the secure button below to choose your password and sign in:
+      </p>
+
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${setupUrl}" style="display: inline-block; background-color: #2563eb; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 2px 4px rgba(37,99,235,0.2);">
+          Set Password & Access Portal
+        </a>
+      </div>
+
+      <p style="margin: 20px 0 8px 0; font-size: 12px; color: #64748b; line-height: 1.4;">
+        This invitation link is valid for <strong>24 hours</strong>. For security purposes, choose a strong password with at least 8 characters.
+      </p>
+
+      <p style="margin: 0; font-size: 11px; color: #94a3b8; word-break: break-all;">
+        If the button does not work, copy and paste this link into your browser:<br/>
+        <a href="${setupUrl}" style="color: #2563eb;">${setupUrl}</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
+      <p style="margin: 0;">Automated portal access dispatch from ${senderName}.</p>
+    </div>
+
+  </div>
+</body>
+</html>
+  `;
+}
+
+/**
+ * Sends a portal invitation email with secure password setup link to a client
+ */
+export async function sendPortalInvitationEmail(params: SendPortalInvitationEmailParams): Promise<{
+  success: boolean;
+  messageId?: string;
+}> {
+  const { recipientEmail, recipientName, setupUrl, companyName } = params;
+  const senderName = companyName || "Client Billing Operations";
+  const fromAddress = env.EMAIL_FROM || `${senderName} <onboarding@resend.dev>`;
+
+  if (!resend) {
+    console.log(`\n======================================================`);
+    console.log(`[PORTAL INVITATION EMAIL SIMULATION]`);
+    console.log(`To: ${recipientEmail}`);
+    console.log(`Client Name: ${recipientName || "N/A"}`);
+    console.log(`Setup Link: ${setupUrl}`);
+    console.log(`(Set RESEND_API_KEY to send real emails)`);
+    console.log(`======================================================\n`);
+    return { success: true, messageId: "simulated-dev-id" };
+  }
+
+  const html = renderPortalInvitationEmailHtml({
+    recipientName,
+    setupUrl,
+    senderName,
+  });
+
+  const response = await resend.emails.send({
+    from: fromAddress,
+    to: [recipientEmail],
+    subject: `Welcome to your Client Portal - Set Your Password | ${senderName}`,
+    html,
+  });
+
+  if (response.error) {
+    throw new Error(response.error.message);
+  }
+
+  return {
+    success: true,
+    messageId: response.data?.id,
+  };
+}
+
