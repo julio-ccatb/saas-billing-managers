@@ -19,6 +19,8 @@ interface CompanyContextType {
   switchCompany: (companyId: string) => void;
   isCreateModalOpen: boolean;
   setIsCreateModalOpen: (open: boolean) => void;
+  isMembersModalOpen: boolean;
+  setIsMembersModalOpen: (open: boolean) => void;
 }
 
 const CompanyContext = createContext<CompanyContextType | undefined>(undefined);
@@ -34,6 +36,7 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
 
   const utils = api.useUtils();
   const { data: companiesData, isLoading } = api.company.list.useQuery();
@@ -86,12 +89,15 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
         switchCompany,
         isCreateModalOpen,
         setIsCreateModalOpen,
+        isMembersModalOpen,
+        setIsMembersModalOpen,
       }}
     >
       {children}
     </CompanyContext.Provider>
   );
 }
+
 
 export function useCompany() {
   const context = useContext(CompanyContext);

@@ -1,6 +1,7 @@
 import { AppSidebar } from "~/components/app-sidebar"
 import { CompanyProvider } from "~/components/company/CompanyContext"
 import { CreateCompanyModal } from "~/components/company/CreateCompanyModal"
+import { CompanyMembersModal } from "~/components/company/CompanyMembersModal"
 import { AppRoutes } from "~/config/routes"
 import {
   Breadcrumb,
@@ -51,6 +52,8 @@ export default function DashboardAppLayout({ children }: { children: React.React
         </SidebarInset>
       </SidebarProvider>
       <CreateCompanyModal />
+      <CompanyMembersModal />
     </CompanyProvider>
   )
 }
+

@@ -17,12 +17,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "~/components/ui/sidebar"
-import { ChevronsUpDownIcon, PlusIcon, Building2Icon, Check } from "lucide-react"
+import { ChevronsUpDownIcon, PlusIcon, Building2Icon, Check, Users } from "lucide-react"
 import { useCompany } from "./company/CompanyContext"
 
 export function TeamSwitcher() {
   const { isMobile } = useSidebar()
-  const { companies, activeCompany, switchCompany, setIsCreateModalOpen } = useCompany()
+  const { companies, activeCompany, switchCompany, setIsCreateModalOpen, setIsMembersModalOpen } = useCompany()
 
   const activeName = activeCompany?.name || "My Workspace"
   const activeRole = activeCompany?.role ? `${activeCompany.role} (${activeCompany.currency})` : "Workspace"
@@ -95,6 +95,17 @@ export function TeamSwitcher() {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="gap-2 p-2 cursor-pointer"
+                onClick={() => setIsMembersModalOpen(true)}
+              >
+                <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                  <Users className="size-3.5 text-muted-foreground" />
+                </div>
+                <div className="font-medium text-xs text-muted-foreground">
+                  Manage team members
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="gap-2 p-2 cursor-pointer"
                 onClick={() => setIsCreateModalOpen(true)}
               >
                 <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
@@ -111,4 +122,5 @@ export function TeamSwitcher() {
     </SidebarMenu>
   )
 }
+
 
