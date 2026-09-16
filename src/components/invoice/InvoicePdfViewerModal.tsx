@@ -92,21 +92,21 @@ export function InvoicePdfViewerModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-4xl w-[95vw] h-[90vh] max-h-[95vh] flex flex-col p-0 gap-0 overflow-hidden bg-card border-border">
+      <DialogContent className="max-w-4xl w-[95vw] h-[90vh] max-h-[95vh] flex flex-col p-0 gap-0 overflow-hidden bg-card border-border/80 shadow-2xl">
         {/* Header */}
-        <DialogHeader className="p-4 sm:p-5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+        <DialogHeader className="p-4 sm:p-5 border-b border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-muted/20 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
               <FileText className="w-5 h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <DialogTitle className="text-base sm:text-lg font-bold tracking-tight text-foreground font-mono">
                   {invoice.invoiceNumber || "Invoice"}
                 </DialogTitle>
                 <InvoiceStatusBadge status={invoice.status} />
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">
                 {invoice.receiverName ? `${invoice.receiverName} • ` : ""}
                 {invoice.issueDate ? `Issued: ${formatDate(invoice.issueDate)}` : ""}
                 {invoice.totalAmount !== undefined && invoice.currency
@@ -117,12 +117,12 @@ export function InvoicePdfViewerModal({
           </div>
 
           {/* Action Toolbar */}
-          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 pr-6 sm:pr-0">
             <Button
               variant="outline"
               size="sm"
               onClick={handlePrint}
-              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
+              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer border-border/80"
               title="Print invoice"
             >
               <Printer className="w-3.5 h-3.5 text-muted-foreground" />
@@ -133,7 +133,7 @@ export function InvoicePdfViewerModal({
               variant="outline"
               size="sm"
               onClick={handleOpenNewTab}
-              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer"
+              className="h-8 px-2.5 text-xs gap-1.5 cursor-pointer border-border/80"
               title="Open PDF in new browser tab"
             >
               <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
@@ -144,7 +144,7 @@ export function InvoicePdfViewerModal({
               size="sm"
               onClick={handleDownload}
               disabled={isDownloading}
-              className="h-8 px-3 text-xs gap-1.5 cursor-pointer shadow-xs"
+              className="h-8 px-3 text-xs gap-1.5 cursor-pointer shadow-xs font-medium"
               title="Download PDF"
             >
               {isDownloading ? (
@@ -158,7 +158,7 @@ export function InvoicePdfViewerModal({
         </DialogHeader>
 
         {/* PDF Viewport Body */}
-        <div className="relative flex-1 w-full h-full bg-muted/40 overflow-hidden flex flex-col">
+        <div className="relative flex-1 w-full h-full bg-muted/30 overflow-hidden flex flex-col">
           {isLoadingPdf && !loadError && (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-xs gap-3">
               <Loader2 className="w-7 h-7 text-primary animate-spin" />

@@ -8,7 +8,9 @@ import {
   AlertCircle, 
   Loader2, 
   Image as ImageIcon,
-  X
+  X,
+  FileCheck2,
+  Receipt
 } from "lucide-react";
 import { api } from "~/trpc/react";
 import { formatCurrency } from "~/lib/utils/format";
@@ -23,6 +25,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
 } from "~/components/ui/dialog";
 
@@ -86,7 +89,7 @@ export function UploadReceiptModal({
     if (!file) return;
 
     if (file.size > 5 * 1024 * 1024) {
-      setFileError("File size exceeds 5MB. Please upload a compressed PDF or image.");
+      setFileError("File size exceeds 5MB limit. Please upload a compressed PDF or image.");
       return;
     }
 
@@ -101,7 +104,7 @@ export function UploadReceiptModal({
       });
     };
     reader.onerror = () => {
-      setFileError("Failed to read file.");
+      setFileError("Failed to read the selected file.");
     };
     reader.readAsDataURL(file);
   };
@@ -123,34 +126,53 @@ export function UploadReceiptModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle className="text-base font-bold flex items-center gap-2">
-            <Upload className="w-4 h-4 text-primary" />
-            <span>Submit Payment Receipt</span>
-          </DialogTitle>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Attach proof of payment for Invoice{" "}
-            <span className="font-mono font-semibold text-foreground">
-              {invoice.invoiceNumber}
-            </span>{" "}
-            ({formatCurrency(invoice.totalAmount, invoice.currency)}).
-          </p>
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-border/80 bg-popover">
+        <DialogHeader className="p-5 pb-4 border-b border-border/60 bg-muted/20">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <Upload className="w-4 h-4" />
+            </div>
+            <div>
+              <DialogTitle className="text-base font-bold text-foreground">
+                Submit Payment Receipt
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                Proof of bank remittance for statement verification
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
+        {/* Invoice Summary Banner */}
+        <div className="px-5 py-3 bg-muted/30 border-b border-border/50 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5 font-mono">
+            <Receipt className="w-3.5 h-3.5 text-muted-foreground" />
+            <span className="font-semibold text-foreground">{invoice.invoiceNumber}</span>
+          </div>
+          <div className="font-mono font-bold text-sm text-foreground">
+            {formatCurrency(invoice.totalAmount, invoice.currency)}
+          </div>
+        </div>
+
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 py-2">
-            {/* File Picker Zone */}
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="p-5 space-y-4">
+            {/* File Upload Zone */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium text-foreground">
-                Receipt File (PNG, JPG, or PDF max 5MB)
+              <label className="text-xs font-semibold text-foreground">
+                Transfer Receipt Document <span className="text-destructive">*</span>
               </label>
 
               {!selectedFile ? (
-                <label className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/30 transition-colors rounded-xl p-6 cursor-pointer group">
-                  <Upload className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
-                  <span className="text-xs font-semibold text-foreground">Click to upload payment proof</span>
-                  <span className="text-[11px] text-muted-foreground mt-0.5">Supports PDF, PNG, JPG</span>
+                <label className="flex flex-col items-center justify-center border-2 border-dashed border-border hover:border-primary/50 hover:bg-muted/30 transition-all rounded-xl p-6 cursor-pointer group">
+                  <div className="p-3 rounded-full bg-muted/80 text-muted-foreground group-hover:text-primary group-hover:bg-primary/10 transition-colors mb-2">
+                    <Upload className="w-5 h-5" />
+                  </div>
+                  <span className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors">
+                    Click to browse or drop file here
+                  </span>
+                  <span className="text-[11px] text-muted-foreground mt-0.5">
+                    Supports PDF, PNG, JPG (up to 5MB)
+                  </span>
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp,application/pdf"
@@ -159,80 +181,79 @@ export function UploadReceiptModal({
                   />
                 </label>
               ) : (
-                <div className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30">
+                <div className="flex items-center justify-between p-3 rounded-xl border border-border/80 bg-muted/30">
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <div className="size-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                       {selectedFile.type.includes("pdf") ? (
-                        <FileText className="w-5 h-5" />
+                        <FileText className="w-4 h-4" />
                       ) : (
-                        <ImageIcon className="w-5 h-5" />
+                        <ImageIcon className="w-4 h-4" />
                       )}
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-medium text-foreground truncate">{selectedFile.name}</p>
                       <p className="text-[10px] text-muted-foreground font-mono">
-                        {(selectedFile.size / 1024).toFixed(1)} KB
+                        {(selectedFile.size / 1024).toFixed(1)} KB • Attached
                       </p>
                     </div>
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
-                    size="icon"
+                    size="icon-xs"
                     onClick={() => setSelectedFile(null)}
-                    className="text-muted-foreground hover:text-destructive h-8 w-8"
+                    className="text-muted-foreground hover:text-destructive shrink-0 cursor-pointer"
+                    title="Remove file"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </Button>
                 </div>
               )}
 
               {fileError && (
                 <p className="text-[11px] text-destructive flex items-center gap-1 mt-1">
-                  <AlertCircle className="w-3.5 h-3.5" />
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                   <span>{fileError}</span>
                 </p>
               )}
             </div>
 
-            {/* Transfer reference / notes */}
+            {/* Reference notes */}
             <FormField
               control={form.control}
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Reference / Notes (Optional)</FormLabel>
+                  <FormLabel className="text-xs font-semibold">Payment Reference / Notes (Optional)</FormLabel>
                   <FormControl>
                     <Textarea
                       rows={2}
-                      placeholder="e.g. Wire transfer ref #84920 via Chase Bank on Sept 14"
-                      className="text-xs"
+                      placeholder="e.g. Wire transfer ref #84920 via Chase Bank"
+                      className="text-xs resize-none"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="text-[11px]" />
                 </FormItem>
               )}
             />
 
-            <div className="p-3 rounded-lg bg-muted/40 border border-border text-[11px] text-muted-foreground space-y-1">
-              <p className="font-semibold text-foreground">Verification Notice:</p>
+            <div className="p-3 rounded-xl bg-muted/40 border border-border/60 text-[11px] text-muted-foreground flex items-start gap-2">
+              <FileCheck2 className="w-4 h-4 text-purple-600 dark:text-purple-400 shrink-0 mt-0.5" />
               <p>
-                Once submitted, this invoice status will update to{" "}
-                <span className="font-semibold text-purple-600 dark:text-purple-400">
-                  Payment Pending Verification
-                </span>
-                . Our billing department will verify the bank funds and mark your invoice as fully Paid.
+                Upon submission, this invoice will enter{" "}
+                <strong className="text-foreground">Payment Pending Verification</strong>. Once bank clearance is confirmed, the invoice is marked as Cleared.
               </p>
             </div>
 
-            <DialogFooter className="gap-2 sm:gap-0">
+            <DialogFooter className="gap-2 sm:gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={handleClose}
                 disabled={submitMutation.isPending}
+                className="h-8 text-xs cursor-pointer border-border/80"
               >
                 Cancel
               </Button>
@@ -240,17 +261,17 @@ export function UploadReceiptModal({
                 type="submit"
                 size="sm"
                 disabled={!selectedFile || submitMutation.isPending}
-                className="gap-1.5"
+                className="h-8 text-xs gap-1.5 cursor-pointer font-medium shadow-xs"
               >
                 {submitMutation.isPending ? (
                   <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    <span>Submitting Receipt...</span>
+                    <span>Submitting...</span>
                   </>
                 ) : (
                   <>
                     <Check className="w-3.5 h-3.5" />
-                    <span>Submit for Verification</span>
+                    <span>Submit Payment Proof</span>
                   </>
                 )}
               </Button>
