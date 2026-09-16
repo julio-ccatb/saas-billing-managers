@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 import { generatePdfFromInvoice } from "~/server/services/pdfService";
+import { canUserAccessInvoice } from "~/server/auth/invoiceAccess";
 import { invoiceSchema } from "~/lib/schemas/invoice";
 
 // Increase max duration to maximum allowable on Vercel Hobby/Free tier (15s)
@@ -25,8 +26,16 @@ export async function POST(req: NextRequest) {
         include: { items: { orderBy: { orderIndex: "asc" } } },
       });
 
-      if (!dbInvoice || dbInvoice.userId !== session.user.id) {
+      if (!dbInvoice) {
         return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
+      }
+
+      const hasAccess = await canUserAccessInvoice(db, dbInvoice, session.user);
+      if (!hasAccess) {
+        return NextResponse.json(
+          { error: "Access denied. Only company members and the invoice customer can access this invoice." },
+          { status: 403 }
+        );
       }
 
       invoiceData = {

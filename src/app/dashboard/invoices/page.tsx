@@ -8,6 +8,7 @@ import {
   CheckCircle2, 
   Trash2, 
   Eye, 
+  Edit3,
   FileText,
   Download,
   Mail
@@ -21,6 +22,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { AppRoutes } from "~/config/routes";
 import { VerifyPaymentProofModal } from "~/components/invoice/VerifyPaymentProofModal";
 import { SendInvoiceModal } from "~/components/invoice/SendInvoiceModal";
+import { InvoicePdfViewerModal } from "~/components/invoice/InvoicePdfViewerModal";
 import { InvoiceStatusBadge } from "~/features/billing/components/InvoiceStatusBadge";
 import { Pagination } from "~/components/Pagination";
 
@@ -33,6 +35,7 @@ export default function InvoicesPage() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [reviewingReceipt, setReviewingReceipt] = useState<any>(null);
   const [sendingInvoice, setSendingInvoice] = useState<any>(null);
+  const [viewingPdfInvoice, setViewingPdfInvoice] = useState<any>(null);
 
   const utils = api.useUtils();
 
@@ -272,6 +275,15 @@ export default function InvoicesPage() {
                             <Download className="w-4 h-4" />
                           </Button>
                           <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setViewingPdfInvoice(inv)}
+                            className="text-muted-foreground hover:text-primary hover:bg-primary/10"
+                            title="View Invoice & PDF"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
                             render={<Link href={AppRoutes.INVOICE_EDIT(inv.id)} />}
                             nativeButton={false}
                             variant="ghost"
@@ -279,7 +291,7 @@ export default function InvoicesPage() {
                             className="text-muted-foreground hover:text-primary hover:bg-primary/10"
                             title="Edit Invoice"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Edit3 className="w-4 h-4" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -342,13 +354,23 @@ export default function InvoicesPage() {
                       </Button>
                     )}
                     <Button
-                      render={<Link href={`/invoices/${inv.id}/edit`} />}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setViewingPdfInvoice(inv)}
+                      className="h-9 text-xs flex-1 cursor-pointer"
+                      title="View Invoice PDF"
+                    >
+                      <Eye className="w-3.5 h-3.5 mr-1 text-primary" /> View
+                    </Button>
+                    <Button
+                      render={<Link href={AppRoutes.INVOICE_EDIT(inv.id)} />}
                       nativeButton={false}
                       variant="outline"
                       size="sm"
-                      className="h-9 text-xs flex-1"
+                      className="h-9 px-3 text-xs"
+                      title="Edit Invoice"
                     >
-                      <Eye className="w-3.5 h-3.5 mr-1" /> View / Edit
+                      <Edit3 className="w-3.5 h-3.5" />
                     </Button>
                     <Button
                       variant="outline"
@@ -444,6 +466,13 @@ export default function InvoicesPage() {
             });
           }}
           isSending={sendEmailMutation.isPending}
+        />
+
+        {/* Invoice PDF Viewer Modal */}
+        <InvoicePdfViewerModal
+          invoice={viewingPdfInvoice}
+          isOpen={!!viewingPdfInvoice}
+          onClose={() => setViewingPdfInvoice(null)}
         />
       </div>
   );

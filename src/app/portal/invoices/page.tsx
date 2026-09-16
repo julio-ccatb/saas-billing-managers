@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "~/components/ui/dialog";
 import { UploadReceiptModal } from "../components/UploadReceiptModal";
+import { InvoicePdfViewerModal } from "~/components/invoice/InvoicePdfViewerModal";
 
 export default function PortalInvoicesPage() {
   const [statusFilter, setStatusFilter] = useState<
@@ -33,6 +34,30 @@ export default function PortalInvoicesPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedInvoiceForReceipt, setSelectedInvoiceForReceipt] = useState<any>(null);
   const [viewingReceipt, setViewingReceipt] = useState<any>(null);
+  const [viewingPdfInvoice, setViewingPdfInvoice] = useState<any>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownloadPdf = async (inv: any) => {
+    try {
+      setDownloadingId(inv.id);
+      const downloadUrl = `/api/invoice/${inv.id}/pdf?disposition=attachment`;
+      const res = await fetch(downloadUrl);
+      if (!res.ok) throw new Error("Download failed");
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `invoice-${inv.invoiceNumber || inv.id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      window.location.href = `/api/invoice/${inv.id}/pdf?disposition=attachment`;
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   const { data: invoices, isLoading } = api.portal.getInvoices.useQuery({
     status: statusFilter,
@@ -117,9 +142,10 @@ export default function PortalInvoicesPage() {
         </div>
       </Card>
 
-      {/* Invoices List Table */}
+      {/* Invoices List - Desktop Table & Mobile Card View */}
       <Card className="overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
               <tr className="bg-muted/30 border-b border-border text-xs uppercase tracking-wider text-muted-foreground font-semibold">
@@ -153,7 +179,15 @@ export default function PortalInvoicesPage() {
                   return (
                     <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
                       <td className="py-3.5 px-5 font-mono text-xs font-semibold text-foreground">
-                        {inv.invoiceNumber}
+                        <button
+                          type="button"
+                          onClick={() => setViewingPdfInvoice(inv)}
+                          className="text-primary hover:underline flex items-center gap-1.5 font-bold cursor-pointer"
+                          title="Click to view Invoice PDF"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>{inv.invoiceNumber}</span>
+                        </button>
                       </td>
                       <td className="py-3.5 px-5 font-mono text-xs text-muted-foreground">
                         {formatDate(inv.issueDate)}
@@ -181,6 +215,31 @@ export default function PortalInvoicesPage() {
                       </td>
                       <td className="py-3.5 px-5 text-right">
                         <div className="flex items-center justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            onClick={() => setViewingPdfInvoice(inv)}
+                            className="text-xs h-8 px-2.5 gap-1.5 cursor-pointer font-medium shadow-xs"
+                            title="View Invoice PDF"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View PDF</span>
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={downloadingId === inv.id}
+                            onClick={() => handleDownloadPdf(inv)}
+                            className="text-xs h-8 px-2.5 gap-1.5 cursor-pointer"
+                            title="Download PDF"
+                          >
+                            <Download className="w-3.5 h-3.5 text-muted-foreground" />
+                            <span>
+                              {downloadingId === inv.id ? "Downloading..." : "Download"}
+                            </span>
+                          </Button>
+
                           {!isPaid && !isVerification && (
                             <Button
                               size="sm"
@@ -217,6 +276,104 @@ export default function PortalInvoicesPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Responsive Card List */}
+        <div className="md:hidden divide-y divide-border">
+          {isLoading ? (
+            <div className="text-center py-10 text-xs text-muted-foreground">Loading invoices...</div>
+          ) : !filteredInvoices || filteredInvoices.length === 0 ? (
+            <div className="text-center py-12 px-4 text-xs text-muted-foreground">No matching invoices found.</div>
+          ) : (
+            filteredInvoices.map((inv) => {
+              const isPaid = inv.status === "PAID";
+              const isVerification = inv.status === "PAYMENT_PENDING_VERIFICATION";
+              const latestReceipt = inv.receipts?.[0];
+
+              return (
+                <div key={inv.id} className="p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setViewingPdfInvoice(inv)}
+                        className="font-mono font-bold text-sm text-primary hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>{inv.invoiceNumber}</span>
+                      </button>
+                      <span className="text-xs text-muted-foreground block mt-0.5">Due: {formatDate(inv.dueDate)}</span>
+                    </div>
+                    <div>{getStatusBadge(inv.status)}</div>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs py-1.5 border-y border-border/60">
+                    <span className="text-muted-foreground">Total Amount</span>
+                    <span className="font-bold text-foreground font-mono text-sm">{formatCurrency(inv.totalAmount, inv.currency)}</span>
+                  </div>
+
+                  {latestReceipt && (
+                    <div className="flex items-center justify-between text-xs bg-muted/40 p-2 rounded-md">
+                      <span className="text-muted-foreground">Receipt Proof Attached</span>
+                      <button
+                        onClick={() => setViewingReceipt(latestReceipt)}
+                        className="text-primary hover:underline text-xs flex items-center gap-1 font-medium cursor-pointer"
+                      >
+                        <FileText className="w-3 h-3" />
+                        <span>View Proof</span>
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => setViewingPdfInvoice(inv)}
+                      className="flex-1 text-xs h-9 gap-1.5 cursor-pointer font-medium"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View PDF</span>
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      disabled={downloadingId === inv.id}
+                      onClick={() => handleDownloadPdf(inv)}
+                      className="text-xs h-9 px-3 gap-1.5 cursor-pointer"
+                    >
+                      <Download className="w-3.5 h-3.5 text-muted-foreground" />
+                      <span>{downloadingId === inv.id ? "..." : "Download"}</span>
+                    </Button>
+
+                    {!isPaid && !isVerification && (
+                      <Button
+                        size="sm"
+                        onClick={() => setSelectedInvoiceForReceipt(inv)}
+                        className="w-full text-xs h-9 gap-1.5"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Submit Receipt</span>
+                      </Button>
+                    )}
+
+                    {isVerification && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setSelectedInvoiceForReceipt(inv)}
+                        className="w-full text-xs h-9 gap-1.5"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Re-upload Receipt</span>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </Card>
 
@@ -271,6 +428,13 @@ export default function PortalInvoicesPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      {/* Invoice PDF Viewer Modal */}
+      <InvoicePdfViewerModal
+        invoice={viewingPdfInvoice}
+        isOpen={!!viewingPdfInvoice}
+        onClose={() => setViewingPdfInvoice(null)}
+      />
     </div>
   );
 }

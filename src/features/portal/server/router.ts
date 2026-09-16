@@ -2,6 +2,54 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, clientProcedure } from "~/server/api/trpc";
 import { recordAuditLog } from "~/features/audit/server/auditService";
+import { canUserAccessInvoice } from "~/server/auth/invoiceAccess";
+
+async function getCustomerInvoiceWhere(ctx: any) {
+  const customer = ctx.customer;
+  const user = ctx.session.user;
+
+  const userCustomerIds = [customer.id];
+  if (ctx.customerId) userCustomerIds.push(ctx.customerId);
+  if (user.customerId) userCustomerIds.push(user.customerId);
+
+  const linkedCustomers = await ctx.db.customer.findMany({
+    where: {
+      OR: [
+        { clientUserId: user.id },
+        ...(user.email ? [{ email: { equals: user.email, mode: "insensitive" } }] : []),
+        ...(customer.email ? [{ email: { equals: customer.email, mode: "insensitive" } }] : []),
+      ],
+    },
+    select: { id: true, email: true },
+  });
+  for (const lc of linkedCustomers) {
+    userCustomerIds.push(lc.id);
+  }
+
+  const customerEmails = Array.from(
+    new Set(
+      [customer.email, user.email, ...linkedCustomers.map((lc: any) => lc.email)]
+        .filter(Boolean)
+        .map((e: string) => e.trim().toLowerCase())
+    )
+  );
+
+  return {
+    OR: [
+      { customerId: { in: Array.from(new Set(userCustomerIds)) } },
+      ...(customerEmails.length > 0
+        ? [
+            {
+              receiverEmail: {
+                in: customerEmails,
+                mode: "insensitive" as const,
+              },
+            },
+          ]
+        : []),
+    ],
+  };
+}
 
 export const portalRouter = createTRPCRouter({
   /**
@@ -9,10 +57,11 @@ export const portalRouter = createTRPCRouter({
    */
   getOverview: clientProcedure.query(async ({ ctx }) => {
     const customer = ctx.customer;
+    const invoiceWhere = await getCustomerInvoiceWhere(ctx);
 
     const [invoices, activeLicenses, activeContracts] = await Promise.all([
       ctx.db.invoice.findMany({
-        where: { customerId: customer.id },
+        where: invoiceWhere,
         orderBy: { issueDate: "desc" },
         include: {
           receipts: {
@@ -90,10 +139,9 @@ export const portalRouter = createTRPCRouter({
         .optional()
     )
     .query(async ({ ctx, input }) => {
-      const customerId = ctx.customerId;
       const status = input?.status ?? "ALL";
+      const where: any = await getCustomerInvoiceWhere(ctx);
 
-      const where: any = { customerId };
       if (status !== "ALL") {
         where.status = status;
       }
@@ -131,7 +179,15 @@ export const portalRouter = createTRPCRouter({
         },
       });
 
-      if (!invoice || invoice.customerId !== ctx.customerId) {
+      if (!invoice) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Invoice not found or access denied.",
+        });
+      }
+
+      const hasAccess = await canUserAccessInvoice(ctx.db, invoice, ctx.session.user);
+      if (!hasAccess) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Invoice not found or access denied.",

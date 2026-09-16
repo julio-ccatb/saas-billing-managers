@@ -7,6 +7,7 @@ import { PortalInvoicesTable } from "~/features/portal/components/PortalInvoices
 import { PortalLicensesSection } from "~/features/portal/components/PortalLicensesSection";
 import { PortalContractsSection } from "~/features/portal/components/PortalContractsSection";
 import { UploadReceiptModal } from "~/features/portal/components/UploadReceiptModal";
+import { InvoicePdfViewerModal } from "~/components/invoice/InvoicePdfViewerModal";
 
 export default function PortalOverviewPage() {
   const { data: overview, isLoading } = api.portal.getOverview.useQuery();
@@ -14,6 +15,7 @@ export default function PortalOverviewPage() {
   const { data: contracts } = api.portal.getContracts.useQuery();
 
   const [selectedInvoiceForReceipt, setSelectedInvoiceForReceipt] = useState<any>(null);
+  const [viewingPdfInvoice, setViewingPdfInvoice] = useState<any>(null);
 
   if (isLoading) {
     return (
@@ -33,6 +35,7 @@ export default function PortalOverviewPage() {
         <PortalInvoicesTable
           invoices={overview?.recentInvoices}
           onUploadReceipt={setSelectedInvoiceForReceipt}
+          onViewInvoice={setViewingPdfInvoice}
         />
         <PortalLicensesSection licenses={licenses} />
       </div>
@@ -45,6 +48,13 @@ export default function PortalOverviewPage() {
         isOpen={!!selectedInvoiceForReceipt}
         onClose={() => setSelectedInvoiceForReceipt(null)}
         invoice={selectedInvoiceForReceipt}
+      />
+
+      {/* Invoice PDF Viewer Modal */}
+      <InvoicePdfViewerModal
+        invoice={viewingPdfInvoice}
+        isOpen={!!viewingPdfInvoice}
+        onClose={() => setViewingPdfInvoice(null)}
       />
     </div>
   );
