@@ -83,10 +83,14 @@ export default function ContractsPage() {
         signingUrl: data.signingUrl,
         contractNumber: data.contractNumber,
       });
-      toast.success("DocuSeal envelope dispatched", "Signing session ready.");
+      if (data.emailDispatched) {
+        toast.success("Signing invitation sent", "Official signing link emailed to client via Resend.");
+      } else {
+        toast.success("Signing session ready", "Signing URL generated successfully.");
+      }
     },
     onError: (err) => {
-      toast.error("DocuSeal submission failed", err.message);
+      toast.error("Contract dispatch failed", err.message);
     },
   });
 

@@ -158,6 +158,7 @@ export async function createDynamicDocuSealSubmission(params: SendContractSubmis
     email: params.customer.email || "test@example.com",
     name: params.customer.name || "Client Signer",
     external_id: params.contract.contractNumber,
+    send_email: false,
     values: { ...commonValues },
   });
 
@@ -182,14 +183,17 @@ export async function createDynamicDocuSealSubmission(params: SendContractSubmis
       role: vendorRoleName,
       email: vendorEmail || "vendor@example.com",
       name: vendorName,
+      send_email: false,
       values: vendorValues,
     });
   }
 
-  // Execute submission via @docuseal/api SDK
+  // Execute submission via @docuseal/api SDK with send_email: false
+  // All signature invitation emails are routed exclusively through Resend
   const submissionRes = (await client.createSubmission({
     template_id: templateId,
     external_id: params.contract.contractNumber,
+    send_email: false,
     submitters: submittersPayload,
   } as any)) as any;
 
@@ -220,6 +224,7 @@ export async function createDynamicDocuSealSubmission(params: SendContractSubmis
     slug: clientSlug,
     signingUrl,
     submitterId: clientSubmitter?.id,
+    customerEmail: params.customer.email,
   };
 }
 

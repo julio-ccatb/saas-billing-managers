@@ -377,6 +377,33 @@ export const contractRouter = createTRPCRouter({
         },
       });
 
+      // Dispatch contract signature invitation exclusively via Resend (DocuSeal emails disabled)
+      let emailDispatched = false;
+      let emailError: string | null = null;
+      let emailMessageId: string | undefined;
+
+      if (contract.customer.email) {
+        try {
+          const { sendContractSigningEmail } = await import("~/server/services/emailService");
+          const emailRes = await sendContractSigningEmail({
+            recipientEmail: contract.customer.email,
+            recipientName: contract.customer.name,
+            contractNumber: contract.contractNumber,
+            contractTitle: contract.title,
+            contractValue: contract.value,
+            currency: contract.currency,
+            billingCycle: contract.billingCycle,
+            signingUrl: result.signingUrl,
+            companyName: company.name || ctx.session.user.name || "Billing Operations",
+          });
+          emailDispatched = true;
+          emailMessageId = emailRes.messageId;
+        } catch (err: any) {
+          console.error("[CONTRACT SIGNING EMAIL ERROR]", err);
+          emailError = err.message || "Failed to dispatch email via Resend";
+        }
+      }
+
       await recordAuditLog(ctx.db, {
         companyId,
         userId,
@@ -384,13 +411,16 @@ export const contractRouter = createTRPCRouter({
         action: "CONTRACT_DISPATCHED_FOR_SIGNATURE",
         entityType: "CONTRACT",
         entityId: contract.id,
-        reason: `Dispatched e-signature request to DocuSeal (Submission #${result.submissionId})`,
+        reason: `Dispatched e-signature request to DocuSeal (Submission #${result.submissionId})${emailDispatched ? " and sent signing invitation via Resend" : ""}`,
         metadata: {
           submissionId: result.submissionId,
           templateId: input.templateId ?? null,
           slug: result.slug,
           signingUrl: result.signingUrl,
           customerEmail: contract.customer.email,
+          emailDispatched,
+          emailMessageId,
+          emailError,
         },
       });
 
@@ -399,6 +429,8 @@ export const contractRouter = createTRPCRouter({
         signingUrl: result.signingUrl,
         submissionId: result.submissionId,
         contractNumber: contract.contractNumber,
+        emailDispatched,
+        emailError,
       };
     }),
 

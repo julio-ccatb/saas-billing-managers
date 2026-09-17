@@ -452,3 +452,191 @@ export async function sendPortalInvitationEmail(params: SendPortalInvitationEmai
   };
 }
 
+export interface SendContractSigningEmailParams {
+  recipientEmail: string;
+  recipientName: string;
+  contractNumber: string;
+  contractTitle: string;
+  contractValue: number;
+  currency: string;
+  billingCycle: string;
+  signingUrl: string;
+  companyName?: string;
+}
+
+/**
+ * Generates an operational, CSOC-branded HTML template for contract e-signature invitation
+ */
+export function renderContractSigningEmailHtml(params: {
+  recipientName: string;
+  contractNumber: string;
+  contractTitle: string;
+  contractValue: number;
+  currency: string;
+  billingCycle: string;
+  signingUrl: string;
+  senderName: string;
+}): string {
+  const {
+    recipientName,
+    contractNumber,
+    contractTitle,
+    contractValue,
+    currency,
+    billingCycle,
+    signingUrl,
+    senderName,
+  } = params;
+
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Action Required: Please Sign Agreement ${contractNumber}</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; margin: 0; padding: 32px 16px;">
+  <div style="max-width: 580px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+    
+    <!-- Header -->
+    <div style="padding: 24px; border-bottom: 1px solid #e2e8f0; background-color: #0f172a; color: #ffffff;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h1 style="margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.02em;">${senderName}</h1>
+          <p style="margin: 4px 0 0 0; font-size: 12px; color: #94a3b8;">Operations &amp; Contract Command</p>
+        </div>
+        <div style="text-align: right;">
+          <span style="display: inline-block; padding: 4px 10px; background-color: #1e293b; border: 1px solid #334155; border-radius: 6px; font-family: monospace; font-size: 12px; font-weight: 700; color: #38bdf8;">
+            ${contractNumber}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding: 28px 24px;">
+      <p style="margin: 0 0 12px 0; font-size: 14px; color: #334155;">
+        Dear <strong>${recipientName}</strong>,
+      </p>
+
+      <p style="margin: 0 0 16px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+        A new service agreement has been prepared for your review and electronic signature by <strong>${senderName}</strong>.
+      </p>
+
+      <!-- Contract Overview Card -->
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 12px;">
+        <tr>
+          <td style="padding: 12px; color: #64748b;">Contract:</td>
+          <td style="padding: 12px; font-weight: 600; color: #1e293b; text-align: right;">${contractTitle}</td>
+        </tr>
+        <tr style="border-top: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #64748b;">Contract Number:</td>
+          <td style="padding: 12px; font-family: monospace; font-weight: 600; color: #1e293b; text-align: right;">${contractNumber}</td>
+        </tr>
+        <tr style="border-top: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #64748b;">Billing Interval:</td>
+          <td style="padding: 12px; font-weight: 600; color: #1e293b; text-align: right; text-transform: capitalize;">${billingCycle.toLowerCase()}</td>
+        </tr>
+        <tr style="border-top: 1px solid #e2e8f0;">
+          <td style="padding: 12px; color: #64748b;">Commitment Value:</td>
+          <td style="padding: 12px; font-weight: 800; font-family: monospace; font-size: 14px; color: #0f172a; text-align: right;">
+            ${formatCurrency(contractValue, currency)}
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin: 16px 0 24px 0; font-size: 13px; color: #475569; line-height: 1.5;">
+        Please review the terms, deliverables, and commitments. You can sign the agreement digitally from any device:
+      </p>
+
+      <!-- CTA Button -->
+      <div style="text-align: center; margin: 28px 0;">
+        <a href="${signingUrl}" style="display: inline-block; background-color: #2563eb; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 13px 32px; border-radius: 8px; box-shadow: 0 2px 4px rgba(37,99,235,0.25);">
+          Review &amp; Sign Agreement
+        </a>
+      </div>
+
+      <p style="margin: 20px 0 8px 0; font-size: 12px; color: #64748b; line-height: 1.4;">
+        Once submitted, all parties will automatically receive a copy of the executed document and an initial billing invoice will be generated.
+      </p>
+
+      <p style="margin: 0; font-size: 11px; color: #94a3b8; word-break: break-all;">
+        Or copy and paste this link into your browser:<br/>
+        <a href="${signingUrl}" style="color: #2563eb;">${signingUrl}</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 16px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #94a3b8;">
+      <p style="margin: 0;">Automated e-signature delivery dispatched on behalf of ${senderName}.</p>
+    </div>
+
+  </div>
+</body>
+</html>
+  `;
+}
+
+/**
+ * Sends a contract e-signature invitation email via Resend
+ */
+export async function sendContractSigningEmail(params: SendContractSigningEmailParams): Promise<{
+  success: boolean;
+  messageId?: string;
+}> {
+  const {
+    recipientEmail,
+    recipientName,
+    contractNumber,
+    contractTitle,
+    contractValue,
+    currency,
+    billingCycle,
+    signingUrl,
+    companyName,
+  } = params;
+
+  const senderName = companyName || "Client Billing Operations";
+  const fromAddress = env.EMAIL_FROM || `${senderName} <onboarding@resend.dev>`;
+
+  if (!resend) {
+    console.log(`\n======================================================`);
+    console.log(`[CONTRACT SIGNING EMAIL SIMULATION]`);
+    console.log(`To: ${recipientEmail} (${recipientName})`);
+    console.log(`Contract: ${contractNumber} - ${contractTitle}`);
+    console.log(`Value: ${formatCurrency(contractValue, currency)} (${billingCycle})`);
+    console.log(`Signing URL: ${signingUrl}`);
+    console.log(`(Set RESEND_API_KEY to send real emails)`);
+    console.log(`======================================================\n`);
+    return { success: true, messageId: "simulated-dev-id" };
+  }
+
+  const html = renderContractSigningEmailHtml({
+    recipientName,
+    contractNumber,
+    contractTitle,
+    contractValue,
+    currency,
+    billingCycle,
+    signingUrl,
+    senderName,
+  });
+
+  const response = await resend.emails.send({
+    from: fromAddress,
+    to: [recipientEmail],
+    subject: `Please Sign: Agreement ${contractNumber} (${contractTitle}) | ${senderName}`,
+    html,
+  });
+
+  if (response.error) {
+    throw new Error(response.error.message);
+  }
+
+  return {
+    success: true,
+    messageId: response.data?.id,
+  };
+}
+
