@@ -171,7 +171,10 @@ async function checkLicenseStatus() {
 
   try {
     const res = await fetch("${endpoint}", {
-      headers: { "Authorization": "Bearer ${key}" }
+      headers: {
+        "Authorization": "Bearer ${key}",
+        "x-origin-domain": process.env.APP_DOMAIN || "localhost",
+      }
     });
     const data = await res.json();
 
@@ -203,8 +206,12 @@ app.use(async (req, res, next) => {
 import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
+  const originDomain = req.nextUrl.hostname;
   const res = await fetch("${endpoint}", {
-    headers: { "Authorization": "Bearer ${key}" },
+    headers: {
+      "Authorization": "Bearer ${key}",
+      "x-origin-domain": originDomain,
+    },
     next: { revalidate: 3600 }
   });
   
@@ -220,10 +227,12 @@ export async function middleware(req: NextRequest) {
 
     case "python":
       return `import time
+import os
 import requests
 
 LICENSE_KEY = "${key}"
 VERIFY_URL = "${endpoint}"
+APP_DOMAIN = os.getenv("APP_DOMAIN", "example.com")
 
 _cached_expiry = 0
 _is_active = True
@@ -238,7 +247,10 @@ def verify_service_active():
     try:
         resp = requests.get(
             VERIFY_URL, 
-            headers={"Authorization": f"Bearer {LICENSE_KEY}"},
+            headers={
+                "Authorization": f"Bearer {LICENSE_KEY}",
+                "x-origin-domain": APP_DOMAIN,
+            },
             timeout=5
         )
         data = resp.json()
@@ -254,13 +266,17 @@ function is_service_licensed() {
     $cache_key = 'license_lease_expiry';
     $key = "${key}";
     $url = "${endpoint}";
+    $domain = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
     if (isset($_SESSION[$cache_key]) && time() < $_SESSION[$cache_key]) {
         return true;
     }
 
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer " . $key]);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer " . $key,
+        "x-origin-domain: " . $domain
+    ]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_TIMEOUT, 5);
     $response = curl_exec($ch);

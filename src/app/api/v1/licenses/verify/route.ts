@@ -1,25 +1,14 @@
 import crypto from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "~/server/db";
-
-// Helper to normalize domains (e.g. "https://api.myclient.com:3000/path" -> "myclient.com" or "api.myclient.com")
-function cleanDomain(raw?: string | null): string | null {
-  if (!raw) return null;
-  try {
-    const withProtocol = raw.includes("://") ? raw : `http://${raw}`;
-    const url = new URL(withProtocol);
-    return url.hostname.toLowerCase().replace(/^www\./, "");
-  } catch {
-    return raw.trim().toLowerCase().replace(/^www\./, "");
-  }
-}
+import { cleanDomain, isDomainAllowed } from "~/features/licenses/server/domainValidation";
 
 // Helper to set CORS headers
 function corsHeaders() {
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-key, x-origin-domain",
   };
 }
 
@@ -114,19 +103,18 @@ async function handleVerification(req: NextRequest) {
       );
     }
 
-    // Domain validation check if allowedDomain is configured
-    if (license.allowedDomain) {
-      const allowed = cleanDomain(license.allowedDomain);
-      if (!originDomain || !originDomain.endsWith(allowed ?? "")) {
-        return NextResponse.json(
-          {
-            active: false,
-            status: "DOMAIN_MISMATCH",
-            reason: `Origin domain '${originDomain ?? "none"}' does not match authorized domain '${license.allowedDomain}'.`,
-          },
-          { status: 403, headers: corsHeaders() }
-        );
-      }
+    // Domain validation check if allowedDomain is configured on the license
+    if (license.allowedDomain && !isDomainAllowed(originDomain, license.allowedDomain)) {
+      return NextResponse.json(
+        {
+          active: false,
+          status: "DOMAIN_MISMATCH",
+          reason: originDomain
+            ? `Origin domain '${originDomain}' does not match authorized domain '${license.allowedDomain}'.`
+            : `Origin domain is required when an allowed domain is configured ('${license.allowedDomain}'). Please provide via 'x-origin-domain' header, 'Origin' header, or 'originDomain' parameter.`,
+        },
+        { status: 403, headers: corsHeaders() }
+      );
     }
 
     // Update telemetry (non-blocking for speed)
