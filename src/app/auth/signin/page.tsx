@@ -57,7 +57,13 @@ function SignInContent() {
     }
     const errorParam = searchParams.get("error");
     if (errorParam) {
-      if (activeTab === "portal") {
+      if (errorParam === "OAuthAccountNotLinked") {
+        setOperatorError("An account with this email already exists. Google sign-in has been enabled for existing accounts; please try signing in again.");
+      } else if (errorParam === "AccessDenied") {
+        setOperatorError("Access was denied. Please make sure you have the required permissions or try another account.");
+      } else if (errorParam === "Configuration") {
+        setOperatorError("Authentication server configuration error. Please contact the administrator.");
+      } else if (activeTab === "portal") {
         setClientError("Authentication failed. Please verify your client credentials.");
       } else {
         setOperatorError("Authentication error during operator sign-in. Please try again.");
